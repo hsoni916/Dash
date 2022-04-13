@@ -1,0 +1,9 @@
+<resources>
+    <string name="app_name">Dash</string>
+    <string name="new_customer">New Customer</string>
+    <string name="cancel">Cancel</string>
+    <string name="save">Save</string>
+    <string name="name">Name:</string>
+    <string name="phone">Contact:</string>
+    <string name="dob">D.O.B:</string>
+</resources>
