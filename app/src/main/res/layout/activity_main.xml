@@ -22,6 +22,20 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"/>
 
+    <Button
+        android:id="@+id/NewInvoice"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:elevation="2dp"
+        android:textSize="11sp"
+        android:paddingBottom="8dp"
+        android:paddingTop="8dp"
+        android:text="@string/new_invoice"
+        android:drawableTop="@drawable/invoice"
+        android:backgroundTint="@color/purple_200"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/NewCustomer"/>
 
 
 

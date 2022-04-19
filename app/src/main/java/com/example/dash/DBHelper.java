@@ -21,14 +21,14 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE= "create table if not exists " + "CustomersList" +
             "("
             + "Name" +" TEXT NOT NULL,"
-            + "PhoneNumber" + "STRING PRIMARY KEY NOT NULL CHECK (length(PhoneNumber)==10),"
-            + "DateofBirth" + "STRING NOT NULL,"
+            + "PhoneNumber" + " STRING PRIMARY KEY NOT NULL CHECK (length(PhoneNumber)==10),"
+            + "DateofBirth" + " STRING NOT NULL,"
             + "Points" + "INTEGER"
             + ");";
 
     private static final String CREATE_TABLE_CONTROLS = "create table if not exists " + "Controls" +
             "("
-            + "PointThreshold" + "INTEGER NOT NULL CHECK (PointThreshold>=100)"
+            + "PointThreshold" + " INTEGER NOT NULL CHECK (PointThreshold>=100)"
             + ");";
 
     @Override
