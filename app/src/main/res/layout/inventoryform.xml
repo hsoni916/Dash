@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:id="@+id/header_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/add_inventory"
+        android:gravity="center"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:paddingBottom="8dp"
+        android:paddingTop="4dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/textview_background_1"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/Label1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/purity"
+        android:labelFor="@id/purity_etv"
+        app:layout_constraintTop_toBottomOf="@id/header_title"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <AutoCompleteTextView
+        android:id="@+id/purity_etv"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="32dp"
+        android:layout_marginEnd="48dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:background="@drawable/etv_background"
+        app:layout_constraintStart_toEndOf="@id/Label1"
+        app:layout_constraintTop_toTopOf="@id/Label1"
+        app:layout_constraintBottom_toBottomOf="@id/Label1"/>
+
+    <TextView
+        android:id="@+id/Label2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/Category"
+        android:labelFor="@id/category_etv"
+        app:layout_constraintTop_toBottomOf="@id/Label1"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <AutoCompleteTextView
+        android:id="@+id/category_etv"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:background="@drawable/etv_background"
+        app:layout_constraintStart_toStartOf="@id/purity_etv"
+        app:layout_constraintTop_toTopOf="@id/Label2"
+        app:layout_constraintBottom_toBottomOf="@id/Label2"/>
+
+    <TextView
+        android:id="@+id/Label3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/Weight"
+        android:labelFor="@id/category_etv"
+        app:layout_constraintTop_toBottomOf="@id/Label2"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <EditText
+        android:id="@+id/weight_etv"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:inputType="numberDecimal"
+        android:background="@drawable/etv_background"
+        app:layout_constraintStart_toStartOf="@id/purity_etv"
+        app:layout_constraintTop_toTopOf="@id/Label3"
+        app:layout_constraintBottom_toBottomOf="@id/Label3"/>
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

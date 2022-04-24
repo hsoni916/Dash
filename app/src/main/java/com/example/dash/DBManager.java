@@ -55,7 +55,7 @@ public class DBManager {
 
     public List<String> ListAllCustomer(){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String sql = "SELECT * FROM CustomersList";
+        String sql = "SELECT Name FROM CustomersList";
         Cursor fetch = db.rawQuery(sql,null);
         List<String> NamesOfCustomer = new ArrayList<>();
         while(fetch.moveToNext()){
@@ -63,6 +63,28 @@ public class DBManager {
         }
         return NamesOfCustomer;
         //run a loop to return all the names and phone numbers to the popup.
+    }
+
+    public List<String> ListAllPhone() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String sql = "SELECT PhoneNumber FROM CustomersList";
+        Cursor fetch = db.rawQuery(sql,null);
+        List<String> PhoneOfCustomer = new ArrayList<>();
+        while(fetch.moveToNext()){
+            PhoneOfCustomer.add(fetch.getString(0));
+        }
+        return PhoneOfCustomer;
+    }
+
+    public List<String> ListDOB() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String sql = "SELECT DateOfBirth FROM CustomersList";
+        Cursor fetch = db.rawQuery(sql,null);
+        List<String> DOBofCustomer = new ArrayList<>();
+        while(fetch.moveToNext()){
+            DOBofCustomer.add(fetch.getString(0));
+        }
+        return DOBofCustomer;
     }
 
     public long changePointThreshold(int newthreshold){

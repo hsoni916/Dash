@@ -12,4 +12,8 @@
     <string name="new_invoice">New Invoice</string>
     <string name="Item">Item:</string>
     <string name="add_item">Add Item</string>
+    <string name="add_inventory">Add Inventory</string>
+    <string name="purity">Purity:</string>
+    <string name="Category">Category:</string>
+    <string name="Weight">Weight:</string>
 </resources>

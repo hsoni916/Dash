@@ -24,7 +24,7 @@ import java.util.Calendar;
 
 public class MainActivity extends AppCompatActivity {
     final Calendar calendar = Calendar.getInstance();
-    Button NewCustomer, newInvoiceButton;
+    Button NewCustomer, newInvoiceButton, newInventory;
     PopupWindow popupWindow;
     private DBManager dbManager;
     String Name,PhoneNumber,DateOfBirth;
@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
         dbManager = new DBManager(this);
         NewCustomer = findViewById(R.id.NewCustomer);
         newInvoiceButton = findViewById(R.id.NewInvoice);
+        newInventory = findViewById(R.id.AddInventory);
+
         NewCustomer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -215,6 +217,17 @@ public class MainActivity extends AppCompatActivity {
             public void onClick(View view) {
                 Intent newinvoice = new Intent(MainActivity.this,Invoice.class);
                 startActivity(newinvoice);
+            }
+        });
+
+        newInventory.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                if(inflater!=null){
+                    final View marginView = inflater.inflate(R.layout.inventoryform,null);
+
+                }
             }
         });
     }
