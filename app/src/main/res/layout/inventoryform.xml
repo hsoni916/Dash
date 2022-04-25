@@ -23,6 +23,14 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/header_title"
+        app:layout_constraintStart_toEndOf="@id/purity_etv"/>
+
     <TextView
         android:id="@+id/Label1"
         android:layout_width="wrap_content"
@@ -68,19 +76,20 @@
         app:layout_constraintTop_toTopOf="@id/Label2"
         app:layout_constraintBottom_toBottomOf="@id/Label2"/>
 
+
     <TextView
-        android:id="@+id/Label3"
+        android:id="@+id/Label3_1"
+        android:text="@string/gross"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="@string/Weight"
-        android:labelFor="@id/category_etv"
         app:layout_constraintTop_toBottomOf="@id/Label2"
         app:layout_constraintStart_toStartOf="parent"/>
 
+
     <EditText
         android:id="@+id/weight_etv"
-        android:layout_width="320dp"
+        android:layout_width="67dp"
         android:layout_height="wrap_content"
         android:layout_marginEnd="48dp"
         android:paddingStart="8dp"
@@ -88,8 +97,157 @@
         android:inputType="numberDecimal"
         android:background="@drawable/etv_background"
         app:layout_constraintStart_toStartOf="@id/purity_etv"
-        app:layout_constraintTop_toTopOf="@id/Label3"
-        app:layout_constraintBottom_toBottomOf="@id/Label3"/>
+        app:layout_constraintTop_toTopOf="@id/Label3_1"
+        app:layout_constraintBottom_toBottomOf="@id/Label3_1"
+        android:importantForAutofill="no" />
+
+    <TextView
+        android:id="@+id/Label3_2"
+        android:text="@string/less"
+        android:layout_marginStart="2dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/Label3_1"
+        app:layout_constraintStart_toEndOf="@id/weight_etv"
+        app:layout_constraintBottom_toBottomOf="@id/Label3_1"/>
+
+    <EditText
+        android:id="@+id/less_weight_etv"
+        android:layout_width="67dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        android:layout_marginStart="6dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:inputType="numberDecimal"
+        android:background="@drawable/etv_background"
+        app:layout_constraintStart_toEndOf="@id/Label3_2"
+        app:layout_constraintTop_toTopOf="@id/Label3_1"
+        app:layout_constraintBottom_toBottomOf="@id/Label3_1"
+        android:importantForAutofill="no" />
+
+    <TextView
+        android:id="@+id/Label3_3"
+        android:text="@string/net"
+        android:layout_marginStart="2dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="@id/Label3_1"
+        app:layout_constraintStart_toEndOf="@id/less_weight_etv"
+        app:layout_constraintBottom_toBottomOf="@id/Label3_1"/>
+
+    <EditText
+        android:id="@+id/net_weight_etv"
+        android:layout_width="67dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        android:layout_marginStart="6dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:enabled="false"
+        android:inputType="numberDecimal"
+        android:background="@drawable/etv_background"
+        app:layout_constraintStart_toEndOf="@id/Label3_3"
+        app:layout_constraintTop_toTopOf="@id/Label3_1"
+        app:layout_constraintBottom_toBottomOf="@id/Label3_1"
+        android:importantForAutofill="no" />
+
+    <TextView
+        android:id="@+id/Label4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/Extra"
+        android:labelFor="@id/supplier_etv"
+        app:layout_constraintTop_toBottomOf="@id/Label3_1"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <EditText
+        android:id="@+id/charges_etv"
+        android:layout_width="67dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:enabled="false"
+        android:inputType="numberDecimal"
+        android:background="@drawable/etv_background"
+        app:layout_constraintStart_toStartOf="@id/purity_etv"
+        app:layout_constraintTop_toTopOf="@id/Label4"
+        app:layout_constraintBottom_toBottomOf="@id/Label4"
+        android:importantForAutofill="no" />
+
+    <TextView
+        android:id="@+id/Label5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/Supplier"
+        android:labelFor="@id/supplier_etv"
+        app:layout_constraintTop_toBottomOf="@id/Label4"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <EditText
+        android:id="@+id/supplier_etv"
+        android:layout_width="280dp"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="48dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:inputType="numberDecimal"
+        android:background="@drawable/etv_background"
+        app:layout_constraintStart_toStartOf="@id/purity_etv"
+        app:layout_constraintTop_toTopOf="@id/Label5"
+        app:layout_constraintBottom_toBottomOf="@id/Label5"
+        android:importantForAutofill="no" />
+
+    <TextView
+        android:id="@+id/Label6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/Wastage"
+        android:labelFor="@id/supplier_etv"
+        app:layout_constraintTop_toBottomOf="@id/Label5"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/Label7"
+        android:layout_width="40dp"
+        android:layout_height="wrap_content"
+        android:text="75"
+        android:gravity="center"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:background="@drawable/etv_background"
+        app:layout_constraintTop_toTopOf="@id/Label6"
+        app:layout_constraintBottom_toBottomOf="@id/Label6"
+        app:layout_constraintStart_toStartOf="@id/purity_etv"/>
+
+    <EditText
+        android:id="@+id/touch_etv"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:background="@drawable/etv_background"
+        android:layout_marginStart="8dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:inputType="numberDecimal|numberSigned"
+        app:layout_constraintTop_toTopOf="@id/Label7"
+        app:layout_constraintStart_toEndOf="@id/Label7"
+        app:layout_constraintBottom_toBottomOf="@id/Label7"
+        android:importantForAutofill="no" />
+
+
+
+
+
+
+
+
+
+
+
 
 
 

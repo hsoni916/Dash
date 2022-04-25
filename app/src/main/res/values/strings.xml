@@ -16,4 +16,10 @@
     <string name="purity">Purity:</string>
     <string name="Category">Category:</string>
     <string name="Weight">Weight:</string>
+    <string name="Supplier">Supplier:</string>
+    <string name="Wastage">Touch:</string>
+    <string name="gross">Gross:</string>
+    <string name="less">Less:</string>
+    <string name="net">Net:</string>
+    <string name="Extra">Charges:</string>
 </resources>
