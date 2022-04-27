@@ -119,6 +119,7 @@
         app:layout_constraintStart_toEndOf="@id/particular"
         app:layout_constraintBottom_toBottomOf="@id/particular"/>
 
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/item_list"
         android:layout_width="0dp"

@@ -33,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         dbManager = new DBManager(this);
+        dbManager.open();
         NewCustomer = findViewById(R.id.NewCustomer);
         newInvoiceButton = findViewById(R.id.NewInvoice);
         newInventory = findViewById(R.id.AddInventory);
@@ -154,7 +155,12 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onDateSet(DatePicker datePicker, int year, int month, int date) {
                             month = month+1;
-                            String dobs = date+"/"+month+"/"+year;
+                            String dobs;
+                            if(month<10){
+                                dobs = date+"/"+"0"+month+"/"+year;
+                            }else{
+                                dobs = date+"/"+month+"/"+year;
+                            }
                             dob.setText(dobs);
                             DateOfBirth = dobs;
                         }
@@ -226,6 +232,7 @@ public class MainActivity extends AppCompatActivity {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 if(inflater!=null){
                     final View marginView = inflater.inflate(R.layout.inventoryform,null);
+
 
                 }
             }

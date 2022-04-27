@@ -140,4 +140,15 @@ public class DBManager {
         }
         return result;
     }
+
+    public List<String> ListAllItems() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String sql = "SELECT Barcode FROM Inventory";
+        Cursor fetch = db.rawQuery(sql,null);
+        List<String> BarcodeList = new ArrayList<>();
+        while(fetch.moveToNext()){
+            BarcodeList.add(fetch.getString(0));
+        }
+        return BarcodeList;
+    }
 }

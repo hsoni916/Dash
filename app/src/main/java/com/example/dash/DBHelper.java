@@ -26,6 +26,21 @@ public class DBHelper extends SQLiteOpenHelper {
             + "Points" + "INTEGER"
             + ");";
 
+    private static final String CREATE_TABLE_2 = "create table if not exists " + "Inventory" +
+            "("
+            + "Barcode" + " STRING PRIMARY KEY NOT NULL,"
+            + "Purity" + " STRING NOT NULL,"
+            + "Wastage" + " DECIMAL(2,2),"
+            + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
+            + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
+            + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
+            + "ExtraCharges" + " INTEGER,"
+            + "HUID" + " STRING,"
+            + "SupplierCode" + " INTEGER"
+            + ");" ;
+
+
+
     private static final String CREATE_TABLE_CONTROLS = "create table if not exists " + "Controls" +
             "("
             + "PointThreshold" + " INTEGER NOT NULL CHECK (PointThreshold>=100)"
@@ -35,12 +50,14 @@ public class DBHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_TABLE);
         db.execSQL(CREATE_TABLE_CONTROLS);
+        db.execSQL(CREATE_TABLE_2);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS " + "CustomersList");
         db.execSQL("DROP TABLE IF EXISTS " + "Controls");
+        db.execSQL("DROP TABLE IF EXISTS " + "Inventory");
         onCreate(db);
     }
 }
