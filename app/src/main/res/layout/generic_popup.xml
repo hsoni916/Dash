@@ -183,7 +183,7 @@
         app:layout_constraintTop_toBottomOf="@id/Label4"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <EditText
+    <AutoCompleteTextView
         android:id="@+id/supplier_etv"
         android:layout_width="280dp"
         android:layout_height="wrap_content"
@@ -212,6 +212,7 @@
         android:layout_width="40dp"
         android:layout_height="wrap_content"
         android:text="75"
+        android:enabled="false"
         android:gravity="center"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"

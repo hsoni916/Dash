@@ -39,7 +39,13 @@ public class DBHelper extends SQLiteOpenHelper {
             + "SupplierCode" + " INTEGER"
             + ");" ;
 
-
+    private static final String CREATE_TABLE_3 = "create table if not exists " + "Supplier" +
+            "("
+            + " Business_Name " + " STRING,"
+            + "Person_In_Charge" + " STRING,"
+            + "PhoneNumber" + " STRING NOT NULL CHECK (length(PhoneNumber)==10),"
+            + "SupplierCode" + " INTEGER PRIMARY KEY"
+            + ");";
 
     private static final String CREATE_TABLE_CONTROLS = "create table if not exists " + "Controls" +
             "("
@@ -51,6 +57,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE);
         db.execSQL(CREATE_TABLE_CONTROLS);
         db.execSQL(CREATE_TABLE_2);
+        db.execSQL(CREATE_TABLE_3);
     }
 
     @Override

@@ -8,6 +8,7 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
@@ -67,7 +68,7 @@ public class Invoice extends AppCompatActivity {
                             "Damdi", "Tikka", "Gold Saakra",
                             "Silver Saakra", "Silver Chain", "Silver Murti",
                             "Gold Coin", "Silver Coin", "Mangalsutra",
-                            "MS-Pendant", "MS-Pendant Set"});
+                            "MS-Pendant", "MS-Pendant Set", "Pan+Tops"});
         }else{
             ItemAdapter.addAll("Gents Ring", "Ladies Ring", "Chain",
                     "Plastic Paatla", "Gold Set", "Gold Haar",
@@ -77,7 +78,7 @@ public class Invoice extends AppCompatActivity {
                     "Damdi", "Tikka", "Gold Saakra",
                     "Silver Saakra", "Silver Chain", "Silver Murti",
                     "Gold Coin", "Silver Coin", "Mangalsutra",
-                    "MS-Pendant", "MS-Pendant Set");
+                    "MS-Pendant", "MS-Pendant Set", "Pan+Tops");
         }
 
 
@@ -105,11 +106,9 @@ public class Invoice extends AppCompatActivity {
                     if(date1.equals(today)){
                         Toast.makeText(getBaseContext(),"Customer's Birthday.",Toast.LENGTH_LONG).show();
                     }
-
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-
                 //Next Fetch History of Sales by Name.
             }
         });
@@ -124,6 +123,38 @@ public class Invoice extends AppCompatActivity {
                     LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     if(inflater!=null){
                         final View marginView = inflater.inflate(R.layout.generic_popup,null);
+                        AutoCompleteTextView Purity, Category, Supplier;
+                        EditText GrossWeight, LessWeight, NetWeight, ExtraCharges, Wastage;
+
+                        Purity = marginView.findViewById(R.id.purity_etv);
+                        Category = marginView.findViewById(R.id.category_etv);
+                        Supplier = marginView.findViewById(R.id.supplier_etv);
+
+                        GrossWeight = marginView.findViewById(R.id.weight_etv);
+                        LessWeight = marginView.findViewById(R.id.less_weight_etv);
+                        NetWeight = marginView.findViewById(R.id.net_weight_etv);
+                        ExtraCharges = marginView.findViewById(R.id.charges_etv);
+                        Wastage = marginView.findViewById(R.id.touch_etv);
+
+                        ArrayAdapter<String> Purity_Adapter = new ArrayAdapter<String>
+                                (marginView.getContext(), android.R.layout.select_dialog_item,
+                                        new String[]{"999 Fine Gold", "23KT958", "22KT916", "21KT875",
+                                        "20KT833", "18KT750", "14KT585"});
+
+                        Purity.setAdapter(Purity_Adapter);
+                        Category.setAdapter(finalItemAdapter);
+                        //Supplier get it from the list of suppliers?
+
+
+
+
+
+
+
+
+
+                        //Receive input from user and save it.
+                        //in a separate database as to avoid adding it to inventory.
                     }
                 }else{
                     Add_Barcode_Item.setEnabled(true);
