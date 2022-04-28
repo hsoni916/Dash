@@ -19,16 +19,13 @@ public class DBHelper extends SQLiteOpenHelper {
     }
 
     private static final String CREATE_TABLE= "create table if not exists " + "CustomersList" +
-            "("
-            + "Name" +" TEXT NOT NULL,"
+            "(" + "Name" +" TEXT NOT NULL,"
             + "PhoneNumber" + " STRING PRIMARY KEY NOT NULL CHECK (length(PhoneNumber)==10),"
             + "DateofBirth" + " STRING NOT NULL,"
-            + "Points" + "INTEGER"
-            + ");";
+            + "Points" + "INTEGER" + ");";
 
     private static final String CREATE_TABLE_2 = "create table if not exists " + "Inventory" +
-            "("
-            + "Barcode" + " STRING PRIMARY KEY NOT NULL,"
+            "(" + "Barcode" + " STRING PRIMARY KEY NOT NULL,"
             + "Purity" + " STRING NOT NULL,"
             + "Wastage" + " DECIMAL(2,2),"
             + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
@@ -36,21 +33,16 @@ public class DBHelper extends SQLiteOpenHelper {
             + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
             + "ExtraCharges" + " INTEGER,"
             + "HUID" + " STRING,"
-            + "SupplierCode" + " INTEGER"
-            + ");" ;
+            + "SupplierCode" + " INTEGER" + ");";
 
     private static final String CREATE_TABLE_3 = "create table if not exists " + "Supplier" +
-            "("
-            + " Business_Name " + " STRING,"
+            "(" + " Business_Name " + " STRING,"
             + "Person_In_Charge" + " STRING,"
             + "PhoneNumber" + " STRING NOT NULL CHECK (length(PhoneNumber)==10),"
-            + "SupplierCode" + " INTEGER PRIMARY KEY"
-            + ");";
+            + "SupplierCode" + " INTEGER PRIMARY KEY" + ");";
 
     private static final String CREATE_TABLE_CONTROLS = "create table if not exists " + "Controls" +
-            "("
-            + "PointThreshold" + " INTEGER NOT NULL CHECK (PointThreshold>=100)"
-            + ");";
+            "(" + "PointThreshold" + " INTEGER NOT NULL CHECK (PointThreshold>=100)" + ");";
 
     @Override
     public void onCreate(SQLiteDatabase db) {
@@ -62,9 +54,12 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
+
         db.execSQL("DROP TABLE IF EXISTS " + "CustomersList");
         db.execSQL("DROP TABLE IF EXISTS " + "Controls");
         db.execSQL("DROP TABLE IF EXISTS " + "Inventory");
+        db.execSQL("DROP TABLE IF EXISTS " + "Supplier");
         onCreate(db);
+
     }
 }

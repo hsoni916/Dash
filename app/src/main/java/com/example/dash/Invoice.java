@@ -145,6 +145,10 @@ public class Invoice extends AppCompatActivity {
                         Category.setAdapter(finalItemAdapter);
                         //Supplier get it from the list of suppliers?
 
+                        ArrayAdapter<String> Supplier_Adapter = new ArrayAdapter<String>
+                                (marginView.getContext(), android.R.layout.select_dialog_item,
+                                        dbManager.ListAllSuppliers());
+
 
 
 

@@ -151,4 +151,15 @@ public class DBManager {
         }
         return BarcodeList;
     }
+
+    public List<String> ListAllSuppliers() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String sql = "SELECT Business_Name FROM Supplier";
+        Cursor fetch = db.rawQuery(sql,null);
+        List<String> BarcodeList = new ArrayList<>();
+        while(fetch.moveToNext()){
+            BarcodeList.add(fetch.getString(0));
+        }
+        return BarcodeList;
+    }
 }
