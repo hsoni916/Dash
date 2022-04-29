@@ -25,7 +25,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + "Points" + "INTEGER" + ");";
 
     private static final String CREATE_TABLE_2 = "create table if not exists " + "Inventory" +
-            "(" + "Barcode" + " STRING PRIMARY KEY NOT NULL,"
+            "(" + "Barcode" + " INTEGER PRIMARY KEY NOT NULL,"
             + "Purity" + " STRING NOT NULL,"
             + "Wastage" + " DECIMAL(2,2),"
             + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
@@ -36,10 +36,27 @@ public class DBHelper extends SQLiteOpenHelper {
             + "SupplierCode" + " INTEGER" + ");";
 
     private static final String CREATE_TABLE_3 = "create table if not exists " + "Supplier" +
-            "(" + " Business_Name " + " STRING,"
+            "(" + "Business_Name" + " STRING,"
             + "Person_In_Charge" + " STRING,"
-            + "PhoneNumber" + " STRING NOT NULL CHECK (length(PhoneNumber)==10),"
+            + "PhoneNumber" + " STRING CHECK (length(PhoneNumber)==10),"
             + "SupplierCode" + " INTEGER PRIMARY KEY" + ");";
+
+    private static final String CREATE_TABLE_3_1 = "create table if not exists " + "Sundry_Supplies" +
+            "(" + "Name" + " STRING NOT NULL,"
+            + "Date_Of" + " STRING NOT NULL,"
+            + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
+            + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
+            + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
+            + "ADD_INFO" + "STRING"
+            + ");";
+
+    private static final String CREATE_TABLE_4 = "create table if not exists " + "Categories" +
+            "("
+            + "Category" + " STRING UNIQUE NOT NULL,"
+            + "Category_Code" + " INTEGER PRIMARY KEY NOT NULL"
+            + ");";
+
+
 
     private static final String CREATE_TABLE_CONTROLS = "create table if not exists " + "Controls" +
             "(" + "PointThreshold" + " INTEGER NOT NULL CHECK (PointThreshold>=100)" + ");";
@@ -50,15 +67,18 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_CONTROLS);
         db.execSQL(CREATE_TABLE_2);
         db.execSQL(CREATE_TABLE_3);
+        db.execSQL(CREATE_TABLE_3_1);
+        db.execSQL(CREATE_TABLE_4);
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
 
-        db.execSQL("DROP TABLE IF EXISTS " + "CustomersList");
-        db.execSQL("DROP TABLE IF EXISTS " + "Controls");
-        db.execSQL("DROP TABLE IF EXISTS " + "Inventory");
-        db.execSQL("DROP TABLE IF EXISTS " + "Supplier");
+        db.execSQL("DROP TABLE IF EXISTS CustomersList");
+        db.execSQL("DROP TABLE IF EXISTS Controls");
+        db.execSQL("DROP TABLE IF EXISTS Inventory");
+        db.execSQL("DROP TABLE IF EXISTS Supplier");
+        db.execSQL("DROP TABLE IF EXISTS Sundry_Supplies");
         onCreate(db);
 
     }

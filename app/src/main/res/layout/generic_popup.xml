@@ -198,13 +198,85 @@
         android:importantForAutofill="no" />
 
     <TextView
+        android:id="@+id/Attention_text_1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:textColor="@color/mattegrey"
+        android:textSize="12sp"
+        android:paddingStart="8dp"
+        android:paddingEnd="8dp"
+        android:visibility="gone"
+        android:gravity="center_vertical"
+        android:drawablePadding="8dp"
+        android:layout_marginTop="4dp"
+        android:text="@string/this_is_the_business_name"
+        app:layout_constraintTop_toBottomOf="@id/supplier_etv"
+        app:layout_constraintStart_toStartOf="@id/supplier_etv"
+        app:layout_constraintEnd_toEndOf="@id/supplier_etv"
+        app:drawableStartCompat="@drawable/warning" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/supplier_add_layout"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/Attention_text_1"
+        app:layout_constraintStart_toStartOf="@id/supplier_etv"
+        app:layout_constraintEnd_toEndOf="@id/supplier_etv">
+
+        <TextView
+            android:id="@+id/Attention_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textColor="@color/mattegrey"
+            android:textSize="12sp"
+            android:paddingStart="8dp"
+            android:paddingEnd="8dp"
+            android:text="@string/add_this_supplier_to_the_list"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+
+        <Button
+            android:id="@+id/dont_add_supplier"
+            android:layout_width="56dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone"
+            android:text="@string/close"
+            android:padding="0dp"
+            android:textColor="@color/black"
+            android:textSize="11sp"
+            android:backgroundTint="@color/white"
+            app:layout_constraintTop_toBottomOf="@id/Attention_text"
+            app:layout_constraintEnd_toStartOf="@id/add_supplier"/>
+
+        <Button
+            android:id="@+id/add_supplier"
+            android:layout_width="56dp"
+            android:layout_height="32dp"
+            android:layout_marginEnd="8dp"
+            android:visibility="gone"
+            android:text="@string/add"
+            android:padding="0dp"
+            android:textColor="@color/white"
+            android:textSize="11sp"
+            android:backgroundTint="@color/teal_700"
+            app:layout_constraintTop_toBottomOf="@id/Attention_text"
+            app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <TextView
         android:id="@+id/Label6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
         android:text="@string/Wastage"
         android:labelFor="@id/supplier_etv"
-        app:layout_constraintTop_toBottomOf="@id/Label5"
+        app:layout_constraintTop_toBottomOf="@id/supplier_add_layout"
         app:layout_constraintStart_toStartOf="parent"/>
 
     <TextView

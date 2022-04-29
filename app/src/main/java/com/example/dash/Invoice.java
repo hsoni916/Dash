@@ -8,12 +8,16 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ListAdapter;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -141,13 +145,70 @@ public class Invoice extends AppCompatActivity {
                                         new String[]{"999 Fine Gold", "23KT958", "22KT916", "21KT875",
                                         "20KT833", "18KT750", "14KT585"});
 
+                        Purity.setThreshold(2);
                         Purity.setAdapter(Purity_Adapter);
-                        Category.setAdapter(finalItemAdapter);
-                        //Supplier get it from the list of suppliers?
 
+
+                        ArrayAdapter<String> genericitemadapter=new ArrayAdapter<String>(marginView.getContext(),
+                                android.R.layout.select_dialog_item,
+                                dbManager.ListGenericItems());
+
+                        Category.setThreshold(2);
+                        Category.setAdapter(genericitemadapter);
                         ArrayAdapter<String> Supplier_Adapter = new ArrayAdapter<String>
                                 (marginView.getContext(), android.R.layout.select_dialog_item,
                                         dbManager.ListAllSuppliers());
+
+                        if(Supplier_Adapter.getCount()>0){
+                            Supplier.setThreshold(2);
+                            Supplier.setAdapter(Supplier_Adapter);
+                        }
+
+                        //if(Supplier_Adapter.getCount()==0)
+                        Supplier.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                            @Override
+                            public void onFocusChange(View view, boolean b) {
+                                if(!b){
+                                    if(Supplier.getText().toString().length()>=3){
+                                        if(!Supplier_Adapter.toString().contains(Supplier.getText().toString())){
+                                            //Bubble to add that to the
+                                            ConstraintLayout add_supplier_layout = marginView.findViewById(R.id.supplier_add_layout);
+                                            add_supplier_layout.setVisibility(View.VISIBLE);
+                                            Button Add,Close;
+                                            Add = marginView.findViewById(R.id.add_supplier);
+                                            Close = marginView.findViewById(R.id.dont_add_supplier);
+
+                                            Add.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+                                                    long result = dbManager.AddNewSupplier(Supplier.getText().toString());
+                                                }
+                                            });
+
+                                            Close.setOnClickListener(new View.OnClickListener() {
+                                                @Override
+                                                public void onClick(View view) {
+                                                    add_supplier_layout.setVisibility(View.GONE);
+                                                }
+                                            });
+
+
+                                        }
+                                    }
+                                }else{
+                                    if(!Supplier.getText().toString().isEmpty()){
+                                        TextView attention = marginView.findViewById(R.id.Attention_text_1);
+                                        if(attention.getVisibility()==View.INVISIBLE || attention.getVisibility()==View.GONE){
+                                            attention.setVisibility(View.VISIBLE);
+                                        }
+                                    }else{
+                                        TextView attention = marginView.findViewById(R.id.Attention_text_1);
+                                        attention.setVisibility(View.GONE);
+                                    }
+
+                                }
+                            }
+                        });
 
 
 

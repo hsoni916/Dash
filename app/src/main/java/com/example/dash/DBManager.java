@@ -152,14 +152,47 @@ public class DBManager {
         return BarcodeList;
     }
 
+    public List<String> ListGenericItems() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String sql = "SELECT Barcode FROM Categories";
+        Cursor fetch = db.rawQuery(sql,null);
+        List<String> GenericItemList = new ArrayList<>();
+        while(fetch.moveToNext()){
+            GenericItemList.add(fetch.getString(0));
+        }
+        return GenericItemList;
+    }
+
+    public List<Integer> ListGenericItemCodes() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String sql = "SELECT Barcode FROM Categories";
+        Cursor fetch = db.rawQuery(sql,null);
+        List<Integer> GenericItemCodeList = new ArrayList<>();
+        while(fetch.moveToFirst() && fetch.moveToNext() && !fetch.isAfterLast()){
+            GenericItemCodeList.add(fetch.getInt(1));
+        }
+        return GenericItemCodeList;
+    }
+
     public List<String> ListAllSuppliers() {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String sql = "SELECT Business_Name FROM Supplier";
         Cursor fetch = db.rawQuery(sql,null);
-        List<String> BarcodeList = new ArrayList<>();
-        while(fetch.moveToNext()){
-            BarcodeList.add(fetch.getString(0));
+        List<String> SupplierList = new ArrayList<>();
+        while(fetch.moveToFirst() && fetch.moveToNext() && !fetch.isAfterLast()){
+            SupplierList.add("(" + fetch.getInt(3)+ ")" + " " +fetch.getString(0));
         }
-        return BarcodeList;
+        return SupplierList;
     }
+
+    public long AddNewSupplier(String Supplier_Name) {
+        long result = -1;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("Business_Name",Supplier_Name);
+        result = db.insert("Supplier", null, contentValues);
+        return result;
+    }
+
+
 }
