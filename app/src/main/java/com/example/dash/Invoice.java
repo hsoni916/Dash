@@ -140,7 +140,7 @@ public class Invoice extends AppCompatActivity {
                         popupWindow.update();
                         AutoCompleteTextView Purity, Category, Supplier;
                         EditText GrossWeight, LessWeight, NetWeight, ExtraCharges, Wastage;
-
+                        TextView BasePurity;
                         Purity = marginView.findViewById(R.id.purity_etv);
                         Category = marginView.findViewById(R.id.category_etv);
                         Supplier = marginView.findViewById(R.id.supplier_etv);
@@ -150,7 +150,7 @@ public class Invoice extends AppCompatActivity {
                         NetWeight = marginView.findViewById(R.id.net_weight_etv);
                         ExtraCharges = marginView.findViewById(R.id.charges_etv);
                         Wastage = marginView.findViewById(R.id.touch_etv);
-
+                        BasePurity = marginView.findViewById(R.id.Label7);
                         ArrayAdapter<String> Purity_Adapter = new ArrayAdapter<String>
                                 (marginView.getContext(), android.R.layout.select_dialog_item,
                                         new String[]{"999 Fine Gold", "23KT958", "22KT916", "21KT875",
@@ -169,6 +169,28 @@ public class Invoice extends AppCompatActivity {
                         ArrayAdapter<String> Supplier_Adapter = new ArrayAdapter<String>
                                 (marginView.getContext(), android.R.layout.select_dialog_item,
                                         dbManager.ListAllSuppliers());
+
+                        Purity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                            @Override
+                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                                switch (i){
+                                    case 0: BasePurity.setText("99");
+                                        break;
+                                    case 1: BasePurity.setText("96");
+                                        break;
+                                    case 2: BasePurity.setText("92");
+                                        break;
+                                    case 3: BasePurity.setText("88");
+                                        break;
+                                    case 4: BasePurity.setText("84");
+                                        break;
+                                    case 5: BasePurity.setText("76");
+                                        break;
+                                    case 6: BasePurity.setText("59");
+                                        break;
+                                }
+                            }
+                        });
 
                         if(Supplier_Adapter.getCount()>0){
                             Supplier.setThreshold(2);
