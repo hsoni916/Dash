@@ -154,7 +154,7 @@ public class DBManager {
 
     public List<String> ListGenericItems() {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String sql = "SELECT Barcode FROM Categories";
+        String sql = "SELECT Category FROM Categories";
         Cursor fetch = db.rawQuery(sql,null);
         List<String> GenericItemList = new ArrayList<>();
         while(fetch.moveToNext()){
@@ -165,7 +165,7 @@ public class DBManager {
 
     public List<Integer> ListGenericItemCodes() {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String sql = "SELECT Barcode FROM Categories";
+        String sql = "SELECT Category FROM Categories";
         Cursor fetch = db.rawQuery(sql,null);
         List<Integer> GenericItemCodeList = new ArrayList<>();
         while(fetch.moveToFirst() && fetch.moveToNext() && !fetch.isAfterLast()){

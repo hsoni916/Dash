@@ -2,7 +2,9 @@ package com.example.dash;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
@@ -12,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListAdapter;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -34,10 +37,13 @@ public class Invoice extends AppCompatActivity {
     AutoCompleteTextView Names,PhoneNumber, Particular;
     List<String> GenericItems = new ArrayList<>();
     ImageButton Add_Barcode_Item;
+    PopupWindow popupWindow;
+    Context context;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.invoiceform);
+        context = getBaseContext();
         dbManager = new DBManager(this);
         dbManager.open();
         Names = findViewById(R.id.name_etv);
@@ -127,6 +133,11 @@ public class Invoice extends AppCompatActivity {
                     LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     if(inflater!=null){
                         final View marginView = inflater.inflate(R.layout.generic_popup,null);
+                        popupWindow = new PopupWindow(marginView, 800,600);
+                        popupWindow.setAnimationStyle(R.style.popup_animation);
+                        popupWindow.showAtLocation(Particular.getRootView(), Gravity.CENTER,0,0);
+                        popupWindow.setFocusable(true);
+                        popupWindow.update();
                         AutoCompleteTextView Purity, Category, Supplier;
                         EditText GrossWeight, LessWeight, NetWeight, ExtraCharges, Wastage;
 
@@ -182,6 +193,20 @@ public class Invoice extends AppCompatActivity {
                                                 @Override
                                                 public void onClick(View view) {
                                                     long result = dbManager.AddNewSupplier(Supplier.getText().toString());
+                                                    if(result!=-1){
+                                                        TextView Attention_text = marginView.findViewById(R.id.Attention_text);
+                                                        Attention_text.setText(R.string.supplier_success);
+                                                        Attention_text.setCompoundDrawablesWithIntrinsicBounds(R.drawable.success, 0, 0, 0);
+                                                        Attention_text.setCompoundDrawablePadding(4);
+                                                        final Handler handler = new Handler();
+                                                        handler.postDelayed(new Runnable() {
+                                                            @Override
+                                                            public void run() {
+                                                                // Do something after 5s = 5000ms
+                                                                add_supplier_layout.setVisibility(View.GONE);
+                                                            }
+                                                        }, 2500);
+                                                    }
                                                 }
                                             });
 

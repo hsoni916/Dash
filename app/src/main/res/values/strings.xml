@@ -27,4 +27,5 @@
     <string name="close">Close</string>
     <string name="add_this_supplier_to_the_list">Add this Supplier to the list?</string>
     <string name="this_is_the_business_name">This is the Business Name.</string>
+    <string name="supplier_success">Supplier added successfully.</string>
 </resources>

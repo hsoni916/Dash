@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -122,8 +123,14 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onFocusChange(View view, boolean b) {
                             if(!b){
-                                PhoneError.setText(R.string.phone_error);
-                                PhoneError.setVisibility(View.VISIBLE);
+                                if(PhoneEtv.getText().toString().length()!=10){
+                                    PhoneError.setText(R.string.phone_error);
+                                    PhoneError.setVisibility(View.VISIBLE);
+                                }else{
+                                    PhoneError.setText(null);
+                                    PhoneError.setVisibility(View.GONE);
+                                }
+
                             }
                         }
                     });
