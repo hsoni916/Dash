@@ -76,6 +76,35 @@ public class DBManager {
         return PhoneOfCustomer;
     }
 
+    public long insertAllCategoriesGold(List<String> Categories, List<String> Purity){
+        long result = -1;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        for(int i=0;i<Purity.size();i++){
+            for(int j=0;j<Categories.size();j++){
+                contentValues.put("Category",Categories.get(j));
+                contentValues.put("Purity",Purity.get(i));
+            }
+        }
+        result = db.insert("Categories_Gold", null,contentValues);
+        return result;
+    }
+
+    public long insertAllCategoriesSilver(List<String> Categories, List<String> Purity){
+        long result = -1;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        for(int i=0;i<Purity.size();i++){
+            for(int j=0;j<Categories.size();j++){
+                contentValues.put("Category",Categories.get(j));
+                contentValues.put("Purity",Purity.get(i));
+            }
+        }
+        result = db.insert("Categories_Silver", null,contentValues);
+        return result;
+    }
+
+
     public List<String> ListDOB() {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String sql = "SELECT DateOfBirth FROM CustomersList";

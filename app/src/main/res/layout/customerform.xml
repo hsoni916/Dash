@@ -168,6 +168,21 @@
         app:layout_constraintTop_toTopOf="@id/dob_etv"
         app:layout_constraintBottom_toBottomOf="@id/dob_etv"/>
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/Fetch_Customer_Details"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="8dp"
+        android:elevation="8dp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/label3"
+        app:layout_constraintTop_toBottomOf="@id/DOBError"
+        app:layout_constraintEnd_toEndOf="@id/phone_etv"
+        app:layout_constraintBottom_toTopOf="@id/save">
+
+    </androidx.recyclerview.widget.RecyclerView>
+
+
     <Button
         android:id="@+id/save"
         android:layout_width="wrap_content"

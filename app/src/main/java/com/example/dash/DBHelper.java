@@ -1,5 +1,6 @@
 package com.example.dash;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.DatabaseErrorHandler;
 import android.database.sqlite.SQLiteDatabase;
@@ -41,8 +42,9 @@ public class DBHelper extends SQLiteOpenHelper {
             + "PhoneNumber" + " STRING CHECK (length(PhoneNumber)==10),"
             + "SupplierCode" + " INTEGER PRIMARY KEY" + ");";
 
-    private static final String CREATE_TABLE_3_1 = "create table if not exists " + "Sundry_Supplies" +
-            "(" + "Name" + " STRING NOT NULL,"
+    private static final String CREATE_TABLE_3_1 = "create table if not exists " + "Sundry_Supplies"
+            + "("
+            + "Name" + " STRING NOT NULL,"
             + "Date_Of" + " STRING NOT NULL,"
             + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
             + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
@@ -50,13 +52,19 @@ public class DBHelper extends SQLiteOpenHelper {
             + "ADD_INFO" + "STRING"
             + ");";
 
-    private static final String CREATE_TABLE_4 = "create table if not exists " + "Categories" +
-            "("
-            + "Category" + " STRING UNIQUE NOT NULL,"
+    private static final String CREATE_TABLE_4 = "create table if not exists " + "Categories_Gold"
+            + "("
+            + "Category" + " STRING NOT NULL,"
+            + "Purity" + " STRING NOT NULL,"
             + "Category_Code" + " INTEGER PRIMARY KEY NOT NULL"
             + ");";
 
-
+    private static final String CREATE_TABLE_4_1 = "create table if not exists " + "Categories_Silver"
+            + "("
+            + "Category" + " STRING NOT NULL,"
+            + "Purity" + " STRING NOT NULL,"
+            + "Category_Code" + " INTEGER PRIMARY KEY NOT NULL"
+            + ");";
 
     private static final String CREATE_TABLE_CONTROLS = "create table if not exists " + "Controls" +
             "(" + "PointThreshold" + " INTEGER NOT NULL CHECK (PointThreshold>=100)" + ");";
@@ -69,17 +77,20 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_3);
         db.execSQL(CREATE_TABLE_3_1);
         db.execSQL(CREATE_TABLE_4);
+        db.execSQL(CREATE_TABLE_4_1);
+
+
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-
         db.execSQL("DROP TABLE IF EXISTS CustomersList");
+        db.execSQL("DROP TABLE IF EXISTS Categories_Gold");
+        db.execSQL("DROP TABLE IF EXISTS Categories_Silver");
         db.execSQL("DROP TABLE IF EXISTS Controls");
         db.execSQL("DROP TABLE IF EXISTS Inventory");
         db.execSQL("DROP TABLE IF EXISTS Supplier");
         db.execSQL("DROP TABLE IF EXISTS Sundry_Supplies");
         onCreate(db);
-
     }
 }

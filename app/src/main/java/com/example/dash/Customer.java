@@ -1,11 +1,16 @@
 package com.example.dash;
 
 import java.util.Date;
+import java.util.List;
 
 public class Customer {
     String name;
     Date dateOfBirth;
-    int phoneNumber;
+    String phoneNumber;
+
+    public Customer() {
+
+    }
 
     public String getName() {
         return name;
@@ -23,11 +28,11 @@ public class Customer {
         this.dateOfBirth = dateOfBirth;
     }
 
-    public int getPhoneNumber() {
+    public String getPhoneNumber() {
         return phoneNumber;
     }
 
-    public void setPhoneNumber(int phoneNumber) {
+    public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
 }

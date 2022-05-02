@@ -7,7 +7,7 @@
     <string name="phone">Contact:</string>
     <string name="dob">D.O.B:</string>
     <string name="name_error">Name is too short.</string>
-    <string name="phone_error">Mobile No. is only.</string>
+    <string name="phone_error">Mobile No. only.</string>
     <string name="dob_error">Date of birth is required.</string>
     <string name="new_invoice">New Invoice</string>
     <string name="Item">Item:</string>

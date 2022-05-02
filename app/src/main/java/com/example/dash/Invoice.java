@@ -13,7 +13,6 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.ListAdapter;
 import android.widget.PopupWindow;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -29,13 +28,15 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
-import java.util.Objects;
 
 public class Invoice extends AppCompatActivity {
     private DBManager dbManager;
     AutoCompleteTextView Names,PhoneNumber, Particular;
-    List<String> GenericItems = new ArrayList<>();
+    List<String> GenericItemsGold = new ArrayList<>();
+    List<String> GenericItemsSilver = new ArrayList<>();
+    List<String> Purity_Levels_Gold = new ArrayList<>();
+    List<String> Purity_Levels_Silver = new ArrayList<>();
+    List<Hallmarking_Standards> hallmarking_standards = new ArrayList<>();
     ImageButton Add_Barcode_Item;
     PopupWindow popupWindow;
     Context context;
@@ -50,15 +51,33 @@ public class Invoice extends AppCompatActivity {
         PhoneNumber = findViewById(R.id.phone_etv);
         Particular = findViewById(R.id.particular);
         Add_Barcode_Item = findViewById(R.id.Add_item);
-        GenericItems.addAll(Arrays.asList("Gents Ring", "Ladies Ring", "Chain",
+
+        GenericItemsGold.addAll(Arrays.asList("Gents Ring", "Ladies Ring", "Chain",
                 "Plastic Paatla", "Gold Set", "Gold Haar",
                 "Earring", "Tops", "Gents Bracelets",
                 "Ladies Bracelets", "Gold Paatla", "Gold Kada",
                 "Pendant", "Pendant-Set","Bor", "Nath",
                 "Damdi", "Tikka", "Gold Saakra",
-                "Silver Saakra", "Silver Chain", "Silver Murti",
-                "Gold Coin", "Silver Coin", "Mangalsutra",
-                "MS-Pendant", "MS-Pendant Set"));
+                "Gold Coin", "Mangalsutra",
+                "MS-Pendant", "MS-Pendant Set", "Dano",
+                "Nathdi", "Pokarva", "Baby-Earring"));
+
+        GenericItemsSilver.addAll(Arrays.asList("Silver Saakra", "Silver Chain", "Silver Murti",
+                "Silver Coin", "Silver Mangalsutra", "Silver Bracelets"));
+
+        Purity_Levels_Silver.addAll(Arrays.asList("925", "Kachhi Silver", "Zevar Silver", "D-Silver", "Rupa"));
+
+
+        //For future upgrades, fetch hallmarking standards from cloud and add it to list.
+        //Also fetch any new products from the cloud to add it to backend.
+        //Periodically take a backup of all data.
+
+        Purity_Levels_Gold.addAll(Arrays.asList("999 Fine Gold", "23KT958", "22KT916", "21KT875",
+                "20KT833", "18KT750", "14KT585", "22K Regular"));
+
+        dbManager.insertAllCategoriesGold(GenericItemsGold, Purity_Levels_Gold);
+        dbManager.insertAllCategoriesSilver(GenericItemsSilver,Purity_Levels_Silver);
+
         ArrayAdapter<String> NameAdapter = new ArrayAdapter<String>
                 (this,android.R.layout.select_dialog_item,dbManager.ListAllCustomer());
         ArrayAdapter<String> PhoneAdapter = new ArrayAdapter<String>
@@ -67,30 +86,10 @@ public class Invoice extends AppCompatActivity {
                 (this,android.R.layout.select_dialog_item,dbManager.ListDOB());
         ArrayAdapter<String> ItemAdapter = new ArrayAdapter<String>
                 (this, android.R.layout.select_dialog_item,dbManager.ListAllItems());
-
         if(ItemAdapter.getCount()==0){
             ItemAdapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item,
-                    new String[]{"Gents Ring", "Ladies Ring", "Chain",
-                            "Plastic Paatla", "Gold Set", "Gold Haar",
-                            "Earring", "Tops", "Gents Bracelets",
-                            "Ladies Bracelets", "Gold Paatla", "Gold Kada",
-                            "Pendant", "Pendant-Set","Bor", "Nath",
-                            "Damdi", "Tikka", "Gold Saakra",
-                            "Silver Saakra", "Silver Chain", "Silver Murti",
-                            "Gold Coin", "Silver Coin", "Mangalsutra",
-                            "MS-Pendant", "MS-Pendant Set", "Pan+Tops"});
-        }else{
-            ItemAdapter.addAll("Gents Ring", "Ladies Ring", "Chain",
-                    "Plastic Paatla", "Gold Set", "Gold Haar",
-                    "Earring", "Tops", "Gents Bracelets",
-                    "Ladies Bracelets", "Gold Paatla", "Gold Kada",
-                    "Pendant", "Bor", "Nath",
-                    "Damdi", "Tikka", "Gold Saakra",
-                    "Silver Saakra", "Silver Chain", "Silver Murti",
-                    "Gold Coin", "Silver Coin", "Mangalsutra",
-                    "MS-Pendant", "MS-Pendant Set", "Pan+Tops");
+                    new ArrayList<String>(){{addAll(GenericItemsGold); addAll(GenericItemsSilver);}});
         }
-
 
         Names.setThreshold(2);
         Names.setAdapter(NameAdapter);
@@ -127,7 +126,7 @@ public class Invoice extends AppCompatActivity {
         Particular.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(GenericItems.contains(finalItemAdapter.getItem(i))){
+                if(GenericItemsGold.contains(finalItemAdapter.getItem(i))){
                     Log.d("Item :","Generic");
                     Add_Barcode_Item.setEnabled(false);
                     LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -153,8 +152,7 @@ public class Invoice extends AppCompatActivity {
                         BasePurity = marginView.findViewById(R.id.Label7);
                         ArrayAdapter<String> Purity_Adapter = new ArrayAdapter<String>
                                 (marginView.getContext(), android.R.layout.select_dialog_item,
-                                        new String[]{"999 Fine Gold", "23KT958", "22KT916", "21KT875",
-                                        "20KT833", "18KT750", "14KT585"});
+                                        Purity_Levels_Gold);
 
                         Purity.setThreshold(2);
                         Purity.setAdapter(Purity_Adapter);
