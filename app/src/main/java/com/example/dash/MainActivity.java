@@ -129,12 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
                         private void resetlist() {
                             recordList = new ArrayList<>();
-                            for(int i = 0;i<dbManager.ListAllCustomer().size();i++){
-                                Customer customer = new Customer();
-                                customer.setName(NameAdapter.getItem(i));
-                                customer.setPhoneNumber(PhoneAdapter.getItem(i));
-                                recordList.add(customer);
-                            }
+                            recordList.addAll(recordList2);
                             Custom_Adapter = new customer_adapter(recordList);
                             recordContainer.setLayoutManager(new LinearLayoutManager(getBaseContext()));
                             recordContainer.setItemAnimator(new DefaultItemAnimator());
