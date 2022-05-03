@@ -134,6 +134,16 @@ public class MainActivity extends AppCompatActivity {
                             recordContainer.setLayoutManager(new LinearLayoutManager(getBaseContext()));
                             recordContainer.setItemAnimator(new DefaultItemAnimator());
                             recordContainer.setAdapter(Custom_Adapter);
+                            Custom_Adapter.setOnItemClickListener(new customer_adapter.OnItemClickListener() {
+                                @Override
+                                public boolean onItemClick(int position) {
+                                    Intent intent = new Intent(MainActivity.this, Invoice.class);
+                                    intent.putExtra("Name",recordList.get(position).getName());
+                                    intent.putExtra("Phone",recordList.get(position).getPhoneNumber());
+                                    startActivity(intent);
+                                    return false;
+                                }
+                            });
                         }
 
                         private void Filter_By_Name(String name) {

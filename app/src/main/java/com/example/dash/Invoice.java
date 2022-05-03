@@ -14,6 +14,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -52,21 +53,19 @@ public class Invoice extends AppCompatActivity {
         Particular = findViewById(R.id.particular);
         Add_Barcode_Item = findViewById(R.id.Add_item);
 
-        GenericItemsGold.addAll(Arrays.asList("Gents Ring", "Ladies Ring", "Chain",
+        GenericItemsGold.addAll(Arrays.asList("Mens Ring", "Women Ring", "Chain",
                 "Plastic Paatla", "Gold Set", "Gold Haar",
                 "Earring", "Tops", "Gents Bracelets",
                 "Ladies Bracelets", "Gold Paatla", "Gold Kada",
                 "Pendant", "Pendant-Set","Bor", "Nath",
-                "Damdi", "Tikka", "Gold Saakra",
-                "Gold Coin", "Mangalsutra",
-                "MS-Pendant", "MS-Pendant Set", "Dano",
-                "Nathdi", "Pokarva", "Baby-Earring"));
+                "Damdi", "Tikka", "Gold Saakra", "Gold Coin",
+                "Mangalsutra", "MS-Pendant", "MS-Pendant Set",
+                "Dano", "Nathdi", "Pokarva", "Baby-Earring"));
 
         GenericItemsSilver.addAll(Arrays.asList("Silver Saakra", "Silver Chain", "Silver Murti",
-                "Silver Coin", "Silver Mangalsutra", "Silver Bracelets"));
+                "Silver Coin", "Silver Mangalsutra", "Silver Bracelets", "Silver Mangalsutra","Silver Men Ring", "Silver Women Rings"));
 
         Purity_Levels_Silver.addAll(Arrays.asList("925", "Kachhi Silver", "Zevar Silver", "D-Silver", "Rupa"));
-
 
         //For future upgrades, fetch hallmarking standards from cloud and add it to list.
         //Also fetch any new products from the cloud to add it to backend.
@@ -75,8 +74,8 @@ public class Invoice extends AppCompatActivity {
         Purity_Levels_Gold.addAll(Arrays.asList("999 Fine Gold", "23KT958", "22KT916", "21KT875",
                 "20KT833", "18KT750", "14KT585", "22K Regular"));
 
-        dbManager.insertAllCategoriesGold(GenericItemsGold, Purity_Levels_Gold);
-        dbManager.insertAllCategoriesSilver(GenericItemsSilver,Purity_Levels_Silver);
+        dbManager.insertAllCategoriesGold(GenericItemsGold);
+        dbManager.insertAllCategoriesSilver(GenericItemsSilver);
 
         ArrayAdapter<String> NameAdapter = new ArrayAdapter<String>
                 (this,android.R.layout.select_dialog_item,dbManager.ListAllCustomer());
@@ -126,7 +125,7 @@ public class Invoice extends AppCompatActivity {
         Particular.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(GenericItemsGold.contains(finalItemAdapter.getItem(i))){
+                if(GenericItemsGold.contains(finalItemAdapter.getItem(i)) || GenericItemsSilver.contains(finalItemAdapter.getItem(i))){
                     Log.d("Item :","Generic");
                     Add_Barcode_Item.setEnabled(false);
                     LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -137,7 +136,8 @@ public class Invoice extends AppCompatActivity {
                         popupWindow.showAtLocation(Particular.getRootView(), Gravity.CENTER,0,0);
                         popupWindow.setFocusable(true);
                         popupWindow.update();
-                        AutoCompleteTextView Purity, Category, Supplier;
+                        Spinner Purity,  Supplier;
+                        TextView Category;
                         EditText GrossWeight, LessWeight, NetWeight, ExtraCharges, Wastage;
                         TextView BasePurity;
                         Purity = marginView.findViewById(R.id.purity_etv);
@@ -151,26 +151,20 @@ public class Invoice extends AppCompatActivity {
                         Wastage = marginView.findViewById(R.id.touch_etv);
                         BasePurity = marginView.findViewById(R.id.Label7);
                         ArrayAdapter<String> Purity_Adapter = new ArrayAdapter<String>
-                                (marginView.getContext(), android.R.layout.select_dialog_item,
-                                        Purity_Levels_Gold);
+                                (marginView.getContext(), android.R.layout.simple_spinner_item,
+                                        new ArrayList<String>(){{addAll(Purity_Levels_Gold); addAll(Purity_Levels_Silver);}});
+                        Purity_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
-                        Purity.setThreshold(2);
                         Purity.setAdapter(Purity_Adapter);
-
-
-                        ArrayAdapter<String> genericitemadapter=new ArrayAdapter<String>(marginView.getContext(),
-                                android.R.layout.select_dialog_item,
-                                dbManager.ListGenericItems());
-
-                        Category.setThreshold(2);
-                        Category.setAdapter(genericitemadapter);
+                        Category.setEnabled(false);
+                        Category.setText(finalItemAdapter.getItem(i));
                         ArrayAdapter<String> Supplier_Adapter = new ArrayAdapter<String>
-                                (marginView.getContext(), android.R.layout.select_dialog_item,
+                                (marginView.getContext(), android.R.layout.simple_spinner_item,
                                         dbManager.ListAllSuppliers());
-
-                        Purity.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                        Supplier_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        Purity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
-                            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                 switch (i){
                                     case 0: BasePurity.setText("99");
                                         break;
@@ -188,10 +182,16 @@ public class Invoice extends AppCompatActivity {
                                         break;
                                 }
                             }
+
+                            @Override
+                            public void onNothingSelected(AdapterView<?> adapterView) {
+
+                            }
                         });
 
+
+
                         if(Supplier_Adapter.getCount()>0){
-                            Supplier.setThreshold(2);
                             Supplier.setAdapter(Supplier_Adapter);
                         }
 
@@ -200,8 +200,8 @@ public class Invoice extends AppCompatActivity {
                             @Override
                             public void onFocusChange(View view, boolean b) {
                                 if(!b){
-                                    if(Supplier.getText().toString().length()>=3){
-                                        if(!Supplier_Adapter.toString().contains(Supplier.getText().toString())){
+                                    if(Supplier.getSelectedItem().toString().length()>=3){
+                                        if(!Supplier_Adapter.toString().contains(Supplier.getSelectedItem().toString())){
                                             //Bubble to add that to the
                                             ConstraintLayout add_supplier_layout = marginView.findViewById(R.id.supplier_add_layout);
                                             add_supplier_layout.setVisibility(View.VISIBLE);
@@ -212,7 +212,7 @@ public class Invoice extends AppCompatActivity {
                                             Add.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View view) {
-                                                    long result = dbManager.AddNewSupplier(Supplier.getText().toString());
+                                                    long result = dbManager.AddNewSupplier(Supplier.getSelectedItem().toString());
                                                     if(result!=-1){
                                                         TextView Attention_text = marginView.findViewById(R.id.Attention_text);
                                                         Attention_text.setText(R.string.supplier_success);
@@ -241,7 +241,7 @@ public class Invoice extends AppCompatActivity {
                                         }
                                     }
                                 }else{
-                                    if(!Supplier.getText().toString().isEmpty()){
+                                    if(!Supplier.getSelectedItem().toString().isEmpty()){
                                         TextView attention = marginView.findViewById(R.id.Attention_text_1);
                                         if(attention.getVisibility()==View.INVISIBLE || attention.getVisibility()==View.GONE){
                                             attention.setVisibility(View.VISIBLE);

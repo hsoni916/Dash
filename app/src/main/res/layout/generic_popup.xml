@@ -37,14 +37,15 @@
         app:layout_constraintTop_toBottomOf="@id/header_title"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <AutoCompleteTextView
+    <Spinner
         android:id="@+id/purity_etv"
         android:layout_width="320dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="32dp"
         android:layout_marginEnd="48dp"
         android:paddingStart="8dp"
         android:paddingEnd="4dp"
+        android:spinnerMode="dialog"
         android:background="@drawable/etv_background"
         app:layout_constraintStart_toEndOf="@id/Label1"
         app:layout_constraintTop_toTopOf="@id/Label1"
@@ -60,13 +61,14 @@
         app:layout_constraintTop_toBottomOf="@id/Label1"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <AutoCompleteTextView
+    <TextView
         android:id="@+id/category_etv"
         android:layout_width="320dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginEnd="48dp"
         android:paddingStart="8dp"
         android:paddingEnd="4dp"
+        android:spinnerMode="dialog"
         android:background="@drawable/etv_background"
         app:layout_constraintStart_toStartOf="@id/purity_etv"
         app:layout_constraintTop_toTopOf="@id/Label2"
@@ -183,14 +185,14 @@
         app:layout_constraintTop_toBottomOf="@id/Label4"
         app:layout_constraintStart_toStartOf="parent"/>
 
-    <AutoCompleteTextView
+    <Spinner
         android:id="@+id/supplier_etv"
         android:layout_width="280dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:spinnerMode="dialog"
         android:layout_marginEnd="48dp"
         android:paddingStart="8dp"
         android:paddingEnd="4dp"
-        android:inputType="numberDecimal"
         android:background="@drawable/etv_background"
         app:layout_constraintStart_toStartOf="@id/purity_etv"
         app:layout_constraintTop_toTopOf="@id/Label5"

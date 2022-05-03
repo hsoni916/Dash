@@ -76,31 +76,33 @@ public class DBManager {
         return PhoneOfCustomer;
     }
 
-    public long insertAllCategoriesGold(List<String> Categories, List<String> Purity){
+    public long insertAllCategoriesGold(List<String> Categories){
         long result = -1;
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        for(int i=0;i<Purity.size();i++){
+        String sql = "SELECT Category FROM Categories_Gold";
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor fetch = db.rawQuery(sql,null);
+             String delete_statement= "DELETE FROM Categories_Gold";
+             Cursor delete_execute = db.rawQuery(delete_statement,null);
             for(int j=0;j<Categories.size();j++){
                 contentValues.put("Category",Categories.get(j));
-                contentValues.put("Purity",Purity.get(i));
+                result = result+db.insert("Categories_Gold", null,contentValues);
             }
-        }
-        result = db.insert("Categories_Gold", null,contentValues);
         return result;
     }
 
-    public long insertAllCategoriesSilver(List<String> Categories, List<String> Purity){
+    public long insertAllCategoriesSilver(List<String> Categories){
         long result = -1;
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
-        for(int i=0;i<Purity.size();i++){
-            for(int j=0;j<Categories.size();j++){
-                contentValues.put("Category",Categories.get(j));
-                contentValues.put("Purity",Purity.get(i));
-            }
+        String sql = "SELECT Category FROM Categories_Silver";
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor fetch = db.rawQuery(sql,null);
+        String delete_statement= "DELETE FROM Categories_Silver";
+        Cursor delete_execute = db.rawQuery(delete_statement,null);
+        for(int j=0;j<Categories.size();j++){
+            contentValues.put("Category",Categories.get(j));
+            result = result+db.insert("Categories_Silver", null,contentValues);
         }
-        result = db.insert("Categories_Silver", null,contentValues);
         return result;
     }
 
@@ -183,9 +185,14 @@ public class DBManager {
 
     public List<String> ListGenericItems() {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String sql = "SELECT Category FROM Categories";
+        String sql = "SELECT Category FROM Categories_Gold";
         Cursor fetch = db.rawQuery(sql,null);
         List<String> GenericItemList = new ArrayList<>();
+        while(fetch.moveToNext()){
+            GenericItemList.add(fetch.getString(0));
+        }
+        sql = "SELECT Category FROM Categories_Silver";
+        fetch = db.rawQuery(sql,null);
         while(fetch.moveToNext()){
             GenericItemList.add(fetch.getString(0));
         }

@@ -55,14 +55,12 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_4 = "create table if not exists " + "Categories_Gold"
             + "("
             + "Category" + " STRING NOT NULL,"
-            + "Purity" + " STRING NOT NULL,"
             + "Category_Code" + " INTEGER PRIMARY KEY NOT NULL"
             + ");";
 
     private static final String CREATE_TABLE_4_1 = "create table if not exists " + "Categories_Silver"
             + "("
             + "Category" + " STRING NOT NULL,"
-            + "Purity" + " STRING NOT NULL,"
             + "Category_Code" + " INTEGER PRIMARY KEY NOT NULL"
             + ");";
 
