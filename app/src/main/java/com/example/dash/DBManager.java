@@ -231,4 +231,53 @@ public class DBManager {
     }
 
 
+    public void AddStandards() {
+        long result = -1;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+
+        contentValues.put("Standard_Name","999 Fine Gold");
+        contentValues.put("Standard_Value",99.9);
+        db.insert("Standards", null, contentValues);
+
+        contentValues.put("Standard_Name","23KT958");
+        contentValues.put("Standard_Value",95.8);
+        db.insert("Standards", null, contentValues);
+
+        contentValues.put("Standard_Name","22KT916");
+        contentValues.put("Standard_Value",91.6);
+        db.insert("Standards", null, contentValues);
+
+        contentValues.put("Standard_Name","21KT875");
+        contentValues.put("Standard_Value",87.5);
+        db.insert("Standards", null, contentValues);
+
+        contentValues.put("Standard_Name","20KT833");
+        contentValues.put("Standard_Value",83.3);
+        db.insert("Standards", null, contentValues);
+
+        contentValues.put("Standard_Name","18KT750");
+        contentValues.put("Standard_Value",75.0);
+        db.insert("Standards", null, contentValues);
+
+        contentValues.put("Standard_Name","14KT585");
+        contentValues.put("Standard_Value",58.5);
+        db.insert("Standards", null, contentValues);
+
+        //"925", "Kachhi Silver", "Zevar Silver", "D-Silver", "Rupa"
+        contentValues.put("Standard_Name","925");
+        contentValues.put("Standard_Value",92.5);
+        db.insert("Standards", null, contentValues);
+
+    }
+
+    public long AddStandard(String Label, int Purity){
+        long result = -1;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        ContentValues contentValues = new ContentValues();
+        contentValues.put("Standard_Name",Label);
+        contentValues.put("Standard_Value",Purity);
+        result = db.insert("Standards", null, contentValues);
+        return result;
+    }
 }

@@ -3,6 +3,8 @@ package com.example.dash;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -29,6 +31,7 @@ import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class Invoice extends AppCompatActivity {
     private DBManager dbManager;
@@ -72,7 +75,7 @@ public class Invoice extends AppCompatActivity {
         //Periodically take a backup of all data.
 
         Purity_Levels_Gold.addAll(Arrays.asList("999 Fine Gold", "23KT958", "22KT916", "21KT875",
-                "20KT833", "18KT750", "14KT585", "22K Regular"));
+                "20KT833", "18KT750", "14KT585"));
 
         dbManager.insertAllCategoriesGold(GenericItemsGold);
         dbManager.insertAllCategoriesSilver(GenericItemsSilver);
@@ -150,12 +153,18 @@ public class Invoice extends AppCompatActivity {
                         ExtraCharges = marginView.findViewById(R.id.charges_etv);
                         Wastage = marginView.findViewById(R.id.touch_etv);
                         BasePurity = marginView.findViewById(R.id.Label7);
+
+                        Button save,clear;
+                        save = marginView.findViewById(R.id.save_item);
+                        clear = marginView.findViewById(R.id.clear_item);
+
                         ArrayAdapter<String> Purity_Adapter = new ArrayAdapter<String>
                                 (marginView.getContext(), android.R.layout.simple_spinner_item,
                                         new ArrayList<String>(){{addAll(Purity_Levels_Gold); addAll(Purity_Levels_Silver);}});
                         Purity_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
                         Purity.setAdapter(Purity_Adapter);
+                        Purity.setSelection(0);
                         Category.setEnabled(false);
                         Category.setText(finalItemAdapter.getItem(i));
                         ArrayAdapter<String> Supplier_Adapter = new ArrayAdapter<String>
@@ -180,6 +189,7 @@ public class Invoice extends AppCompatActivity {
                                         break;
                                     case 6: BasePurity.setText("59");
                                         break;
+                                    case 7: BasePurity.setText("");
                                 }
                             }
 
@@ -189,12 +199,9 @@ public class Invoice extends AppCompatActivity {
                             }
                         });
 
-
-
                         if(Supplier_Adapter.getCount()>0){
                             Supplier.setAdapter(Supplier_Adapter);
                         }
-
                         //if(Supplier_Adapter.getCount()==0)
                         Supplier.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                             @Override
@@ -254,27 +261,52 @@ public class Invoice extends AppCompatActivity {
                                 }
                             }
                         });
-
-
-
-
-
-
-
-
-
                         //Receive input from user and save it.
                         //in a separate database as to avoid adding it to inventory.
+                        LessWeight.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                            }
+
+                            @Override
+                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable editable) {
+                                if(!GrossWeight.getText().toString().isEmpty()){
+                                    double GW = Double.parseDouble(GrossWeight.getText().toString());
+                                    if(!LessWeight.getText().toString().isEmpty()){
+                                        double LW = Double.parseDouble(LessWeight.getText().toString());
+                                        if(LW<GW){
+                                            save.setEnabled(true);
+                                            double NW = GW-LW;
+                                            NetWeight.setText(String.format(Locale.getDefault(),"%.3f", NW));
+                                        }else{
+                                            save.setEnabled(false);
+                                        }
+                                    }
+                                }
+                            }
+                        });
+                        LessWeight.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                            @Override
+                            public void onFocusChange(View view, boolean b) {
+                                if(!b){
+                                    if(LessWeight.getText().toString().isEmpty()){
+                                        double zero =0;
+                                        LessWeight.setText(String.format(Locale.getDefault(),"%.3f",zero));
+                                    }
+                                }
+                            }
+                        });
                     }
                 }else{
                     Add_Barcode_Item.setEnabled(true);
                 }
             }
         });
-
-
-
     }
-
-
 }

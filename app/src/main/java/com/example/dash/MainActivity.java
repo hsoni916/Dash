@@ -50,7 +50,7 @@ public class MainActivity extends AppCompatActivity {
         NewCustomer = findViewById(R.id.NewCustomer);
         newInvoiceButton = findViewById(R.id.NewInvoice);
         newInventory = findViewById(R.id.AddInventory);
-
+        dbManager.AddStandards();
         NewCustomer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

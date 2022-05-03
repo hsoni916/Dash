@@ -52,15 +52,23 @@ public class DBHelper extends SQLiteOpenHelper {
             + "ADD_INFO" + "STRING"
             + ");";
 
+    private static final String CREATE_TABLE_4_2 = "create table if not exists " + "Standards"
+            + "("
+            + "Standard_Name" + " STRING NOT NULL,"
+            + "Standard_Value" + " DECIMAL(4,2) NOT NULL"
+            + ");";
+
     private static final String CREATE_TABLE_4 = "create table if not exists " + "Categories_Gold"
             + "("
             + "Category" + " STRING NOT NULL,"
+            + "Base_Purity" + " DECIMAL(4,2),"
             + "Category_Code" + " INTEGER PRIMARY KEY NOT NULL"
             + ");";
 
     private static final String CREATE_TABLE_4_1 = "create table if not exists " + "Categories_Silver"
             + "("
             + "Category" + " STRING NOT NULL,"
+            + "Base_Purity" + " DECIMAL(4,2),"
             + "Category_Code" + " INTEGER PRIMARY KEY NOT NULL"
             + ");";
 
@@ -76,7 +84,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_3_1);
         db.execSQL(CREATE_TABLE_4);
         db.execSQL(CREATE_TABLE_4_1);
-
+        db.execSQL(CREATE_TABLE_4_2);
 
     }
 
@@ -85,6 +93,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS CustomersList");
         db.execSQL("DROP TABLE IF EXISTS Categories_Gold");
         db.execSQL("DROP TABLE IF EXISTS Categories_Silver");
+        db.execSQL("DROP TABLE IF EXISTS Standards");
         db.execSQL("DROP TABLE IF EXISTS Controls");
         db.execSQL("DROP TABLE IF EXISTS Inventory");
         db.execSQL("DROP TABLE IF EXISTS Supplier");
