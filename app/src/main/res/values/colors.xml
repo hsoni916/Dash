@@ -11,4 +11,14 @@
     <color name="teal_light">#4B9696</color>
     <color name="mattegrey">#41949FA6</color>
     <color name="mattegrey1">#474747</color>
+    <color name="matteblack">#28282B</color>
+
+
+    <color name="cool_grey">#30343F</color>
+    <color name="cool_grey_dark">#46494C</color>
+    <color name="cool_white">#FAFAFF</color>
+    <color name="lavender_blue">#E4D9FF</color>
+    <color name="space_cadet">#273469</color>
+    <color name="space_cadet_dark">#1E2749</color>
+
 </resources>

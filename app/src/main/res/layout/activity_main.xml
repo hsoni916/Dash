@@ -7,49 +7,143 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-    <Button
-        android:id="@+id/NewCustomer"
-        android:layout_width="160dp"
+    <LinearLayout
+        android:id="@+id/Button_Layout"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:elevation="2dp"
-        android:text="@string/new_customer"
-        android:textSize="11sp"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
-        android:drawableTop="@drawable/add"
-        android:backgroundTint="@color/teal_700"
+        android:orientation="horizontal"
+        android:weightSum="4"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+        <Button
+            android:id="@+id/NewCustomer"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:elevation="2dp"
+            android:text="@string/new_customer"
+            android:textSize="11sp"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:layout_weight="1"
+            android:drawableTop="@drawable/add"
+            android:backgroundTint="@color/space_cadet_dark"/>
 
-    <Button
-        android:id="@+id/NewInvoice"
-        android:layout_width="160dp"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:elevation="2dp"
-        android:textSize="11sp"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
-        android:text="@string/new_invoice"
-        android:drawableTop="@drawable/invoice"
-        android:backgroundTint="@color/purple_200"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/NewCustomer"/>
+        <Button
+            android:id="@+id/NewInvoice"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:elevation="2dp"
+            android:textSize="11sp"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:text="@string/new_invoice"
+            android:drawableTop="@drawable/invoice"
+            android:backgroundTint="#49a078"
+            android:layout_weight="1"
+            app:layout_constraintTop_toTopOf="parent"/>
 
-    <Button
-        android:id="@+id/AddInventory"
-        android:layout_width="160dp"
+        <Button
+            android:id="@+id/AddInventory"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:elevation="2dp"
+            android:textSize="11sp"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:layout_weight="1"
+            android:text="@string/add_inventory"
+            android:drawableTop="@drawable/inventory"
+            android:backgroundTint="@color/cool_grey"/>
+
+        <Button
+            android:id="@+id/ControlPanel"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="8dp"
+            android:elevation="2dp"
+            android:textSize="11sp"
+            android:paddingBottom="8dp"
+            android:paddingTop="8dp"
+            android:layout_weight="1"
+            android:text="@string/add_inventory"
+            android:drawableTop="@drawable/controls"
+            android:backgroundTint="@color/cool_grey_dark"/>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/Dashboard_1"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:elevation="2dp"
-        android:textSize="11sp"
-        android:paddingBottom="8dp"
-        android:paddingTop="8dp"
-        android:text="@string/add_inventory"
-        android:drawableTop="@drawable/inventory"
-        android:backgroundTint="@color/mattegrey1"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/NewInvoice"/>
+        android:orientation="horizontal"
+        android:visibility="visible"
+        app:layout_constraintTop_toBottomOf="@id/Button_Layout"
+        app:layout_constraintStart_toStartOf="parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/ItemsSold"
+            android:layout_width="130dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="8dp"
+            android:elevation="12dp"
+            android:background="@drawable/cardview_bg">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="Items Sold"
+                android:textColor="@color/cool_white"
+                android:layout_marginStart="6dp"
+                android:layout_margin="4dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="56sp"
+                android:text="18"
+                android:textStyle="bold"
+                android:layout_marginEnd="4dp"
+                android:gravity="bottom"
+                android:textColor="@color/matteblack"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/InvoicesMade"
+            android:layout_width="130dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="8dp"
+            android:elevation="12dp"
+            android:background="@drawable/cardview_bg">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="Invoices Made"
+                android:textColor="@color/cool_white"
+                android:layout_marginStart="6dp"
+                android:layout_margin="4dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="56sp"
+                android:text="17"
+                android:textStyle="bold"
+                android:layout_marginEnd="4dp"
+                android:gravity="bottom"
+                android:textColor="@color/matteblack"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </LinearLayout>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
