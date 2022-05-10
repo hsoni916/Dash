@@ -87,6 +87,20 @@ public class DBManager {
             for(int j=0;j<Categories.size();j++){
                 contentValues.put("Category",Categories.get(j));
                 result = result+db.insert("Categories_Gold", null,contentValues);
+                String label = Categories.get(j).replace(" ","_");
+                String table_name = label.replace("-","_")+"_Gold";
+                String create_table = "create table if not exists " + table_name +
+                        "("
+                        + "Barcode" + " INTEGER PRIMARY KEY NOT NULL,"
+                        + "Purity" + " STRING NOT NULL,"
+                        + "Wastage" + " DECIMAL(2,2),"
+                        + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
+                        + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
+                        + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
+                        + "ExtraCharges" + " INTEGER,"
+                        + "HUID" + " STRING,"
+                        + "SupplierCode" + " INTEGER" + ");";
+                dbHelper.getWritableDatabase().execSQL(create_table);
             }
         return result;
     }
@@ -102,9 +116,58 @@ public class DBManager {
         for(int j=0;j<Categories.size();j++){
             contentValues.put("Category",Categories.get(j));
             result = result+db.insert("Categories_Silver", null,contentValues);
+            String label = Categories.get(j).replace(" ","_");
+            String table_name = label.replace("-","_")+"Silver";
+            String create_table = "create table if not exists " + table_name +
+                    "("
+                    + "Barcode" + " INTEGER PRIMARY KEY NOT NULL,"
+                    + "Purity" + " STRING NOT NULL,"
+                    + "Wastage" + " DECIMAL(2,2),"
+                    + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
+                    + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
+                    + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
+                    + "ExtraCharges" + " INTEGER,"
+                    + "HUID" + " STRING,"
+                    + "SupplierCode" + " INTEGER" + ");";
+            dbHelper.getWritableDatabase().execSQL(create_table);
         }
         return result;
     }
+
+    public long insertCategorySilver(String Category, boolean b){
+        long result = -1;
+        String table_name;
+        ContentValues contentValues = new ContentValues();
+        String sql = "SELECT Category FROM Categories_Silver";
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor fetch = db.rawQuery(sql,null);
+        while(fetch.moveToNext() && fetch.isAfterLast()){
+            if(!fetch.getString(0).equals(Category)){
+                contentValues.put("Category",Category);
+                if(b){
+                    result = result+db.insert("Categories_Gold", null,contentValues);
+                    table_name = Category+"_"+"Gold";
+                }else{
+                    result = result+db.insert("Categories_Silver", null,contentValues);
+                    table_name = Category+"_"+"Silver";
+                }
+                String create_table = "create table if not exists" + table_name +
+                        "("
+                        + "Barcode" + " INTEGER PRIMARY KEY NOT NULL,"
+                        + "Purity" + " STRING NOT NULL,"
+                        + "Wastage" + " DECIMAL(2,2),"
+                        + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
+                        + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
+                        + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
+                        + "ExtraCharges" + " INTEGER,"
+                        + "HUID" + " STRING,"
+                        + "SupplierCode" + " INTEGER" + ");";
+                dbHelper.getWritableDatabase().execSQL(create_table);
+            }
+        }
+        return result;
+    }
+
 
 
     public List<String> ListDOB() {
@@ -264,9 +327,13 @@ public class DBManager {
         contentValues.put("Standard_Value",58.5);
         db.insert("Standards", null, contentValues);
 
-        //"925", "Kachhi Silver", "Zevar Silver", "D-Silver", "Rupa"
+        //"Kachhi Silver", "Zevar Silver", "D-Silver", "Rupa"
         contentValues.put("Standard_Name","925");
         contentValues.put("Standard_Value",92.5);
+        db.insert("Standards", null, contentValues);
+
+        contentValues.put("Standard_Name","Kachhi Silver");
+        contentValues.put("Standard_Value",78.0);
         db.insert("Standards", null, contentValues);
 
     }

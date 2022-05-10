@@ -26,7 +26,8 @@ public class DBHelper extends SQLiteOpenHelper {
             + "Points" + "INTEGER" + ");";
 
     private static final String CREATE_TABLE_2 = "create table if not exists " + "Inventory" +
-            "(" + "Barcode" + " INTEGER PRIMARY KEY NOT NULL,"
+            "("
+            + "Barcode" + " INTEGER PRIMARY KEY NOT NULL,"
             + "Purity" + " STRING NOT NULL,"
             + "Wastage" + " DECIMAL(2,2),"
             + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
@@ -49,6 +50,8 @@ public class DBHelper extends SQLiteOpenHelper {
             + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
             + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
             + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
+            + "Type" + "STRING NOT NULL,"
+            + "Wastage" + " DECIMAL(3,3) NOT NULL,"
             + "ADD_INFO" + "STRING"
             + ");";
 

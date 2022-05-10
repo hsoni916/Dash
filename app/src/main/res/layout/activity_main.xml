@@ -69,18 +69,23 @@
             android:paddingBottom="8dp"
             android:paddingTop="8dp"
             android:layout_weight="1"
-            android:text="@string/add_inventory"
+            android:text="@string/settings"
             android:drawableTop="@drawable/controls"
             android:backgroundTint="@color/cool_grey_dark"/>
 
     </LinearLayout>
 
-    <LinearLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/Dashboard_1"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         android:visibility="visible"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:paddingTop="4dp"
+        android:paddingEnd="4dp"
+        android:paddingBottom="4dp"
         app:layout_constraintTop_toBottomOf="@id/Button_Layout"
         app:layout_constraintStart_toStartOf="parent">
 
@@ -88,15 +93,17 @@
             android:id="@+id/ItemsSold"
             android:layout_width="130dp"
             android:layout_height="100dp"
-            android:layout_marginStart="8dp"
             android:elevation="12dp"
-            android:background="@drawable/cardview_bg">
+            android:backgroundTint="#f7a400"
+            android:background="@drawable/cardview_bg"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="12sp"
                 android:text="Items Sold"
-                android:textColor="@color/cool_white"
+                android:textColor="@color/cool_grey"
                 android:layout_marginStart="6dp"
                 android:layout_margin="4dp"
                 app:layout_constraintTop_toTopOf="parent"
@@ -105,11 +112,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="56sp"
-                android:text="18"
+                android:text="05"
                 android:textStyle="bold"
                 android:layout_marginEnd="4dp"
                 android:gravity="bottom"
-                android:textColor="@color/matteblack"
+                android:textColor="@color/mattegrey1"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
@@ -117,9 +124,12 @@
             android:id="@+id/InvoicesMade"
             android:layout_width="130dp"
             android:layout_height="100dp"
-            android:layout_marginStart="8dp"
+            android:layout_marginTop="4dp"
             android:elevation="12dp"
-            android:background="@drawable/cardview_bg">
+            android:backgroundTint="#3a9efd"
+            android:background="@drawable/cardview_bg"
+            app:layout_constraintTop_toBottomOf="@id/ItemsSold"
+            app:layout_constraintStart_toStartOf="parent">
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -134,16 +144,160 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textSize="56sp"
-                android:text="17"
+                android:text="05"
                 android:textStyle="bold"
                 android:layout_marginEnd="4dp"
                 android:gravity="bottom"
-                android:textColor="@color/matteblack"
+                android:textColor="@color/cool_white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/CustomersAdded"
+            android:layout_width="130dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="4dp"
+            android:elevation="12dp"
+            android:backgroundTint="#3e4491"
+            android:background="@drawable/cardview_bg"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ItemsSold">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="New Customers"
+                android:textColor="@color/cool_white"
+                android:layout_marginStart="6dp"
+                android:layout_margin="4dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="56sp"
+                android:text="20"
+                android:textStyle="bold"
+                android:layout_marginEnd="4dp"
+                android:gravity="bottom"
+                android:textColor="@color/cool_white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/SalesWeight"
+            android:layout_width="130dp"
+            android:layout_height="100dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="4dp"
+            android:elevation="12dp"
+            android:backgroundTint="#292a73"
+            android:background="@drawable/cardview_bg"
+            app:layout_constraintTop_toBottomOf="@id/CustomersAdded"
+            app:layout_constraintStart_toEndOf="@id/ItemsSold">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="Total Sales"
+                android:textColor="@color/cool_white"
+                android:layout_marginStart="6dp"
+                android:layout_margin="4dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="56sp"
+                android:text="22"
+                android:textStyle="bold"
+                android:gravity="bottom"
+                android:textColor="@color/cool_white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/unit"/>
+            <TextView
+                android:id="@+id/unit"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="gm"
+                android:textStyle="bold"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="12dp"
+                android:gravity="bottom"
+                android:textColor="@color/cool_white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/Revenue"
+            android:layout_width="130dp"
+            android:layout_height="100dp"
+            android:layout_marginStart="4dp"
+            android:elevation="12dp"
+            android:backgroundTint="#1a1b4b"
+            android:background="@drawable/cardview_bg"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/CustomersAdded">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="Revenue"
+                android:textColor="@color/cool_white"
+                android:layout_marginStart="6dp"
+                android:layout_margin="4dp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="56sp"
+                android:text="01"
+                android:textStyle="bold"
+                android:gravity="right"
+                android:textColor="@color/cool_white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/unit_r"/>
+            <TextView
+                android:id="@+id/unit_r"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textSize="12sp"
+                android:text="Lac."
+                android:textStyle="bold"
+                android:layout_marginEnd="4dp"
+                android:layout_marginBottom="12dp"
+                android:gravity="bottom"
+                android:textColor="@color/cool_white"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
         </androidx.constraintlayout.widget.ConstraintLayout>
 
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    <TextView
+        android:id="@+id/heading_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:text="Daily Reminder:"
+        android:textStyle="bold"
+        app:layout_constraintTop_toBottomOf="@id/Button_Layout"
+        app:layout_constraintStart_toEndOf="@id/Dashboard_1"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/reminder_list"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginBottom="4dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="2dp"
+        app:layout_constraintTop_toBottomOf="@id/heading_title"
+        app:layout_constraintStart_toStartOf="@id/heading_title">
+
+    </androidx.recyclerview.widget.RecyclerView>
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

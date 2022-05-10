@@ -1,5 +1,6 @@
 package com.example.dash;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
@@ -176,20 +177,40 @@ public class Invoice extends AppCompatActivity {
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                                 switch (i){
                                     case 0: BasePurity.setText("99");
+                                        BasePurity.setEnabled(false);
                                         break;
                                     case 1: BasePurity.setText("96");
+                                        BasePurity.setEnabled(false);
                                         break;
                                     case 2: BasePurity.setText("92");
+                                            BasePurity.setEnabled(false);
                                         break;
                                     case 3: BasePurity.setText("88");
+                                        BasePurity.setEnabled(false);
                                         break;
                                     case 4: BasePurity.setText("84");
+                                        BasePurity.setEnabled(false);
                                         break;
                                     case 5: BasePurity.setText("76");
+                                        BasePurity.setEnabled(false);
                                         break;
                                     case 6: BasePurity.setText("59");
+                                        BasePurity.setEnabled(false);
                                         break;
-                                    case 7: BasePurity.setText("");
+                                    case 7: BasePurity.setText("92.5");
+                                        BasePurity.setEnabled(false);
+                                        break;
+                                    case 8: BasePurity.setText("72");
+                                        BasePurity.setEnabled(false);
+                                        break;
+                                    case 9:
+                                    case 10:
+                                        BasePurity.setText("62");
+                                        BasePurity.setEnabled(false);
+                                        break;
+                                    case 11: BasePurity.setEnabled(true);
+                                        break;
+
                                 }
                             }
 
@@ -263,6 +284,35 @@ public class Invoice extends AppCompatActivity {
                         });
                         //Receive input from user and save it.
                         //in a separate database as to avoid adding it to inventory.
+
+                        GrossWeight.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                            }
+
+                            @Override
+                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable editable) {
+                                if(!GrossWeight.getText().toString().isEmpty()){
+                                    if(!LessWeight.getText().toString().isEmpty()){
+                                        double diff = Double.parseDouble(GrossWeight.getText().toString())-Double.parseDouble(LessWeight.getText().toString());
+                                        NetWeight.setText(String.format(Locale.getDefault(),"%.2f",diff));
+                                    }else{
+                                     NetWeight.setText(GrossWeight.getText().toString());
+                                    }
+                                }else{
+                                    GrossWeight.setText(R.string.zero);
+                                    LessWeight.setText(R.string.zero);
+                                    NetWeight.setText(R.string.zero);
+                                }
+                            }
+                        });
+
                         LessWeight.addTextChangedListener(new TextWatcher() {
                             @Override
                             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -286,11 +336,13 @@ public class Invoice extends AppCompatActivity {
                                             NetWeight.setText(String.format(Locale.getDefault(),"%.3f", NW));
                                         }else{
                                             save.setEnabled(false);
+                                            Toast.makeText(getBaseContext(),"Invalid weight",Toast.LENGTH_LONG).show();
                                         }
                                     }
                                 }
                             }
                         });
+
                         LessWeight.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                             @Override
                             public void onFocusChange(View view, boolean b) {
@@ -302,11 +354,38 @@ public class Invoice extends AppCompatActivity {
                                 }
                             }
                         });
+
+                        save.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View view) {
+                                //Add it to sundry supplier
+                                // +"Name" + " STRING NOT NULL,"
+                                //            + "Date_Of" + " STRING NOT NULL,"
+                                //            + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
+                                //            + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
+                                //            + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
+                                //            + "Type" + "STRING NOT NULL,"
+                                //            + "Wastage" + " DECIMAL(3,3) NOT NULL,"
+                                //            + "ADD_INFO" + "STRING"
+                                ContentValues contentValues = new ContentValues();
+                                contentValues.put("Name",Category.getText().toString());
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
+                                contentValues.put("Date_Of",dateFormat.format(Calendar.getInstance().getTime()));
+                                if(!GrossWeight.getText().toString().isEmpty()){
+                                    contentValues.put("GrossWeight",GrossWeight.getText().toString());
+                                }else{
+
+                                }
+                            }
+                        });
+
                     }
                 }else{
                     Add_Barcode_Item.setEnabled(true);
                 }
+
             }
         });
+
     }
 }
