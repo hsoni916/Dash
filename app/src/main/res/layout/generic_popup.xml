@@ -210,8 +210,7 @@
         android:background="@drawable/etv_background"
         app:layout_constraintStart_toStartOf="@id/purity_etv"
         app:layout_constraintTop_toTopOf="@id/Label5"
-        app:layout_constraintBottom_toBottomOf="@id/Label5"
-        android:importantForAutofill="no" />
+        app:layout_constraintBottom_toBottomOf="@id/Label5" />
 
     <TextView
         android:id="@+id/Attention_text_1"

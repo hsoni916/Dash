@@ -45,6 +45,7 @@ public class Invoice extends AppCompatActivity {
     ImageButton Add_Barcode_Item;
     PopupWindow popupWindow;
     Context context;
+    ArrayAdapter<String> Supplier_Adapter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -140,7 +141,8 @@ public class Invoice extends AppCompatActivity {
                         popupWindow.showAtLocation(Particular.getRootView(), Gravity.CENTER,0,0);
                         popupWindow.setFocusable(true);
                         popupWindow.update();
-                        Spinner Purity,  Supplier;
+                        Spinner Purity;
+                        Spinner Supplier;
                         TextView Category;
                         EditText GrossWeight, LessWeight, NetWeight, ExtraCharges, Wastage;
                         TextView BasePurity;
@@ -154,7 +156,7 @@ public class Invoice extends AppCompatActivity {
                         ExtraCharges = marginView.findViewById(R.id.charges_etv);
                         Wastage = marginView.findViewById(R.id.touch_etv);
                         BasePurity = marginView.findViewById(R.id.Label7);
-
+                        TextView NameError = marginView.findViewById(R.id.NameError);
                         Button save,clear;
                         save = marginView.findViewById(R.id.save_item);
                         clear = marginView.findViewById(R.id.clear_item);
@@ -168,9 +170,10 @@ public class Invoice extends AppCompatActivity {
                         Purity.setSelection(0);
                         Category.setEnabled(false);
                         Category.setText(finalItemAdapter.getItem(i));
-                        ArrayAdapter<String> Supplier_Adapter = new ArrayAdapter<String>
+                        Supplier_Adapter = new ArrayAdapter<String>
                                 (marginView.getContext(), android.R.layout.simple_spinner_item,
                                         dbManager.ListAllSuppliers());
+                        //fetch suppliers from backend.
                         Supplier_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         Purity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
@@ -220,11 +223,17 @@ public class Invoice extends AppCompatActivity {
                             }
                         });
 
-                        if(Supplier_Adapter.getCount()>0){
-                            Supplier.setAdapter(Supplier_Adapter);
+                        if(Supplier_Adapter.getCount()<0){
+                            Log.d("Supplier count","< 0");
+                            List<String> Empty_Adapter = new ArrayList<>();
+                            Supplier_Adapter = new ArrayAdapter<String>
+                                    (marginView.getContext(), android.R.layout.simple_spinner_item,
+                                            new ArrayList<String>(){{addAll(Empty_Adapter);}});
+                            Supplier_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
                         }
+                        Supplier.setAdapter(Supplier_Adapter);
                         //if(Supplier_Adapter.getCount()==0)
-                        Supplier.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                   /*     Supplier.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                             @Override
                             public void onFocusChange(View view, boolean b) {
                                 if(!b){
@@ -281,7 +290,7 @@ public class Invoice extends AppCompatActivity {
 
                                 }
                             }
-                        });
+                        }); */
                         //Receive input from user and save it.
                         //in a separate database as to avoid adding it to inventory.
 
@@ -306,9 +315,11 @@ public class Invoice extends AppCompatActivity {
                                      NetWeight.setText(GrossWeight.getText().toString());
                                     }
                                 }else{
-                                    GrossWeight.setText(R.string.zero);
-                                    LessWeight.setText(R.string.zero);
-                                    NetWeight.setText(R.string.zero);
+                                    NetWeight.setText(null);
+                                    if(NameError.getVisibility()==View.VISIBLE){
+                                        NameError.setText(null);
+                                        NameError.setVisibility(View.INVISIBLE);
+                                    }
                                 }
                             }
                         });
@@ -329,15 +340,21 @@ public class Invoice extends AppCompatActivity {
                                 if(!GrossWeight.getText().toString().isEmpty()){
                                     double GW = Double.parseDouble(GrossWeight.getText().toString());
                                     if(!LessWeight.getText().toString().isEmpty()){
-                                        double LW = Double.parseDouble(LessWeight.getText().toString());
-                                        if(LW<GW){
-                                            save.setEnabled(true);
-                                            double NW = GW-LW;
-                                            NetWeight.setText(String.format(Locale.getDefault(),"%.3f", NW));
-                                        }else{
-                                            save.setEnabled(false);
-                                            Toast.makeText(getBaseContext(),"Invalid weight",Toast.LENGTH_LONG).show();
+                                        try{
+                                            double LW = Double.parseDouble(LessWeight.getText().toString());
+                                            if(LW<GW){
+                                                save.setEnabled(true);
+                                                double NW = GW-LW;
+                                                NetWeight.setText(String.format(Locale.getDefault(),"%.3f", NW));
+                                            }else{
+                                                save.setEnabled(false);
+                                                Toast.makeText(getBaseContext(),"Invalid weight",Toast.LENGTH_LONG).show();
+                                            }
+                                        }catch (Exception e){
+                                            e.printStackTrace();
                                         }
+                                    }else{
+                                        NetWeight.setText(GrossWeight.getText().toString());
                                     }
                                 }
                             }
@@ -374,7 +391,8 @@ public class Invoice extends AppCompatActivity {
                                 if(!GrossWeight.getText().toString().isEmpty()){
                                     contentValues.put("GrossWeight",GrossWeight.getText().toString());
                                 }else{
-
+                                    NameError.setText(R.string.gross_weight_error);
+                                    NameError.setVisibility(View.VISIBLE);
                                 }
                             }
                         });
