@@ -79,19 +79,24 @@ public class DBManager {
     public long insertAllCategoriesGold(List<String> Categories){
         long result = -1;
         ContentValues contentValues = new ContentValues();
-        String sql = "SELECT Category FROM Categories_Gold";
+        String sql = "SELECT Category FROM Categories";
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         Cursor fetch = db.rawQuery(sql,null);
-             String delete_statement= "DELETE FROM Categories_Gold";
+             String delete_statement= "DELETE FROM Categories";
              Cursor delete_execute = db.rawQuery(delete_statement,null);
             for(int j=0;j<Categories.size();j++){
                 contentValues.put("Category",Categories.get(j));
-                result = result+db.insert("Categories_Gold", null,contentValues);
+                if(Categories.get(j).contains("Silver") || Categories.get(j).contains("silver")){
+                    contentValues.put("BaseMetal","Silver");
+                }else{
+                    contentValues.put("BaseMetal","Gold");
+                }
+                result = result+db.insert("Categories", null,contentValues);
                 String label = Categories.get(j).replace(" ","_");
-                String table_name = label.replace("-","_")+"_Gold";
+                String table_name = label.replace("-","_");
                 String create_table = "create table if not exists " + table_name +
                         "("
-                        + "Barcode" + " INTEGER PRIMARY KEY NOT NULL,"
+                        + "Barcode" + " STRING,"
                         + "Purity" + " STRING NOT NULL,"
                         + "Wastage" + " DECIMAL(2,2),"
                         + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
@@ -99,8 +104,26 @@ public class DBManager {
                         + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
                         + "ExtraCharges" + " INTEGER,"
                         + "HUID" + " STRING,"
-                        + "SupplierCode" + " INTEGER" + ");";
+                        + "SupplierCode" + " INTEGER" +
+                        ");";
+
+                String table_name2 = table_name+"_uid";
+                String create_table_backup = "create table if not exists " + table_name2 +
+                        "(" + "Barcode" + " STRING NOT NULL" + ");";
+                dbHelper.getWritableDatabase().execSQL(create_table_backup);
+                String triggerName = table_name+"_barcode_trigger";
+                String triggerName2 = table_name+"_rowid_trigger";
+                String triggerName3 = table_name+"_recover_id";
+                String prefix = "MJ"+Categories.get(j).substring(0,2).replace("-","").toUpperCase();
+                Log.d("Prefixes:",prefix);
+                String triggers = "CREATE TRIGGER IF NOT EXISTS " + triggerName + " AFTER INSERT ON "
+                        + table_name + " BEGIN UPDATE " + table_name + " SET Barcode = '"+prefix+"'||rowid; END";
+                Log.d("Triggers:",triggers);
+                String trigger2 = "CREATE TRIGGER IF NOT EXISTS " + triggerName2 + " AFTER DELETE ON "
+                        + table_name + " BEGIN INSERT INTO " + table_name2 + " (Barcode) " + " VALUES ( old.Barcode ); END";
                 dbHelper.getWritableDatabase().execSQL(create_table);
+                dbHelper.getWritableDatabase().execSQL(triggers);
+                dbHelper.getWritableDatabase().execSQL(trigger2);
             }
         return result;
     }
@@ -120,7 +143,7 @@ public class DBManager {
             String table_name = label.replace("-","_")+"Silver";
             String create_table = "create table if not exists " + table_name +
                     "("
-                    + "Barcode" + " INTEGER PRIMARY KEY NOT NULL,"
+                    + "Barcode" + " INTEGER,"
                     + "Purity" + " STRING NOT NULL,"
                     + "Wastage" + " DECIMAL(2,2),"
                     + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
@@ -153,7 +176,7 @@ public class DBManager {
                 }
                 String create_table = "create table if not exists" + table_name +
                         "("
-                        + "Barcode" + " INTEGER PRIMARY KEY NOT NULL,"
+                        + "Barcode" + " INTEGER,"
                         + "Purity" + " STRING NOT NULL,"
                         + "Wastage" + " DECIMAL(2,2),"
                         + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"

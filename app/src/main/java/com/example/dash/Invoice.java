@@ -2,6 +2,7 @@ package com.example.dash;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.os.Handler;
 import android.text.Editable;
@@ -45,7 +46,10 @@ public class Invoice extends AppCompatActivity {
     ImageButton Add_Barcode_Item;
     PopupWindow popupWindow;
     Context context;
+    private DBHelper dbHelper;
     ArrayAdapter<String> Supplier_Adapter;
+    ContentValues contentValues = new ContentValues();
+    String typeof = "";
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -77,10 +81,10 @@ public class Invoice extends AppCompatActivity {
         //Periodically take a backup of all data.
 
         Purity_Levels_Gold.addAll(Arrays.asList("999 Fine Gold", "23KT958", "22KT916", "21KT875",
-                "20KT833", "18KT750", "14KT585"));
+                "20KT833", "18KT750", "14KT585","Others"));
 
-        dbManager.insertAllCategoriesGold(GenericItemsGold);
-        dbManager.insertAllCategoriesSilver(GenericItemsSilver);
+        dbManager.insertAllCategoriesGold(new ArrayList<String>(){{addAll(GenericItemsGold); addAll(GenericItemsSilver);}});
+       // dbManager.insertAllCategoriesSilver(GenericItemsSilver);
 
         ArrayAdapter<String> NameAdapter = new ArrayAdapter<String>
                 (this,android.R.layout.select_dialog_item,dbManager.ListAllCustomer());
@@ -175,51 +179,59 @@ public class Invoice extends AppCompatActivity {
                                         dbManager.ListAllSuppliers());
                         //fetch suppliers from backend.
                         Supplier_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
                         Purity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
                             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                                typeof =Purity.getItemAtPosition(i).toString();
                                 switch (i){
-                                    case 0: BasePurity.setText("99");
+                                    case 0:
+                                        BasePurity.setText("99");
                                         BasePurity.setEnabled(false);
                                         break;
-                                    case 1: BasePurity.setText("96");
+                                    case 1:
+                                        BasePurity.setText("96");
                                         BasePurity.setEnabled(false);
                                         break;
-                                    case 2: BasePurity.setText("92");
-                                            BasePurity.setEnabled(false);
-                                        break;
-                                    case 3: BasePurity.setText("88");
+                                    case 2:
+                                        BasePurity.setText("92");
                                         BasePurity.setEnabled(false);
                                         break;
-                                    case 4: BasePurity.setText("84");
+                                    case 3:
+                                        BasePurity.setText("88");
                                         BasePurity.setEnabled(false);
                                         break;
-                                    case 5: BasePurity.setText("76");
+                                    case 4:
+                                        BasePurity.setText("84");
                                         BasePurity.setEnabled(false);
                                         break;
-                                    case 6: BasePurity.setText("59");
+                                    case 5:
+                                        BasePurity.setText("76");
                                         BasePurity.setEnabled(false);
                                         break;
-                                    case 7: BasePurity.setText("92.5");
+                                    case 6:
+                                        BasePurity.setText("59");
                                         BasePurity.setEnabled(false);
                                         break;
-                                    case 8: BasePurity.setText("72");
+                                    case 8: BasePurity.setText("92.5");
                                         BasePurity.setEnabled(false);
                                         break;
-                                    case 9:
+                                    case 9: BasePurity.setText("72");
+                                        BasePurity.setEnabled(false);
+                                        break;
                                     case 10:
+                                    case 11:
                                         BasePurity.setText("62");
                                         BasePurity.setEnabled(false);
                                         break;
-                                    case 11: BasePurity.setEnabled(true);
+                                    case 7:
+                                    case 12:
+                                        BasePurity.setEnabled(true);
                                         break;
-
                                 }
                             }
-
                             @Override
                             public void onNothingSelected(AdapterView<?> adapterView) {
-
                             }
                         });
 
@@ -244,8 +256,7 @@ public class Invoice extends AppCompatActivity {
                                             add_supplier_layout.setVisibility(View.VISIBLE);
                                             Button Add,Close;
                                             Add = marginView.findViewById(R.id.add_supplier);
-                                            Close = marginView.findViewById(R.id.dont_add_supplier);
-
+                                            Close = marginView.findViewById(R.id.don't_add_supplier);
                                             Add.setOnClickListener(new View.OnClickListener() {
                                                 @Override
                                                 public void onClick(View view) {
@@ -273,8 +284,6 @@ public class Invoice extends AppCompatActivity {
                                                     add_supplier_layout.setVisibility(View.GONE);
                                                 }
                                             });
-
-
                                         }
                                     }
                                 }else{
@@ -287,7 +296,6 @@ public class Invoice extends AppCompatActivity {
                                         TextView attention = marginView.findViewById(R.id.Attention_text_1);
                                         attention.setVisibility(View.GONE);
                                     }
-
                                 }
                             }
                         }); */
@@ -375,8 +383,7 @@ public class Invoice extends AppCompatActivity {
                         save.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                //Add it to sundry supplier
-                                // +"Name" + " STRING NOT NULL,"
+                                //"Name" + " STRING NOT NULL,"
                                 //            + "Date_Of" + " STRING NOT NULL,"
                                 //            + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
                                 //            + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
@@ -384,26 +391,48 @@ public class Invoice extends AppCompatActivity {
                                 //            + "Type" + "STRING NOT NULL,"
                                 //            + "Wastage" + " DECIMAL(3,3) NOT NULL,"
                                 //            + "ADD_INFO" + "STRING"
-                                ContentValues contentValues = new ContentValues();
                                 contentValues.put("Name",Category.getText().toString());
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
                                 contentValues.put("Date_Of",dateFormat.format(Calendar.getInstance().getTime()));
                                 if(!GrossWeight.getText().toString().isEmpty()){
-                                    contentValues.put("GrossWeight",GrossWeight.getText().toString());
+                                    contentValues.put("GrossWeight",Double.parseDouble(GrossWeight.getText().toString()));
+                                    if(!LessWeight.getText().toString().isEmpty()){
+                                        try{
+                                            contentValues.put("LessWeight",Double.parseDouble(LessWeight.getText().toString()));
+                                            contentValues.put("NetWeight",Double.parseDouble(GrossWeight.getText().toString())-Double.parseDouble(LessWeight.getText().toString()));
+                                        }catch (Exception e){
+                                            e.printStackTrace();
+                                            contentValues.put("LessWeight",0.00);
+                                            contentValues.put("NetWeight",Double.parseDouble(GrossWeight.getText().toString()));
+                                        }
+                                    }else{
+                                        contentValues.put("LessWeight",0.00);
+                                        contentValues.put("NetWeight",Double.parseDouble(GrossWeight.getText().toString()));
+                                    }
+                                    contentValues.put("TypeOfArticle",typeof);
+                                    if(!Wastage.getText().toString().isEmpty()){
+                                        try{
+                                            contentValues.put("Wastage",Double.parseDouble(Wastage.getText().toString()));
+                                        }catch (Exception e){
+                                            e.printStackTrace();
+                                        }
+                                    }else{
+                                        contentValues.put("Wastage",0.00);
+                                    }
+                                    dbHelper = new DBHelper(marginView.getContext());
+                                    SQLiteDatabase db = dbHelper.getWritableDatabase();
+                                    db.insert("Sundry_Supplies", null,contentValues);
                                 }else{
                                     NameError.setText(R.string.gross_weight_error);
                                     NameError.setVisibility(View.VISIBLE);
                                 }
                             }
                         });
-
                     }
                 }else{
                     Add_Barcode_Item.setEnabled(true);
                 }
-
             }
         });
-
     }
 }

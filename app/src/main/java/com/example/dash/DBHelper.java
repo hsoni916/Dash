@@ -19,6 +19,7 @@ public class DBHelper extends SQLiteOpenHelper {
         super(context, DB_NAME,null, DB_VERSION);
     }
 
+
     private static final String CREATE_TABLE= "create table if not exists " + "CustomersList" +
             "(" + "Name" +" TEXT NOT NULL,"
             + "PhoneNumber" + " STRING PRIMARY KEY NOT NULL CHECK (length(PhoneNumber)==10),"
@@ -27,7 +28,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     private static final String CREATE_TABLE_2 = "create table if not exists " + "Inventory" +
             "("
-            + "Barcode" + " INTEGER PRIMARY KEY NOT NULL,"
+            + "Barcode" + " STRING,"
             + "Purity" + " STRING NOT NULL,"
             + "Wastage" + " DECIMAL(2,2),"
             + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
@@ -50,9 +51,10 @@ public class DBHelper extends SQLiteOpenHelper {
             + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
             + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
             + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
-            + "Type" + "STRING NOT NULL,"
+            + "TypeOfArticle" + " STRING NOT NULL,"
             + "Wastage" + " DECIMAL(3,3) NOT NULL,"
-            + "ADD_INFO" + "STRING"
+            + "ADD_INFO" + " STRING,"
+            + "Status" + " INTEGER DEFAULT 0 CHECK ( Status IN (-1,0,1))"
             + ");";
 
     private static final String CREATE_TABLE_4_2 = "create table if not exists " + "Standards"
@@ -61,16 +63,10 @@ public class DBHelper extends SQLiteOpenHelper {
             + "Standard_Value" + " DECIMAL(4,2) NOT NULL"
             + ");";
 
-    private static final String CREATE_TABLE_4 = "create table if not exists " + "Categories_Gold"
+    private static final String CREATE_TABLE_4 = "create table if not exists " + "Categories"
             + "("
             + "Category" + " STRING NOT NULL,"
-            + "Base_Purity" + " DECIMAL(4,2),"
-            + "Category_Code" + " INTEGER PRIMARY KEY NOT NULL"
-            + ");";
-
-    private static final String CREATE_TABLE_4_1 = "create table if not exists " + "Categories_Silver"
-            + "("
-            + "Category" + " STRING NOT NULL,"
+            + "BaseMetal" + " STRING NOT NULL,"
             + "Base_Purity" + " DECIMAL(4,2),"
             + "Category_Code" + " INTEGER PRIMARY KEY NOT NULL"
             + ");";
@@ -86,7 +82,6 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_3);
         db.execSQL(CREATE_TABLE_3_1);
         db.execSQL(CREATE_TABLE_4);
-        db.execSQL(CREATE_TABLE_4_1);
         db.execSQL(CREATE_TABLE_4_2);
 
     }
@@ -94,8 +89,7 @@ public class DBHelper extends SQLiteOpenHelper {
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         db.execSQL("DROP TABLE IF EXISTS CustomersList");
-        db.execSQL("DROP TABLE IF EXISTS Categories_Gold");
-        db.execSQL("DROP TABLE IF EXISTS Categories_Silver");
+        db.execSQL("DROP TABLE IF EXISTS Categories");
         db.execSQL("DROP TABLE IF EXISTS Standards");
         db.execSQL("DROP TABLE IF EXISTS Controls");
         db.execSQL("DROP TABLE IF EXISTS Inventory");
