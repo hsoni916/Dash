@@ -11,6 +11,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
@@ -50,6 +51,7 @@ public class Invoice extends AppCompatActivity {
     ArrayAdapter<String> Supplier_Adapter;
     ContentValues contentValues = new ContentValues();
     String typeof = "";
+    List<Long> itemids = new ArrayList<>();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -76,15 +78,12 @@ public class Invoice extends AppCompatActivity {
 
         Purity_Levels_Silver.addAll(Arrays.asList("925", "Kachhi Silver", "Zevar Silver", "D-Silver", "Rupa"));
 
-        //For future upgrades, fetch hallmarking standards from cloud and add it to list.
-        //Also fetch any new products from the cloud to add it to backend.
-        //Periodically take a backup of all data.
 
         Purity_Levels_Gold.addAll(Arrays.asList("999 Fine Gold", "23KT958", "22KT916", "21KT875",
                 "20KT833", "18KT750", "14KT585","Others"));
 
-        dbManager.insertAllCategoriesGold(new ArrayList<String>(){{addAll(GenericItemsGold); addAll(GenericItemsSilver);}});
-       // dbManager.insertAllCategoriesSilver(GenericItemsSilver);
+        //dbManager.insertAllCategoriesGold(new ArrayList<String>(){{addAll(GenericItemsGold); addAll(GenericItemsSilver);}});
+        //dbManager.insertAllCategoriesSilver(GenericItemsSilver);
 
         ArrayAdapter<String> NameAdapter = new ArrayAdapter<String>
                 (this,android.R.layout.select_dialog_item,dbManager.ListAllCustomer());
@@ -135,6 +134,7 @@ public class Invoice extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(GenericItemsGold.contains(finalItemAdapter.getItem(i)) || GenericItemsSilver.contains(finalItemAdapter.getItem(i))){
+
                     Log.d("Item :","Generic");
                     Add_Barcode_Item.setEnabled(false);
                     LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -145,6 +145,8 @@ public class Invoice extends AppCompatActivity {
                         popupWindow.showAtLocation(Particular.getRootView(), Gravity.CENTER,0,0);
                         popupWindow.setFocusable(true);
                         popupWindow.update();
+                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                         Spinner Purity;
                         Spinner Supplier;
                         TextView Category;
@@ -421,7 +423,14 @@ public class Invoice extends AppCompatActivity {
                                     }
                                     dbHelper = new DBHelper(marginView.getContext());
                                     SQLiteDatabase db = dbHelper.getWritableDatabase();
-                                    db.insert("Sundry_Supplies", null,contentValues);
+                                    long id = db.insert("Sundry_Supplies", null,contentValues);
+                                    if(id!=-1){
+                                        Toast.makeText(marginView.getContext(),"Item Saved",Toast.LENGTH_LONG).show();
+                                        itemid(id);
+                                        popupWindow.dismiss();
+                                    }else{
+                                        Toast.makeText(marginView.getContext(),"Item Save Unsuccessful",Toast.LENGTH_LONG).show();
+                                    }
                                 }else{
                                     NameError.setText(R.string.gross_weight_error);
                                     NameError.setVisibility(View.VISIBLE);
@@ -434,5 +443,9 @@ public class Invoice extends AppCompatActivity {
                 }
             }
         });
+    }
+
+    private void itemid(long id) {
+        itemids.add(id);
     }
 }

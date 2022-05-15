@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -77,6 +78,7 @@ public class DBManager {
     }
 
     public long insertAllCategoriesGold(List<String> Categories){
+
         long result = -1;
         ContentValues contentValues = new ContentValues();
         String sql = "SELECT Category FROM Categories";
@@ -106,21 +108,23 @@ public class DBManager {
                         + "HUID" + " STRING,"
                         + "SupplierCode" + " INTEGER" +
                         ");";
-
                 String table_name2 = table_name+"_uid";
                 String create_table_backup = "create table if not exists " + table_name2 +
                         "(" + "Barcode" + " STRING NOT NULL" + ");";
                 dbHelper.getWritableDatabase().execSQL(create_table_backup);
                 String triggerName = table_name+"_barcode_trigger";
                 String triggerName2 = table_name+"_rowid_trigger";
-                String triggerName3 = table_name+"_recover_id";
                 String prefix = "MJ"+Categories.get(j).substring(0,2).replace("-","").toUpperCase();
-                Log.d("Prefixes:",prefix);
+                String prefixbuildersql = "SELECT Category_Code FROM Categories WHERE Category = '" +Categories.get(j)+ "'";
+                Cursor PFB = db.rawQuery(prefixbuildersql,null);
+                while (PFB.moveToNext()){
+                    Log.d("Prefix:","MJ"+PFB.getInt(0));
+                }
                 String triggers = "CREATE TRIGGER IF NOT EXISTS " + triggerName + " AFTER INSERT ON "
-                        + table_name + " BEGIN UPDATE " + table_name + " SET Barcode = '"+prefix+"'||rowid; END";
+                        + table_name + " WHEN new.Barcode IS null " + " BEGIN UPDATE " + table_name + " SET Barcode = '"+prefix+"'||rowid; END;";
                 Log.d("Triggers:",triggers);
                 String trigger2 = "CREATE TRIGGER IF NOT EXISTS " + triggerName2 + " AFTER DELETE ON "
-                        + table_name + " BEGIN INSERT INTO " + table_name2 + " (Barcode) " + " VALUES ( old.Barcode ); END";
+                        + table_name +" BEGIN INSERT INTO " + table_name2 + " (Barcode) " + " VALUES ( old.Barcode ); END;";
                 dbHelper.getWritableDatabase().execSQL(create_table);
                 dbHelper.getWritableDatabase().execSQL(triggers);
                 dbHelper.getWritableDatabase().execSQL(trigger2);

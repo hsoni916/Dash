@@ -54,7 +54,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + "TypeOfArticle" + " STRING NOT NULL,"
             + "Wastage" + " DECIMAL(3,3) NOT NULL,"
             + "ADD_INFO" + " STRING,"
-            + "Status" + " INTEGER DEFAULT 0 CHECK ( Status IN (-1,0,1))"
+            + "Status" + " INTEGER NOT NULL DEFAULT 0 CHECK ( Status IN (-1,0,1))"
             + ");";
 
     private static final String CREATE_TABLE_4_2 = "create table if not exists " + "Standards"
