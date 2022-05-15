@@ -2,9 +2,9 @@ package com.example.dash;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.os.Handler;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -25,7 +25,9 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -52,6 +54,8 @@ public class Invoice extends AppCompatActivity {
     ContentValues contentValues = new ContentValues();
     String typeof = "";
     List<Long> itemids = new ArrayList<>();
+    RecyclerView ItemList;
+    ItemListAdapter adapter;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -63,7 +67,7 @@ public class Invoice extends AppCompatActivity {
         PhoneNumber = findViewById(R.id.phone_etv);
         Particular = findViewById(R.id.particular);
         Add_Barcode_Item = findViewById(R.id.Add_item);
-
+        ItemList = findViewById(R.id.item_list);
         GenericItemsGold.addAll(Arrays.asList("Mens Ring", "Women Ring", "Chain",
                 "Plastic Paatla", "Gold Set", "Gold Haar",
                 "Earring", "Tops", "Gents Bracelets",
@@ -106,7 +110,6 @@ public class Invoice extends AppCompatActivity {
 
         Particular.setThreshold(2);
         Particular.setAdapter(ItemAdapter);
-
         Names.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -426,7 +429,7 @@ public class Invoice extends AppCompatActivity {
                                     long id = db.insert("Sundry_Supplies", null,contentValues);
                                     if(id!=-1){
                                         Toast.makeText(marginView.getContext(),"Item Saved",Toast.LENGTH_LONG).show();
-                                        itemid(id);
+                                        AddItem(id);
                                         popupWindow.dismiss();
                                     }else{
                                         Toast.makeText(marginView.getContext(),"Item Save Unsuccessful",Toast.LENGTH_LONG).show();
@@ -445,7 +448,50 @@ public class Invoice extends AppCompatActivity {
         });
     }
 
-    private void itemid(long id) {
+    private void AddItem(long id) {
+        //"Name" + " STRING NOT NULL,"
+        //            + "Date_Of" + " STRING NOT NULL,"
+        //            + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
+        //            + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
+        //            + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
+        //            + "TypeOfArticle" + " STRING NOT NULL,"
+        //            + "Wastage" + " DECIMAL(3,3) NOT NULL,"
+        //            + "ADD_INFO" + " STRING,"
+        //            + "Status" + " INTEGER NOT NULL DEFAULT 0 CHECK ( Status IN (-1,0,1))"
         itemids.add(id);
+        dbHelper = new DBHelper(getBaseContext());
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        List<SundryItem> sundryItemList = new ArrayList<>();
+        if(adapter==null){
+            for(int i=0;i<itemids.size();i++){
+                String sql = "SELECT * FROM Sundry_Supplies WHERE rowid = " + itemids.get(i);
+                Cursor fetch = db.rawQuery(sql,null);
+                while (fetch.moveToNext() && !fetch.isAfterLast()){
+                    int CI;
+                    SundryItem newitem = new SundryItem();
+                    CI = fetch.getColumnIndex("Name");
+                    newitem.setName(fetch.getString(CI));
+                    CI = fetch.getColumnIndex("GrossWeight");
+                    newitem.setGW(fetch.getDouble(CI));
+                    CI = fetch.getColumnIndex("LessWeight");
+                    newitem.setLW(fetch.getDouble(CI));
+                    CI = fetch.getColumnIndex("NetWeight");
+                    newitem.setNW(fetch.getDouble(CI));
+                    CI = fetch.getColumnIndex("ExtraCharges");
+                    newitem.setEC(fetch.getDouble(CI));
+                    sundryItemList.add(newitem);
+                }
+            }
+            adapter = new ItemListAdapter(sundryItemList);
+            ItemList.setAdapter(adapter);
+            ItemList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+            ItemList.setItemAnimator(new DefaultItemAnimator());
+            adapter.notifyDataSetChanged();
+
+        }
+    }
+    private void RemoveItem(long id) {
+        //Adapter method.
+
     }
 }

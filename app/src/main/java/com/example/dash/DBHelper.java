@@ -53,6 +53,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
             + "TypeOfArticle" + " STRING NOT NULL,"
             + "Wastage" + " DECIMAL(3,3) NOT NULL,"
+            + "ExtraCharges" + " INTEGER,"
             + "ADD_INFO" + " STRING,"
             + "Status" + " INTEGER NOT NULL DEFAULT 0 CHECK ( Status IN (-1,0,1))"
             + ");";
