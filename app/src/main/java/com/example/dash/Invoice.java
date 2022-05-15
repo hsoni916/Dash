@@ -486,8 +486,7 @@ public class Invoice extends AppCompatActivity {
             ItemList.setAdapter(adapter);
             ItemList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
             ItemList.setItemAnimator(new DefaultItemAnimator());
-            adapter.notifyDataSetChanged();
-
+            ItemList.setVisibility(View.VISIBLE);
         }
     }
     private void RemoveItem(long id) {
