@@ -49,7 +49,6 @@ public class DBManager {
         }catch (Exception e){
             e.fillInStackTrace();
         }
-
         close();
         return result;
     }

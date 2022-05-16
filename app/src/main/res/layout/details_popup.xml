@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="520dp"
+    android:layout_height="360dp"
+    android:layout_gravity="center"
+    android:elevation="8dp"
+    android:focusable="true"
+    android:focusableInTouchMode="true"
+    android:background="@drawable/popup_background"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <TextView
+        android:id="@+id/header_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/add_details"
+        android:textAlignment="center"
+        android:textStyle="bold"
+        android:textSize="16sp"
+        android:textColor="@color/white"
+        android:paddingTop="6dp"
+        android:paddingBottom="8dp"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/textview_background"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+
+    <RadioGroup
+        android:id="@+id/Labour_Type"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_margin="8dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/header_title">
+        <RadioButton
+            android:id="@+id/PerGm"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/per_gram"/>
+        <RadioButton
+            android:id="@+id/percent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/percent"/>
+
+        <RadioButton
+            android:id="@+id/Lumpsum"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/lumpsum"/>
+    </RadioGroup>
+
+    <RadioGroup
+        android:id="@+id/Labour_Sub_Type"
+        android:layout_width="match_parent"
+        android:layout_height="42dp"
+        android:layout_margin="8dp"
+        android:orientation="horizontal"
+        android:gravity="center"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/Labour_Type">
+        <RadioButton
+            android:id="@+id/WithGW"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/gross"/>
+        <RadioButton
+            android:id="@+id/WithNW"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/net"/>
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/Labour_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/labour"
+        android:layout_marginTop="8dp"
+        app:layout_constraintTop_toBottomOf="@id/Labour_Sub_Type"
+        app:layout_constraintStart_toStartOf="@id/Labour_Type"/>
+
+    <EditText
+        android:id="@+id/ET_Labour"
+        android:layout_width="320dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="48dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:inputType="numberDecimal|numberSigned"
+        android:background="@drawable/etv_background"
+        app:layout_constraintTop_toTopOf="@id/Labour_label"
+        app:layout_constraintBottom_toBottomOf="@id/Labour_label"
+        app:layout_constraintStart_toEndOf="@id/Labour_label"
+        android:importantForAutofill="no"/>
+
+    <TextView
+        android:id="@+id/EC_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Extra"
+        android:layout_marginTop="12dp"
+        app:layout_constraintTop_toBottomOf="@id/Labour_label"
+        app:layout_constraintStart_toStartOf="@id/Labour_Type"/>
+
+    <EditText
+        android:id="@+id/ET_extra"
+        android:layout_width="320dp"
+        android:layout_height="28dp"
+        android:layout_marginTop="6dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="48dp"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:inputType="numberDecimal|numberSigned"
+        android:background="@drawable/etv_background"
+        app:layout_constraintTop_toTopOf="@id/EC_label"
+        app:layout_constraintBottom_toBottomOf="@id/EC_label"
+        app:layout_constraintStart_toEndOf="@id/Labour_label"
+        android:importantForAutofill="no"/>
+
+
+
+
+
+
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

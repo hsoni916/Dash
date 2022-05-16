@@ -14,16 +14,17 @@ import java.util.List;
 public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHolder> {
 
     private final List<SundryItem> sundryItemList;
-
-    public ItemListAdapter(List<SundryItem> sundryItemList) {
-        this.sundryItemList = sundryItemList;
-    }
-
     private OnItemClicked onClick;
+
+    public ItemListAdapter(List<SundryItem> sundryItemList, OnItemClicked clicked) {
+        this.sundryItemList = sundryItemList;
+        this.onClick = clicked;
+    }
 
     //make interface like this
     public interface OnItemClicked {
-        void onItemClick(int position);
+        void DeleteThisItem(int position);
+        void AddDetails(int position);
     }
 
     @NonNull
@@ -44,9 +45,16 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                onClick.onItemClick(holder.getAdapterPosition());
+                onClick.DeleteThisItem(holder.getAdapterPosition());
             }
         });
+        holder.adddetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                onClick.AddDetails(holder.getAdapterPosition());
+            }
+        });
+
     }
 
     @Override
@@ -57,7 +65,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
     public class ViewHolder extends RecyclerView.ViewHolder {
         View mView;
         TextView rowid,itemname,gw,lw,nw,ec;
-        Button delete;
+        Button adddetails,delete;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
@@ -67,7 +75,10 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
             lw = mView.findViewById(R.id.LWholder);
             nw = mView.findViewById(R.id.NWholder);
             ec = mView.findViewById(R.id.ECholder);
+            adddetails = mView.findViewById(R.id.EditDetails);
             delete = mView.findViewById(R.id.RemoveItem);
+
+
         }
     }
 }

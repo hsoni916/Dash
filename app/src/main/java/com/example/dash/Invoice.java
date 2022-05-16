@@ -482,11 +482,28 @@ public class Invoice extends AppCompatActivity {
                     sundryItemList.add(newitem);
                 }
             }
-            adapter = new ItemListAdapter(sundryItemList);
+            adapter = new ItemListAdapter(sundryItemList, new ItemListAdapter.OnItemClicked() {
+                @Override
+                public void DeleteThisItem(int position) {
+                    sundryItemList.remove(position);
+                    adapter.notifyItemRemoved(position);
+                }
+
+                @Override
+                public void AddDetails(int position) {
+                    //PopUp.
+                    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                    if(inflater!=null){
+                        final View DetailsView = inflater.inflate(R.layout.details_popup,null);
+
+                    }
+                }
+            });
             ItemList.setAdapter(adapter);
             ItemList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
             ItemList.setItemAnimator(new DefaultItemAnimator());
             ItemList.setVisibility(View.VISIBLE);
+
         }
     }
     private void RemoveItem(long id) {

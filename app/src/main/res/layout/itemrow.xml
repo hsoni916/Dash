@@ -85,6 +85,18 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/NWholder"/>
 
+    <Button
+        android:id="@+id/EditDetails"
+        android:layout_width="wrap_content"
+        android:layout_height="34dp"
+        android:padding="0dp"
+        android:text="Details"
+        android:textAllCaps="false"
+        android:layout_marginStart="12dp"
+        android:backgroundTint="@color/space_cadet"
+        app:layout_constraintTop_toTopOf="@id/ECholder"
+        app:layout_constraintStart_toEndOf="@id/ECholder"
+        app:layout_constraintBottom_toBottomOf="@id/ECholder"/>
         <Button
             android:id="@+id/RemoveItem"
             android:layout_width="wrap_content"
@@ -92,8 +104,9 @@
             android:padding="0dp"
             android:text="Delete"
             android:textAllCaps="false"
+            android:layout_marginStart="12dp"
             android:backgroundTint="@color/cool_grey_dark"
-            app:layout_constraintTop_toTopOf="@id/ECholder"
-            app:layout_constraintStart_toEndOf="@id/ECholder"
-            app:layout_constraintBottom_toBottomOf="@id/ECholder"/>
+            app:layout_constraintTop_toTopOf="@id/EditDetails"
+            app:layout_constraintStart_toEndOf="@id/EditDetails"
+            app:layout_constraintBottom_toBottomOf="@id/EditDetails"/>
 </androidx.constraintlayout.widget.ConstraintLayout>
