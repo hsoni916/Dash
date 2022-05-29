@@ -19,12 +19,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -56,6 +58,9 @@ public class Invoice extends AppCompatActivity {
     List<Long> itemids = new ArrayList<>();
     RecyclerView ItemList;
     ItemListAdapter adapter;
+    double WeightToCalculateLabour;
+    private double ec;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -388,14 +393,10 @@ public class Invoice extends AppCompatActivity {
                         save.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
-                                //"Name" + " STRING NOT NULL,"
-                                //            + "Date_Of" + " STRING NOT NULL,"
-                                //            + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
-                                //            + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
-                                //            + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
-                                //            + "Type" + "STRING NOT NULL,"
-                                //            + "Wastage" + " DECIMAL(3,3) NOT NULL,"
-                                //            + "ADD_INFO" + "STRING"
+                                    //    + "Wastage" + " DECIMAL(3,3) NOT NULL,"
+                                    //    + "ExtraCharges" + " INTEGER,"
+                                    //    + "ADD_INFO" + " STRING,"
+                                     //   + "Status" + " INTEGER NOT NULL DEFAULT 0 CHECK ( Status IN (-1,0,1))"
                                 contentValues.put("Name",Category.getText().toString());
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
                                 contentValues.put("Date_Of",dateFormat.format(Calendar.getInstance().getTime()));
@@ -417,12 +418,20 @@ public class Invoice extends AppCompatActivity {
                                     contentValues.put("TypeOfArticle",typeof);
                                     if(!Wastage.getText().toString().isEmpty()){
                                         try{
-                                            contentValues.put("Wastage",Double.parseDouble(Wastage.getText().toString()));
+                                            contentValues.put("Wastage",Double.parseDouble(Wastage.getText().toString())
+                                                    +Double.parseDouble(BasePurity.getText().toString()));
                                         }catch (Exception e){
                                             e.printStackTrace();
                                         }
                                     }else{
                                         contentValues.put("Wastage",0.00);
+                                    }
+                                    if(!ExtraCharges.getText().toString().isEmpty()){
+                                        try{
+                                            contentValues.put("ExtraCharges",Double.parseDouble(ExtraCharges.getText().toString()));
+                                        }catch (Exception e){
+                                            e.printStackTrace();
+                                        }
                                     }
                                     dbHelper = new DBHelper(marginView.getContext());
                                     SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -492,9 +501,163 @@ public class Invoice extends AppCompatActivity {
                 @Override
                 public void AddDetails(int position) {
                     //PopUp.
+                    SundryItem item  = sundryItemList.get(position);
                     LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     if(inflater!=null){
                         final View DetailsView = inflater.inflate(R.layout.details_popup,null);
+                        popupWindow = new PopupWindow(DetailsView, 800,600);
+                        popupWindow.setAnimationStyle(R.style.popup_animation);
+                        popupWindow.showAtLocation(Particular.getRootView(), Gravity.CENTER,0,0);
+                        popupWindow.setFocusable(true);
+                        popupWindow.update();
+
+                        RadioGroup LabourType,LabourSubType;
+                        LabourType = DetailsView.findViewById(R.id.Labour_Type);
+                        LabourSubType = DetailsView.findViewById(R.id.Labour_Sub_Type);
+
+                        EditText Labour,ExtraCharges;
+                        Labour = DetailsView.findViewById(R.id.ET_Labour);
+                        ExtraCharges = DetailsView.findViewById(R.id.ET_extra);
+                        TextView LabourLabel,LECLabel,LabourHolder,TotalHolder;
+                        LabourLabel = DetailsView.findViewById(R.id.TotalLabourLabel);
+                        LECLabel = DetailsView.findViewById(R.id.TotalWEC);
+                        LabourHolder = DetailsView.findViewById(R.id.TotalLabourTV);
+                        TotalHolder = DetailsView.findViewById(R.id.LEC);
+
+                        ConstraintLayout LabourSubType1 = DetailsView.findViewById(R.id.Labour_Sub_Type_1);
+
+
+                        if(item.getEC()!=0){
+                            ExtraCharges.setText(String.valueOf(item.getEC()));
+                            ExtraCharges.setEnabled(false);
+                        }else {
+                            ExtraCharges.setEnabled(true);
+                        }
+
+
+                        LabourType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                                View view;
+                                if(i == R.id.pergm){
+                                    LabourSubType1.removeAllViews();
+                                    Log.d("PerGm","True");
+                                    view = getLayoutInflater().inflate(R.layout.labourpergram2,null);
+                                    LabourSubType1.addView(view);
+                                    LabourSubType1.setVisibility(View.VISIBLE);
+                                }else if(i == R.id.Percent){
+                                    LabourSubType1.removeAllViews();
+                                    Log.d("Percent","True");
+                                    view = getLayoutInflater().inflate(R.layout.labourbypercent,null);
+                                    LabourSubType1.addView(view);
+                                    LabourSubType1.setVisibility(View.VISIBLE);
+                                } else if(i == R.id.lumpsum){
+                                    Log.d("Lumpsum","True");
+                                    LabourSubType1.removeAllViews();
+                                    LabourSubType1.setVisibility(View.GONE);
+                                }
+                            }
+                        });
+
+/*   LabourSubType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                            @Override
+                            public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                                    if(i == R.id.WithGW){
+                                        WeightToCalculateLabour = item.getGW();
+                                    }else{
+                                        WeightToCalculateLabour = item.getNW();
+                                    }
+                                    refreshlabour(WeightToCalculateLabour);
+                            } */
+
+                           /* private void refreshlabour(double weightToCalculateLabour) {
+                                if(!Labour.getText().toString().isEmpty()){
+                                    if(weightToCalculateLabour!=0){
+                                        LabourLabel.setVisibility(View.VISIBLE);
+                                        LECLabel.setVisibility(View.VISIBLE);
+                                        LabourHolder.setVisibility(View.VISIBLE);
+                                        double labour = Double.parseDouble(Labour.getText().toString()) * weightToCalculateLabour;
+                                        LabourHolder.setText(String.format(Locale.getDefault(),"%.2f",labour));
+                                        if(ec!=0){
+                                            double v = labour + ec;
+                                            TotalHolder.setVisibility(View.VISIBLE);
+                                            TotalHolder.setText(String.format(Locale.getDefault(),"%.2f",v));
+                                        }else{
+                                            TotalHolder.setText(String.format(Locale.getDefault(),"%.2f",labour));
+                                        }
+                                    }else{
+                                        LabourLabel.setVisibility(View.GONE);
+                                        LECLabel.setVisibility(View.GONE);
+                                        TotalHolder.setVisibility(View.GONE);
+                                    }
+                                }else{
+                                    LabourLabel.setVisibility(View.GONE);
+                                    LECLabel.setVisibility(View.GONE);
+                                    TotalHolder.setVisibility(View.GONE);
+                                }
+                            } */
+                       // });
+
+                        Labour.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                            }
+
+                            @Override
+                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable editable) {
+                                if(!Labour.getText().toString().isEmpty()){
+                                    if(WeightToCalculateLabour!=0){
+                                        LabourLabel.setVisibility(View.VISIBLE);
+                                        LECLabel.setVisibility(View.VISIBLE);
+                                        LabourHolder.setVisibility(View.VISIBLE);
+                                        double labour = Double.parseDouble(Labour.getText().toString()) * WeightToCalculateLabour;
+                                        LabourHolder.setText(String.format(Locale.getDefault(),"%.2f",labour));
+                                        if(ec!=0){
+                                            double v = labour + ec;
+                                            TotalHolder.setVisibility(View.VISIBLE);
+                                            TotalHolder.setText(String.format(Locale.getDefault(),"%.2f",v));
+                                        }else{
+                                            TotalHolder.setVisibility(View.GONE);
+                                        }
+                                    }else{
+                                        LabourLabel.setVisibility(View.GONE);
+                                        LECLabel.setVisibility(View.GONE);
+                                        Labour.setVisibility(View.GONE);
+                                        TotalHolder.setVisibility(View.GONE);
+                                    }
+                                }else{
+                                    LabourLabel.setVisibility(View.GONE);
+                                    LECLabel.setVisibility(View.GONE);
+                                    Labour.setVisibility(View.GONE);
+                                    TotalHolder.setVisibility(View.GONE);
+                                }
+                            }
+                        });
+
+
+                        ExtraCharges.addTextChangedListener(new TextWatcher() {
+                            @Override
+                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                            }
+
+                            @Override
+                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                            }
+
+                            @Override
+                            public void afterTextChanged(Editable editable) {
+                                ec = Double.parseDouble(ExtraCharges.getText().toString());
+                                TotalHolder.setText(String.format(Locale.getDefault(),"%.2f", WeightToCalculateLabour +ec));
+                            }
+                        });
 
                     }
                 }
@@ -503,11 +666,6 @@ public class Invoice extends AppCompatActivity {
             ItemList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
             ItemList.setItemAnimator(new DefaultItemAnimator());
             ItemList.setVisibility(View.VISIBLE);
-
         }
-    }
-    private void RemoveItem(long id) {
-        //Adapter method.
-
     }
 }
