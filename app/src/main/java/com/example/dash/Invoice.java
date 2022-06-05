@@ -607,8 +607,10 @@ public class Invoice extends AppCompatActivity {
                                                 double finallabour = valueinpercent*item.getNW();
                                                 LabourLabel.setVisibility(View.VISIBLE);
                                                 LECLabel.setVisibility(View.VISIBLE);
-                                                LabourLabel.setText(String.valueOf(finallabour));
-                                                LECLabel.setText(String.valueOf(finallabour+item.getEC()));
+                                                LabourHolder.setVisibility(View.VISIBLE);
+                                                TotalHolder.setVisibility(View.VISIBLE);
+                                                LabourHolder.setText(String.valueOf(finallabour));
+                                                TotalHolder.setText(String.valueOf(finallabour+item.getEC()));
                                                 Log.d("Percent Labour",String.valueOf(finallabour));
                                             }catch (Exception e){
                                                 e.printStackTrace();
