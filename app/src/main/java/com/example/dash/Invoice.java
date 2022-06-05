@@ -58,9 +58,7 @@ public class Invoice extends AppCompatActivity {
     List<Long> itemids = new ArrayList<>();
     RecyclerView ItemList;
     ItemListAdapter adapter;
-    double WeightToCalculateLabour;
-    private double ec;
-
+    double WeightToCalculateLabour, ec, baseprice, percent;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -488,6 +486,9 @@ public class Invoice extends AppCompatActivity {
                     newitem.setNW(fetch.getDouble(CI));
                     CI = fetch.getColumnIndex("ExtraCharges");
                     newitem.setEC(fetch.getDouble(CI));
+                    CI = fetch.getColumnIndex("TypeOfArticle");
+                    Log.d("TY",fetch.getString(CI));
+                    newitem.setTypeOf(fetch.getString(CI));
                     sundryItemList.add(newitem);
                 }
             }
@@ -501,6 +502,7 @@ public class Invoice extends AppCompatActivity {
                 @Override
                 public void AddDetails(int position) {
                     //PopUp.
+                    final
                     SundryItem item  = sundryItemList.get(position);
                     LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     if(inflater!=null){
@@ -516,6 +518,7 @@ public class Invoice extends AppCompatActivity {
                         LabourSubType = DetailsView.findViewById(R.id.Labour_Sub_Type);
 
                         EditText Labour,ExtraCharges;
+
                         Labour = DetailsView.findViewById(R.id.ET_Labour);
                         ExtraCharges = DetailsView.findViewById(R.id.ET_extra);
                         TextView LabourLabel,LECLabel,LabourHolder,TotalHolder;
@@ -523,6 +526,7 @@ public class Invoice extends AppCompatActivity {
                         LECLabel = DetailsView.findViewById(R.id.TotalWEC);
                         LabourHolder = DetailsView.findViewById(R.id.TotalLabourTV);
                         TotalHolder = DetailsView.findViewById(R.id.LEC);
+
 
                         ConstraintLayout LabourSubType1 = DetailsView.findViewById(R.id.Labour_Sub_Type_1);
 
@@ -545,12 +549,73 @@ public class Invoice extends AppCompatActivity {
                                     view = getLayoutInflater().inflate(R.layout.labourpergram2,null);
                                     LabourSubType1.addView(view);
                                     LabourSubType1.setVisibility(View.VISIBLE);
+                                    LabourSubType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                                        @Override
+                                        public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                                            if(i==R.id.WithGW){
+                                                WeightToCalculateLabour = item.getGW();
+                                            }
+                                            if(i==R.id.WithNW){
+                                                WeightToCalculateLabour = item.getNW();
+                                            }
+                                        }
+                                    });
                                 }else if(i == R.id.Percent){
                                     LabourSubType1.removeAllViews();
                                     Log.d("Percent","True");
                                     view = getLayoutInflater().inflate(R.layout.labourbypercent,null);
+                                    TextView MetalLabel;
                                     LabourSubType1.addView(view);
+                                    MetalLabel = view.findViewById(R.id.MetalLabel);
                                     LabourSubType1.setVisibility(View.VISIBLE);
+                                    MetalLabel.setText(item.getTypeOf());
+                                    EditText MetalPrice = view.findViewById(R.id.MetalPrice);
+                                    MetalPrice.addTextChangedListener(new TextWatcher() {
+                                        @Override
+                                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                        }
+
+                                        @Override
+                                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                        }
+
+                                        @Override
+                                        public void afterTextChanged(Editable editable) {
+                                            try{
+                                                baseprice= Double.parseDouble(MetalPrice.getText().toString());
+                                            }catch (Exception e){e.printStackTrace();}
+                                        }
+                                    });
+
+                                    Labour.addTextChangedListener(new TextWatcher() {
+                                        @Override
+                                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                        }
+
+                                        @Override
+                                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                        }
+
+                                        @Override
+                                        public void afterTextChanged(Editable editable) {
+                                            try {
+                                                double valueinpercent = (Double.parseDouble(Labour.getText().toString())*baseprice)/100;
+                                                double finallabour = valueinpercent*item.getNW();
+                                                LabourLabel.setVisibility(View.VISIBLE);
+                                                LECLabel.setVisibility(View.VISIBLE);
+                                                LabourLabel.setText(String.valueOf(finallabour));
+                                                LECLabel.setText(String.valueOf(finallabour+item.getEC()));
+                                                Log.d("Percent Labour",String.valueOf(finallabour));
+                                            }catch (Exception e){
+                                                e.printStackTrace();
+                                            }
+                                        }
+                                    });
+
                                 } else if(i == R.id.lumpsum){
                                     Log.d("Lumpsum","True");
                                     LabourSubType1.removeAllViews();
@@ -598,7 +663,7 @@ public class Invoice extends AppCompatActivity {
                             } */
                        // });
 
-                        Labour.addTextChangedListener(new TextWatcher() {
+                  /*      Labour.addTextChangedListener(new TextWatcher() {
                             @Override
                             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
@@ -631,6 +696,21 @@ public class Invoice extends AppCompatActivity {
                                         Labour.setVisibility(View.GONE);
                                         TotalHolder.setVisibility(View.GONE);
                                     }
+
+                                    if(LabourType.getCheckedRadioButtonId()==R.id.pergm){
+
+
+
+                                    }else if(LabourType.getCheckedRadioButtonId()==R.id.Percent){
+
+
+
+                                    }else if (LabourType.getCheckedRadioButtonId()==R.id.lumpsum){
+
+
+
+                                    }
+
                                 }else{
                                     LabourLabel.setVisibility(View.GONE);
                                     LECLabel.setVisibility(View.GONE);
@@ -638,7 +718,7 @@ public class Invoice extends AppCompatActivity {
                                     TotalHolder.setVisibility(View.GONE);
                                 }
                             }
-                        });
+                        }); */
 
 
                         ExtraCharges.addTextChangedListener(new TextWatcher() {
