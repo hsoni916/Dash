@@ -36,4 +36,7 @@
     <string name="lumpsum">Lump-sum</string>
     <string name="add_details">Add Details</string>
     <string name="labour">Labour:</string>
+    <string name="payment_method">Payment Method</string>
+    <string name="cash_deposit">Cash Deposit</string>
+    <string name="Address">City:</string>
 </resources>

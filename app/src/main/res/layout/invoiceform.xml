@@ -110,7 +110,6 @@
         android:id="@+id/Add_item"
         android:layout_width="55dp"
         android:layout_height="40dp"
-        android:textSize="8sp"
         android:src="@drawable/add"
         android:drawablePadding="8dp"
         android:layout_marginStart="5dp"
@@ -135,14 +134,13 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/item_list"
         android:layout_width="wrap_content"
-        android:layout_height="0dp"
+        android:layout_height="240dp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/particular"
-        app:layout_constraintBottom_toBottomOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@id/particular"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/sales_history"
@@ -157,7 +155,16 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-
-
+    <ImageButton
+        android:id="@+id/Print"
+        android:layout_width="80dp"
+        android:layout_height="60dp"
+        android:drawablePadding="8dp"
+        android:scaleType="fitCenter"
+        android:src="@drawable/print"
+        android:layout_margin="8dp"
+        android:backgroundTint="@color/space_cadet"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

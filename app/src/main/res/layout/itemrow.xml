@@ -31,7 +31,7 @@
 
     <TextView
         android:id="@+id/GWholder"
-        android:layout_width="wrap_content"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:textAlignment="textStart"
         android:text="999.99"
@@ -45,7 +45,7 @@
 
     <TextView
         android:id="@+id/LWholder"
-        android:layout_width="wrap_content"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:textAlignment="textStart"
         android:text="-999.99"
@@ -59,7 +59,7 @@
 
     <TextView
         android:id="@+id/NWholder"
-        android:layout_width="wrap_content"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:textAlignment="textStart"
         android:text="999.99"
@@ -73,7 +73,7 @@
 
     <TextView
         android:id="@+id/ECholder"
-        android:layout_width="wrap_content"
+        android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:textAlignment="textStart"
         android:text="999.99"

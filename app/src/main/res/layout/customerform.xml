@@ -154,6 +154,29 @@
         app:layout_constraintStart_toStartOf="@id/dob_etv"
         app:drawableStartCompat="@drawable/warning"/>
 
+    <TextView
+        android:id="@+id/label4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Address"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/label3"/>
+
+    <EditText
+        android:id="@+id/city_etv"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:inputType="date"
+        android:background="@drawable/etv_background"
+        app:layout_constraintTop_toTopOf="@id/label4"
+        app:layout_constraintBottom_toBottomOf="@id/label4"
+        app:layout_constraintStart_toStartOf="@id/name_etv"/>
 
     <ImageButton
         android:id="@+id/datePicker"
@@ -176,7 +199,7 @@
         android:elevation="8dp"
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="@id/label3"
-        app:layout_constraintTop_toBottomOf="@id/DOBError"
+        app:layout_constraintTop_toBottomOf="@id/city_etv"
         app:layout_constraintEnd_toEndOf="@id/phone_etv"
         app:layout_constraintBottom_toTopOf="@id/save">
 

@@ -1,9 +1,32 @@
 package com.example.dash;
 
 public class SundryItem {
-    String name, typeOf;
-    double GW, LW, NW, Wastage, EC;
+    String name, typeOf, LabourType;
+    double GW, LW, NW, Wastage, EC, labour, rate;
 
+    public double getRate() {
+        return rate;
+    }
+
+    public void setRate(double rate) {
+        this.rate = rate;
+    }
+
+    public String getLabourType() {
+        return LabourType;
+    }
+
+    public void setLabourType(String labourType) {
+        LabourType = labourType;
+    }
+
+    public double getLabour() {
+        return labour;
+    }
+
+    public void setLabour(double labour) {
+        this.labour = labour;
+    }
 
     public String getName() {
         return name;

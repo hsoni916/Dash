@@ -34,10 +34,10 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     final Calendar calendar = Calendar.getInstance();
-    Button NewCustomer, newInvoiceButton, newInventory;
+    Button NewCustomer, newInvoiceButton, newInventory, CashDeposit;
     PopupWindow popupWindow;
     private DBManager dbManager;
-    String Name="",PhoneNumber="",DateOfBirth="";
+    String Name="",PhoneNumber="",DateOfBirth="",City="";
     List<Customer> recordList = new ArrayList<>();
     List<Customer> recordList2 = new ArrayList<>();
     customer_adapter Custom_Adapter;
@@ -50,13 +50,13 @@ public class MainActivity extends AppCompatActivity {
         NewCustomer = findViewById(R.id.NewCustomer);
         newInvoiceButton = findViewById(R.id.NewInvoice);
         newInventory = findViewById(R.id.AddInventory);
+        CashDeposit = findViewById(R.id.CashEntry);
         dbManager.AddStandards();
         NewCustomer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 if(inflater!=null){
-
                     RecyclerView recordContainer;
                     final View marginView = inflater.inflate(R.layout.customerform,null);
                     TextView NameError,PhoneError,DOBError;
@@ -87,7 +87,28 @@ public class MainActivity extends AppCompatActivity {
                     EditText PhoneEtv = marginView.findViewById(R.id.phone_etv);
                     EditText dob = marginView.findViewById(R.id.dob_etv);
                     ImageButton CalendarButton = marginView.findViewById(R.id.datePicker);
+                    EditText Address = marginView.findViewById(R.id.city_etv);
+                    Address.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                            if(!Address.getText().toString().isEmpty()){
+                                if(Address.getText().toString().length()>=3){
+                                    City = Address.getText().toString();
+                                    Toast.makeText(view.getContext(),"Address saved",Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        }
+                    });
                     popupWindow = new PopupWindow(marginView, 800,600);
                     popupWindow.setAnimationStyle(R.style.popup_animation);
                     popupWindow.showAtLocation(view, Gravity.CENTER,0,0);
@@ -158,7 +179,6 @@ public class MainActivity extends AppCompatActivity {
                             Custom_Adapter.notifyDataSetChanged();
                         }
                     });
-
                     NameEtv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                         @Override
                         public void onFocusChange(View view, boolean b) {
@@ -232,8 +252,6 @@ public class MainActivity extends AppCompatActivity {
                             }
                         }
                     });
-
-
                     DatePickerDialog.OnDateSetListener dateSetListener = new DatePickerDialog.OnDateSetListener() {
                         @Override
                         public void onDateSet(DatePicker datePicker, int year, int month, int date) {
@@ -265,6 +283,7 @@ public class MainActivity extends AppCompatActivity {
                                 progressBar.setVisibility(View.VISIBLE);
                                 NameEtv.setEnabled(false);
                                 PhoneEtv.setEnabled(false);
+                                Address.setEnabled(false);
                                 CalendarButton.setEnabled(false);
                                 if(Name.length()>=2 && !PhoneNumber.isEmpty() && !DateOfBirth.isEmpty()){
                                     dbManager.open();
@@ -339,5 +358,19 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
+
+        CashDeposit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                if(inflater!=null){
+                    RecyclerView recordContainer;
+                    final View CashDepositView = inflater.inflate(R.layout.cash_deposit,null);
+
+
+                }
+            }
+        });
+
     }
 }
