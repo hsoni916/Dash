@@ -10,6 +10,15 @@ public class PrintData {
     String CustomerName, Phone;
     List<String> MOP;
     String date;
+    double Discount;
+
+    public double getDiscount() {
+        return Discount;
+    }
+
+    public void setDiscount(double discount) {
+        Discount = discount;
+    }
 
     public List<SundryItem> getSundryItemList() {
         return sundryItemList;

@@ -482,14 +482,11 @@ public class Invoice extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Print.setEnabled(false);
-
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 if(inflater!=null){
                     final View paymentview = inflater.inflate(R.layout.payment,null);
                     PopupWindow paymentWindow;
                     paymentWindow = new PopupWindow(paymentview, 800,615);
-                    //paymentWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
-                    //paymentWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
                     paymentWindow.setAnimationStyle(R.style.popup_animation);
                     paymentWindow.showAtLocation(Particular.getRootView(), Gravity.CENTER,0,0);
                     paymentWindow.setFocusable(true);
@@ -505,6 +502,7 @@ public class Invoice extends AppCompatActivity {
                     String[] Mode = new String[]{};
                     List<String> MOP = new ArrayList<>();
 
+                    EditText Discount = paymentview.findViewById(R.id.Discount_etv);
                     CashHolder.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -567,6 +565,11 @@ public class Invoice extends AppCompatActivity {
                     SavePayment.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            if(!Discount.getText().toString().isEmpty()){
+                                printData.setDiscount(Double.parseDouble(Discount.getText().toString()));
+                            }else{
+                                printData.setDiscount(0.00);
+                            }
                             if(MOP.size()>0){
                                 printData.setMOP(MOP);
                                 ErrorPayment.setVisibility(View.GONE);
