@@ -9,6 +9,9 @@ public class Customer {
     String phoneNumber;
     String address;
 
+
+    String Reference;
+
     public Customer() {
 
     }
@@ -44,4 +47,14 @@ public class Customer {
     public void setAddress(String address) {
         this.address = address;
     }
+
+    public String getReference() {
+        return Reference;
+    }
+
+    public void setReference(String reference) {
+        Reference = reference;
+    }
+
 }
+

@@ -9,7 +9,10 @@ import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
 import java.nio.charset.StandardCharsets;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class DBManager {
@@ -39,17 +42,28 @@ public class DBManager {
     public long insertNewCustomer(String Name, String PhoneNumber, String DOB) {
         long result = -1;
         Log.d("SQL","insert");
-        String sql = "INSERT INTO CustomersList (Name, PhoneNumber, DateofBirth) VALUES (?, ?, ?)";
-        SQLiteStatement statement = database.compileStatement(sql);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date c = Calendar.getInstance().getTime();
+        Date today = new Date();
+        try{
+            today= dateFormat.parse(dateFormat.format(c));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        String AddNewCustomer = "INSERT INTO CustomersList (Name, PhoneNumber, DateofBirth, AccountCreatedOn, LastActiveOn) VALUES (?, ?, ?, ?, ?)";
+        SQLiteStatement statement = database.compileStatement(AddNewCustomer);
         statement.bindString(1, Name);
         statement.bindString(2,PhoneNumber);
         statement.bindString(3, DOB);
+        statement.bindString(4, String.valueOf(today));
+        statement.bindString(5, String.valueOf(today));
         try{
             result = statement.executeInsert();
         }catch (Exception e){
             e.fillInStackTrace();
         }
         close();
+
         return result;
     }
 
@@ -202,6 +216,7 @@ public class DBManager {
         Cursor fetch = db.rawQuery(sql,null);
         List<String> DOBofCustomer = new ArrayList<>();
         while(fetch.moveToNext()){
+           // Log.d("Birthdays",fetch.getString(0));
             DOBofCustomer.add(fetch.getString(0));
         }
         return DOBofCustomer;
@@ -361,7 +376,6 @@ public class DBManager {
         contentValues.put("Standard_Name","Kachhi Silver");
         contentValues.put("Standard_Value",78.0);
         db.insert("Standards", null, contentValues);
-
     }
 
     public long AddStandard(String Label, int Purity){

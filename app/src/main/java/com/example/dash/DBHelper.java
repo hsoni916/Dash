@@ -24,7 +24,11 @@ public class DBHelper extends SQLiteOpenHelper {
             "(" + "Name" +" TEXT NOT NULL,"
             + "PhoneNumber" + " STRING PRIMARY KEY NOT NULL CHECK (length(PhoneNumber)==10),"
             + "DateofBirth" + " STRING NOT NULL,"
-            + "Points" + "INTEGER" + ");";
+            + "Points" + " INTEGER,"
+            + "Reference" + " TEXT,"
+            + "AccountCreatedOn" + " TEXT NOT NULL,"
+            + "LastActiveOn" + " TEXT NOT NULL"
+            + ");";
 
     private static final String CREATE_TABLE_2 = "create table if not exists " + "Inventory" +
             "("

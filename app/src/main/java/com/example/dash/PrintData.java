@@ -1,12 +1,15 @@
 package com.example.dash;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class PrintData {
 
     List<SundryItem> sundryItemList = new ArrayList<>();
-    String CustomerName, Phone, date, MOP;
+    String CustomerName, Phone;
+    List<String> MOP;
+    String date;
 
     public List<SundryItem> getSundryItemList() {
         return sundryItemList;
@@ -16,11 +19,11 @@ public class PrintData {
         this.sundryItemList = sundryItemList;
     }
 
-    public String getMOP() {
+    public List<String> getMOP() {
         return MOP;
     }
 
-    public void setMOP(String MOP) {
+    public void setMOP(List<String> MOP) {
         this.MOP = MOP;
     }
 

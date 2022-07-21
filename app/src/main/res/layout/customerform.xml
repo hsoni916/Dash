@@ -172,11 +172,12 @@
         android:layout_height="wrap_content"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
-        android:inputType="date"
+        android:inputType="textAutoComplete"
         android:background="@drawable/etv_background"
         app:layout_constraintTop_toTopOf="@id/label4"
         app:layout_constraintBottom_toBottomOf="@id/label4"
-        app:layout_constraintStart_toStartOf="@id/name_etv"/>
+        app:layout_constraintStart_toStartOf="@id/name_etv"
+        android:importantForAutofill="no" />
 
     <ImageButton
         android:id="@+id/datePicker"

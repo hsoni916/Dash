@@ -20,12 +20,15 @@
             android:id="@+id/NewCustomer"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="8dp"
             android:elevation="2dp"
             android:text="@string/new_customer"
             android:textSize="11sp"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp"
             android:layout_weight="1"
             android:drawableTop="@drawable/add"
             android:backgroundTint="@color/space_cadet_dark"/>
@@ -34,11 +37,14 @@
             android:id="@+id/NewInvoice"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="8dp"
             android:elevation="2dp"
             android:textSize="11sp"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp"
             android:text="@string/new_invoice"
             android:drawableTop="@drawable/invoice"
             android:backgroundTint="#49a078"
@@ -49,29 +55,37 @@
             android:id="@+id/AddInventory"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="8dp"
             android:elevation="2dp"
             android:textSize="11sp"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp"
             android:layout_weight="1"
             android:text="@string/add_inventory"
             android:drawableTop="@drawable/inventory"
             android:backgroundTint="@color/cool_grey"/>
 
         <Button
-            android:id="@+id/ControlPanel"
+            android:id="@+id/CashEntry"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="8dp"
             android:elevation="2dp"
+            android:text="@string/cash_deposit"
             android:textSize="11sp"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp"
             android:layout_weight="1"
-            android:text="@string/settings"
-            android:drawableTop="@drawable/controls"
-            android:backgroundTint="@color/cool_grey_dark"/>
+            android:drawableTop="@drawable/cash"
+            android:backgroundTint="@color/space_cadet"/>
+
+
 
     </LinearLayout>
 
@@ -86,63 +100,72 @@
         app:layout_constraintEnd_toEndOf="parent">
 
         <Button
-            android:id="@+id/CashEntry"
+            android:id="@+id/ControlPanel"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="8dp"
             android:elevation="2dp"
-            android:text="@string/cash_deposit"
             android:textSize="11sp"
-            android:paddingBottom="8dp"
-            android:paddingTop="8dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp"
             android:layout_weight="1"
-            android:drawableTop="@drawable/cash"
-            android:backgroundTint="@color/space_cadet"/>
+            android:text="@string/settings"
+            android:drawableTop="@drawable/controls"
+            android:backgroundTint="@color/cool_grey_dark"/>
 
         <Button
-            android:id="@+id/Button2"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="8dp"
             android:elevation="2dp"
-            android:text="Cash Deposit"
             android:textSize="11sp"
-            android:paddingBottom="8dp"
-            android:visibility="invisible"
-            android:paddingTop="8dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp"
             android:layout_weight="1"
-            android:drawableTop="@drawable/cash"
-            android:backgroundTint="@color/space_cadet"/>
+            android:visibility="invisible"
+            android:text="@string/settings"
+            android:drawableTop="@drawable/controls"
+            android:backgroundTint="@color/cool_grey_dark"/>
 
         <Button
-            android:id="@+id/Button3"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="8dp"
             android:elevation="2dp"
-            android:text="@string/cash_deposit"
             android:textSize="11sp"
-            android:paddingBottom="8dp"
-            android:visibility="invisible"
-            android:paddingTop="8dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp"
             android:layout_weight="1"
-            android:drawableTop="@drawable/cash"
-            android:backgroundTint="@color/space_cadet"/>
+            android:visibility="invisible"
+            android:text="@string/settings"
+            android:drawableTop="@drawable/controls"
+            android:backgroundTint="@color/cool_grey_dark"/>
 
         <Button
-            android:id="@+id/Button4"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:layout_marginBottom="8dp"
             android:elevation="2dp"
-            android:text="Cash Deposit"
             android:textSize="11sp"
-            android:paddingBottom="8dp"
-            android:visibility="invisible"
-            android:paddingTop="8dp"
+            android:paddingBottom="12dp"
+            android:paddingTop="12dp"
             android:layout_weight="1"
-            android:drawableTop="@drawable/cash"
-            android:backgroundTint="@color/space_cadet"/>
+            android:visibility="invisible"
+            android:text="@string/settings"
+            android:drawableTop="@drawable/controls"
+            android:backgroundTint="@color/cool_grey_dark"/>
 
     </LinearLayout>
 
@@ -352,21 +375,23 @@
         android:id="@+id/heading_title"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
+        android:layout_marginStart="12dp"
+        android:textSize="16sp"
         android:text="Daily Reminder:"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/Button_Layout"
+        app:layout_constraintTop_toBottomOf="@id/Button_Layout_2"
         app:layout_constraintStart_toEndOf="@id/Dashboard_1"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/reminder_list"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_marginBottom="4dp"
+        android:layout_marginBottom="8dp"
         android:layout_marginEnd="8dp"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@id/heading_title"
-        app:layout_constraintStart_toStartOf="@id/heading_title">
+        app:layout_constraintStart_toStartOf="@id/heading_title"
+        app:layout_constraintBottom_toBottomOf="parent">
 
     </androidx.recyclerview.widget.RecyclerView>
 

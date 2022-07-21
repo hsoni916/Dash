@@ -39,4 +39,10 @@
     <string name="payment_method">Payment Method</string>
     <string name="cash_deposit">Cash Deposit</string>
     <string name="Address">City:</string>
+    <string name="Proceed">Proceed</string>
+    <string name="ModeCash">Cash</string>
+    <string name="ModeUPI">UPI</string>
+    <string name="ModePaytm">Paytm</string>
+    <string name="ModeCard">Swipe</string>
+    <string name="error_payment">Please select a payment mode \nto proceed further.</string>
 </resources>

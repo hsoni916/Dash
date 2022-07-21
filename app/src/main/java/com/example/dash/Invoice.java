@@ -7,8 +7,8 @@ import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.text.format.DateFormat;
 import android.util.Log;
-import android.util.Printer;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -30,6 +30,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -105,13 +106,15 @@ public class Invoice extends AppCompatActivity {
 
         //dbManager.insertAllCategoriesGold(new ArrayList<String>(){{addAll(GenericItemsGold); addAll(GenericItemsSilver);}});
         //dbManager.insertAllCategoriesSilver(GenericItemsSilver);
-
+        List<String> CustomerLists = dbManager.ListAllCustomer();
+        List<String> PhoneNumbers = dbManager.ListAllPhone();
+        List<String> Birthdays = dbManager.ListDOB();
         ArrayAdapter<String> NameAdapter = new ArrayAdapter<String>
-                (this,android.R.layout.select_dialog_item,dbManager.ListAllCustomer());
+                (this,android.R.layout.select_dialog_item,CustomerLists);
         ArrayAdapter<String> PhoneAdapter = new ArrayAdapter<String>
-                (this,android.R.layout.select_dialog_item,dbManager.ListAllPhone());
+                (this,android.R.layout.select_dialog_item,PhoneNumbers);
         ArrayAdapter<String> DOBAdapter = new ArrayAdapter<String>
-                (this,android.R.layout.select_dialog_item,dbManager.ListDOB());
+                (this,android.R.layout.select_dialog_item,Birthdays);
         ArrayAdapter<String> ItemAdapter = new ArrayAdapter<String>
                 (this, android.R.layout.select_dialog_item,dbManager.ListAllItems());
         if(ItemAdapter.getCount()==0){
@@ -130,16 +133,21 @@ public class Invoice extends AppCompatActivity {
         Names.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                printData.setCustomerName(NameAdapter.getItem(i));
+                String selectedName = NameAdapter.getItem(i);
+                int indextouse = CustomerLists.indexOf(selectedName);
+                Log.d("Data",i+ "--" +selectedName+ "--" +indextouse);
+                printData.setCustomerName(CustomerLists.get(indextouse));
                 PhoneNumber.setEnabled(false);
-                PhoneNumber.setText(PhoneAdapter.getItem(i));
-                printData.setPhone(PhoneAdapter.getItem(i));
+                PhoneNumber.setText(PhoneNumbers.get(indextouse));
+                printData.setPhone(PhoneNumbers.get(indextouse));
+                Log.d("Index", String.valueOf(indextouse));
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM");
                 try {
                     //Date date1=new SimpleDateFormat("dd-MM", Locale.getDefault()).parse(String.valueOf(DOBAdapter.getItem(i)));
-                    Date date1 = dateFormat.parse(String.valueOf(DOBAdapter.getItem(i)));
+                    Date date1 = dateFormat.parse(String.valueOf(Birthdays.get(indextouse)));
                     Date c = Calendar.getInstance().getTime();
                     Date today= dateFormat.parse(dateFormat.format(c));
+                    Log.d("Date comparison:",today.toString() + ":" + date1.toString());
                     assert date1 != null;
                     if(date1.equals(today)){
                         Toast.makeText(getBaseContext(),"Customer's Birthday.",Toast.LENGTH_LONG).show();
@@ -147,7 +155,6 @@ public class Invoice extends AppCompatActivity {
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
-                //Next Fetch History of Sales by Name.
             }
         });
 
@@ -414,6 +421,7 @@ public class Invoice extends AppCompatActivity {
                                 contentValues.put("Name",Category.getText().toString());
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
                                 contentValues.put("Date_Of",dateFormat.format(Calendar.getInstance().getTime()));
+                                String example = dateFormat.format(Calendar.getInstance().getTime());
                                 if(!GrossWeight.getText().toString().isEmpty()){
                                     contentValues.put("GrossWeight",Double.parseDouble(GrossWeight.getText().toString()));
                                     if(!LessWeight.getText().toString().isEmpty()){
@@ -474,69 +482,151 @@ public class Invoice extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Print.setEnabled(false);
-                ProgressBar progressBar = findViewById(R.id.progress_circular);
-                progressBar.setVisibility(View.VISIBLE);
+
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 if(inflater!=null){
-                    final View marginView = inflater.inflate(R.layout.payment_popup,null);
-                }
-                if(!printData.getCustomerName().isEmpty() && !printData.getPhone().isEmpty()){
-                    if(sundryItemList!=null && sundryItemList.size()!=0){
-                        printData.setSundryItemList(sundryItemList);
-                        FirebaseFirestore db = FirebaseFirestore.getInstance();
-                        try {
-                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
-                            Date c = Calendar.getInstance().getTime();
-                            Date today= dateFormat.parse(dateFormat.format(c));
-                            if (today != null) {
-                                printData.setDate(today.toString());
+                    final View paymentview = inflater.inflate(R.layout.payment,null);
+                    PopupWindow paymentWindow;
+                    paymentWindow = new PopupWindow(paymentview, 800,615);
+                    //paymentWindow.setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+                    //paymentWindow.setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+                    paymentWindow.setAnimationStyle(R.style.popup_animation);
+                    paymentWindow.showAtLocation(Particular.getRootView(), Gravity.CENTER,0,0);
+                    paymentWindow.setFocusable(true);
+                    paymentWindow.update();
+                    ImageButton CashHolder,UPIHolder,PaytmHolder,CardHolder;
+                    CashHolder = paymentview.findViewById(R.id.cashlayout);
+                    UPIHolder = paymentview.findViewById(R.id.upilayout);
+                    PaytmHolder = paymentview.findViewById(R.id.paytmlayout);
+                    CardHolder = paymentview.findViewById(R.id.cardlayout);
+
+                    TextView ErrorPayment;
+                    ErrorPayment = paymentview.findViewById(R.id.error_payment);
+                    String[] Mode = new String[]{};
+                    List<String> MOP = new ArrayList<>();
+
+                    CashHolder.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            CashHolder.setSelected(!CashHolder.isSelected());
+                            if(CashHolder.isSelected()){
+                                MOP.add(getString(R.string.ModeCash));
+                                Log.d("Selected","true");
+                            }else{
+                                if(MOP.size()>0){
+                                    MOP.remove(getString(R.string.ModeCash));
+                                }
+                                Log.d("Selected","false");
                             }
-                        } catch (ParseException e) {
-                            e.printStackTrace();
                         }
-                        db.collection("Invoices").add(printData).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
-                            @Override
-                            public void onSuccess(DocumentReference documentReference) {
-                                Log.d("Document:",documentReference.toString());
-                                sundryItemList = new ArrayList<>();
-                                printData = new PrintData();
-                                Names.setText(null);
-                                PhoneNumber.setText(null);
-                                Print.setEnabled(true);
-                                ItemList.setAdapter(null);
-                                progressBar.setVisibility(View.GONE);
+                    });
+                    UPIHolder.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            UPIHolder.setSelected(!UPIHolder.isSelected());
+                            if(UPIHolder.isSelected()){
+                                MOP.add(getString(R.string.ModeUPI));
+                            }else{
+                                if(MOP.size()>0){
+                                    MOP.remove(getString(R.string.ModeUPI));
+                                }
                             }
-                        }).addOnFailureListener(new OnFailureListener() {
-                            @Override
-                            public void onFailure(@NonNull Exception e) {
-                                Log.d("Failure","True");
-                                Print.setEnabled(true);
-                                progressBar.setVisibility(View.GONE);
+                        }
+                    });
+                    PaytmHolder.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            PaytmHolder.setSelected(!PaytmHolder.isSelected());
+                            if(PaytmHolder.isSelected()){
+                                MOP.add(getString(R.string.ModePaytm));
+                            }else{
+                                if(MOP.size()>0){
+                                    MOP.remove(getString(R.string.ModePaytm));
+                                }
                             }
-                        }).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentReference> task) {
-                                Print.setEnabled(true);
-                                progressBar.setVisibility(View.GONE);
+                        }
+                    });
+                    CardHolder.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            CardHolder.setSelected(!CardHolder.isSelected());
+                            if(CardHolder.isSelected()){
+                                MOP.add(getString(R.string.ModeCard));
+                            }else{
+                                if(MOP.size()>0){
+                                    MOP.remove(getString(R.string.ModeCard));
+                                }
                             }
-                        });
-                    }
+                        }
+                    });
+
+                    Button SavePayment,ClosePayment;
+                    SavePayment = paymentview.findViewById(R.id.save_payment);
+                    ClosePayment = paymentview.findViewById(R.id.close_payment);
+
+                    SavePayment.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            if(MOP.size()>0){
+                                printData.setMOP(MOP);
+                                ErrorPayment.setVisibility(View.GONE);
+                                if(!printData.getCustomerName().isEmpty() && !printData.getPhone().isEmpty()){
+                                    ProgressBar progressBar = findViewById(R.id.progress_circular);
+                                    progressBar.setVisibility(View.VISIBLE);
+                                    if(sundryItemList!=null && sundryItemList.size()!=0){
+                                        printData.setSundryItemList(sundryItemList);
+                                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+                                        String s = DateFormat.format("dd/MM/yyy", new java.util.Date()).toString();
+                                        printData.setDate(s);
+                                        db.collection("Invoices").add(printData).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
+                                            @Override
+                                            public void onSuccess(DocumentReference documentReference) {
+                                                Log.d("Document:",documentReference.toString());
+                                                sundryItemList = new ArrayList<>();
+                                                printData = new PrintData();
+                                                Names.setText(null);
+                                                PhoneNumber.setText(null);
+                                                Print.setEnabled(true);
+                                                ItemList.setAdapter(null);
+                                                progressBar.setVisibility(View.GONE);
+                                            }
+                                        }).addOnFailureListener(new OnFailureListener() {
+                                            @Override
+                                            public void onFailure(@NonNull Exception e) {
+                                                Log.d("Failure","True");
+                                                Print.setEnabled(true);
+                                                progressBar.setVisibility(View.GONE);
+                                            }
+                                        }).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                Print.setEnabled(true);
+                                                progressBar.setVisibility(View.GONE);
+                                                paymentWindow.dismiss();
+                                            }
+                                        });
+                                    }
+                                }
+                            }else{
+                                ErrorPayment.setVisibility(View.VISIBLE);
+                            }
+                        }
+                    });
+
+                    ClosePayment.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            ErrorPayment.setVisibility(View.GONE);
+                            MOP.clear();
+                            paymentWindow.dismiss();
+                        }
+                    });
                 }
             }
         });
-
     }
 
     private void AddItem(long id) {
-        //"Name" + " STRING NOT NULL,"
-        //            + "Date_Of" + " STRING NOT NULL,"
-        //            + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
-        //            + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
-        //            + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
-        //            + "TypeOfArticle" + " STRING NOT NULL,"
-        //            + "Wastage" + " DECIMAL(3,3) NOT NULL,"
-        //            + "ADD_INFO" + " STRING,"
-        //            + "Status" + " INTEGER NOT NULL DEFAULT 0 CHECK ( Status IN (-1,0,1))"
         itemids.add(id);
         dbHelper = new DBHelper(getBaseContext());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -614,9 +704,6 @@ public class Invoice extends AppCompatActivity {
                         }
                         if(item.getEC()!=0){
                             ExtraCharges.setText(String.valueOf(item.getEC()));
-                            ExtraCharges.setEnabled(false);
-                        }else {
-                            ExtraCharges.setEnabled(true);
                         }
                         if(item.getLabour()!=0){
                             TotalLabourLabel.setVisibility(View.VISIBLE);
@@ -844,5 +931,4 @@ public class Invoice extends AppCompatActivity {
             ItemList.setItemAnimator(new DefaultItemAnimator());
             ItemList.setVisibility(View.VISIBLE);
     }
-
 }

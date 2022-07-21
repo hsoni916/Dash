@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="520dp"
-    android:layout_height="520dp"
+    android:layout_height="wrap_content"
     android:layout_gravity="center"
     android:elevation="8dp"
     android:focusable="true"
@@ -40,35 +40,24 @@
         app:layout_constraintTop_toBottomOf="@id/header_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent">
-
-        <LinearLayout
+        <ImageButton
             android:id="@+id/upilayout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="80dp"
             android:layout_margin="8dp"
+            android:src="@drawable/gpay"
             android:background="@drawable/radio_background"
-            android:orientation="horizontal">
-            <ImageView
-                android:layout_width="150dp"
-                android:layout_height="80dp"
-                android:padding="4dp"
-                android:src="@drawable/gpay"
-                android:layout_gravity="center_vertical"/>
-        </LinearLayout>
-        <LinearLayout
+            android:scaleType="fitCenter">
+        </ImageButton>
+        <ImageButton
             android:id="@+id/paytmlayout"
-            android:layout_width="wrap_content"
-            android:background="@drawable/radio_background"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="80dp"
             android:layout_margin="8dp"
-            android:orientation="horizontal">
-            <ImageView
-                android:layout_width="150dp"
-                android:layout_height="80dp"
-                android:src="@drawable/paytm"
-                android:layout_gravity="center_vertical"/>
-        </LinearLayout>
-
+            android:background="@drawable/radio_background"
+            android:scaleType="fitCenter"
+            android:src="@drawable/paytm">
+        </ImageButton>
     </LinearLayout>
 
     <LinearLayout
@@ -84,35 +73,28 @@
         app:layout_constraintTop_toBottomOf="@id/payment_row"
         app:layout_constraintEnd_toEndOf="parent">
 
-    <LinearLayout
-        android:id="@+id/cashlayout"
-        android:background="@drawable/radio_background"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:orientation="horizontal">
-        <ImageView
+        <ImageButton
+            android:id="@+id/cashlayout"
             android:layout_width="150dp"
             android:layout_height="80dp"
+            android:layout_margin="8dp"
             android:src="@drawable/cashapp"
-            android:layout_gravity="center_vertical"/>
-    </LinearLayout>
+            android:background="@drawable/radio_background"
+            android:scaleType="fitCenter">
+        </ImageButton>
 
-        <LinearLayout
+        <ImageButton
             android:id="@+id/cardlayout"
             android:background="@drawable/radio_background"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="150dp"
+            android:layout_height="80dp"
+            android:src="@drawable/card"
             android:layout_margin="8dp"
+            android:scaleX="1.2"
+            android:scaleY="1.2"
+            android:scaleType="fitCenter"
             android:orientation="horizontal">
-            <ImageView
-                android:layout_width="150dp"
-                android:layout_height="80dp"
-                android:src="@drawable/card"
-                android:scaleX="1.2"
-                android:scaleY="1.2"
-                android:layout_gravity="center_vertical"/>
-        </LinearLayout>
+        </ImageButton>
     </LinearLayout>
 
     <TextView
@@ -121,7 +103,7 @@
         android:layout_height="wrap_content"
         android:text="@string/error_payment"
         android:layout_marginTop="12dp"
-        android:visibility="gone"
+        android:visibility="visible"
         android:drawablePadding="8dp"
         android:padding="4dp"
         android:gravity="center_vertical"
@@ -135,8 +117,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/Proceed"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="8dp"
         android:padding="0dp"
         android:layout_marginEnd="8dp"
         android:textColor="@color/white"
@@ -150,8 +130,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/close"
-        android:layout_marginTop="24dp"
-        android:layout_marginBottom="8dp"
         android:padding="0dp"
         android:layout_marginEnd="8dp"
         android:textColor="@color/black"
@@ -159,9 +137,5 @@
         app:layout_constraintTop_toBottomOf="@id/error_payment"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/save_payment"/>
-
-<!--
--->
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

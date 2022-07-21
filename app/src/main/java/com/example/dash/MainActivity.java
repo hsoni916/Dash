@@ -104,7 +104,6 @@ public class MainActivity extends AppCompatActivity {
                             if(!Address.getText().toString().isEmpty()){
                                 if(Address.getText().toString().length()>=3){
                                     City = Address.getText().toString();
-                                    Toast.makeText(view.getContext(),"Address saved",Toast.LENGTH_LONG).show();
                                 }
                             }
                         }
