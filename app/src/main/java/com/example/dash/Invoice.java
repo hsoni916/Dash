@@ -474,6 +474,7 @@ public class Invoice extends AppCompatActivity {
                     }
                 }else{
                     Add_Barcode_Item.setEnabled(true);
+                    //Fetch details and add it to the recyclerview.
                 }
             }
         });
