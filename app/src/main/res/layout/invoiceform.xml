@@ -28,12 +28,12 @@
         android:text="@string/new_invoice"
         android:gravity="center"
         android:textStyle="bold"
-        android:textSize="16sp"
+        android:textSize="18sp"
         android:textColor="@color/white"
         android:paddingBottom="8dp"
         android:paddingTop="4dp"
         android:layout_marginBottom="8dp"
-        android:background="@color/purple_200"
+        android:background="@color/teal_700"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
@@ -118,17 +118,31 @@
         app:layout_constraintStart_toEndOf="@id/particular"
         app:layout_constraintBottom_toBottomOf="@id/particular"/>
 
+    <TextView
+        android:id="@+id/error_invoice"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/error_invoice"
+        android:layout_margin="8dp"
+        android:visibility="gone"
+        android:drawablePadding="8dp"
+        android:padding="4dp"
+        android:gravity="center_vertical"
+        app:layout_constraintTop_toBottomOf="@id/Add_item"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/Add_item"
+        app:drawableLeftCompat="@drawable/error" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/item_list"
         android:layout_width="wrap_content"
         android:layout_height="240dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:layout_marginBottom="8dp"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/particular"/>
+        app:layout_constraintTop_toBottomOf="@id/error_invoice"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/sales_history"
@@ -145,12 +159,15 @@
 
     <ImageButton
         android:id="@+id/Print"
-        android:layout_width="80dp"
-        android:layout_height="60dp"
-        android:drawablePadding="8dp"
-        android:scaleType="fitCenter"
+        android:layout_width="48dp"
+        android:layout_height="48dp"
+        android:padding="10dp"
+        android:scaleType="fitStart"
         android:src="@drawable/print"
+        android:visibility="gone"
         android:layout_margin="8dp"
+        android:elevation="4dp"
+        android:background="@drawable/fab_background"
         android:backgroundTint="@color/space_cadet"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

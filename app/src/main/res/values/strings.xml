@@ -45,4 +45,9 @@
     <string name="ModePaytm">Paytm</string>
     <string name="ModeCard">Swipe</string>
     <string name="error_payment">Please select a payment mode \nto proceed further.</string>
+    <string name="delete">Delete</string>
+    <string name="details">Details</string>
+    <string name="error_invoice">Printing failed.\nCheck your internet connection &amp; try again in 2 minutes. </string>
+    <string name="Supplier_1">Supplier</string>
+    <string name="profile">Personal Info</string>
 </resources>

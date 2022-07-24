@@ -34,7 +34,7 @@ import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
     final Calendar calendar = Calendar.getInstance();
-    Button NewCustomer, newInvoiceButton, newInventory, CashDeposit;
+    Button NewCustomer, newInvoiceButton, newInventory, CashDeposit, NewSupplier;
     PopupWindow popupWindow;
     private DBManager dbManager;
     String Name="",PhoneNumber="",DateOfBirth="",City="";
@@ -51,6 +51,14 @@ public class MainActivity extends AppCompatActivity {
         newInvoiceButton = findViewById(R.id.NewInvoice);
         newInventory = findViewById(R.id.AddInventory);
         CashDeposit = findViewById(R.id.CashEntry);
+        NewSupplier = findViewById(R.id.NewSupplier);
+        NewSupplier.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent NewSupplier = new Intent(MainActivity.this, Supplier.class);
+                startActivity(NewSupplier);
+            }
+        });
         dbManager.AddStandards();
         NewCustomer.setOnClickListener(new View.OnClickListener() {
             @Override

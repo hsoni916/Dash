@@ -73,6 +73,7 @@ public class Invoice extends AppCompatActivity {
     List<SundryItem> sundryItemList = new ArrayList<>();
     double WeightToCalculateLabour, baseprice;
     PrintData printData = new PrintData();
+    TextView error_invoice;
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -86,6 +87,7 @@ public class Invoice extends AppCompatActivity {
         Add_Barcode_Item = findViewById(R.id.Add_item);
         ItemList = findViewById(R.id.item_list);
         Print = findViewById(R.id.Print);
+        error_invoice = findViewById(R.id.error_invoice);
         GenericItemsGold.addAll(Arrays.asList("Mens Ring", "Women Ring", "Chain",
                 "Plastic Paatla", "Gold Set", "Gold Haar",
                 "Earring", "Tops", "Gents Bracelets",
@@ -460,6 +462,7 @@ public class Invoice extends AppCompatActivity {
                                     long id = db.insert("Sundry_Supplies", null,contentValues);
                                     if(id!=-1){
                                         Toast.makeText(marginView.getContext(),"Item Saved",Toast.LENGTH_LONG).show();
+
                                         AddItem(id);
                                         popupWindow.dismiss();
                                     }else{
@@ -586,10 +589,15 @@ public class Invoice extends AppCompatActivity {
                                             @Override
                                             public void onSuccess(DocumentReference documentReference) {
                                                 Log.d("Document:",documentReference.toString());
+
+                                                if(error_invoice.getVisibility() == View.VISIBLE){
+                                                    error_invoice.setVisibility(View.GONE);
+                                                }
                                                 sundryItemList = new ArrayList<>();
                                                 printData = new PrintData();
                                                 Names.setText(null);
                                                 PhoneNumber.setText(null);
+                                                Particular.setText(null);
                                                 Print.setEnabled(true);
                                                 ItemList.setAdapter(null);
                                                 progressBar.setVisibility(View.GONE);
@@ -598,8 +606,10 @@ public class Invoice extends AppCompatActivity {
                                             @Override
                                             public void onFailure(@NonNull Exception e) {
                                                 Log.d("Failure","True");
+                                                e.printStackTrace();
+                                                error_invoice.setVisibility(View.VISIBLE);
                                                 Print.setEnabled(true);
-                                                progressBar.setVisibility(View.GONE);
+                                                ItemList.setAdapter(null);
                                             }
                                         }).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                             @Override
@@ -663,6 +673,11 @@ public class Invoice extends AppCompatActivity {
                 public void DeleteThisItem(int position) {
                     sundryItemList.remove(position);
                     adapter.notifyItemRemoved(position);
+                    if(sundryItemList.size()==0){
+                        Print.setVisibility(View.GONE);
+                    }else{
+                        Print.setVisibility(View.VISIBLE);
+                    }
                 }
 
                 @Override
@@ -916,6 +931,7 @@ public class Invoice extends AppCompatActivity {
                                     Toast.makeText(view.getContext(),"Labour details invalid",Toast.LENGTH_LONG).show();
                                 }
                             }
+
                         });
                         Clear.setOnClickListener(new View.OnClickListener() {
                             @Override
