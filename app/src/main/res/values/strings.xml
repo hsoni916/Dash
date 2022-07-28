@@ -50,4 +50,10 @@
     <string name="error_invoice">Printing failed.\nCheck your internet connection &amp; try again in 2 minutes. </string>
     <string name="Supplier_1">Supplier</string>
     <string name="profile">Personal Info</string>
+    <string name="Supplier_2">New Supplier:</string>
+    <string name="Supplier_3">Suppliers:</string>
+    <string name="business">Business:</string>
+    <string name="owner">Owner:</string>
+    <string name="city">City:</string>
+    <string name="gstin">GSTIN:</string>
 </resources>

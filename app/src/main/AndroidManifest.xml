@@ -22,6 +22,9 @@
         <activity android:name=".Invoice">
 
         </activity>
+        <activity android:name=".NewSupplier">
+
+        </activity>
     </application>
 
 </manifest>
