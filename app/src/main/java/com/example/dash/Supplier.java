@@ -4,7 +4,7 @@ import java.util.List;
 
 public class Supplier {
     String Business, City, Owner, Phone, GST;
-    List<String> type;
+    List<String> Categories;
 
     public String getBusiness() {
         return Business;
@@ -46,11 +46,11 @@ public class Supplier {
         this.GST = GST;
     }
 
-    public List<String> getType() {
-        return type;
+    public List<String> getCategories() {
+        return Categories;
     }
 
-    public void setType(List<String> type) {
-        this.type = type;
+    public void setCategories(List<String> categories) {
+        this.Categories = categories;
     }
 }

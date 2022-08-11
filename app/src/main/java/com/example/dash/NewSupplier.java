@@ -7,35 +7,89 @@ import android.text.Spanned;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class NewSupplier extends AppCompatActivity {
     EditText Business, Owner, City, GST, Phone;
-    Button Save, Clear;
+    Button  Clear, NewSupplier;
+    Button SSB;
     ChipGroup MetalGroup;
+    SupplierAdapter supplierAdapter;
+    ConstraintLayout SupplierForm;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_supplier);
+        SupplierForm = findViewById(R.id.SupplierForm);
+        NewSupplier = findViewById(R.id.NewSupplierButton);
+        NewSupplier.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                SupplierForm.setVisibility(View.VISIBLE);
+                NewSupplier.setVisibility(View.INVISIBLE);
+            }
+        });
         Business = findViewById(R.id.Business_etv);
         Owner = findViewById(R.id.Owner_etv);
         City = findViewById(R.id.City_etv);
         GST = findViewById(R.id.gstin_etv);
         Phone = findViewById(R.id.phone_etv);
         MetalGroup = findViewById(R.id.Offerings);
-        Save = findViewById(R.id.save_supplier);
+        SSB = findViewById(R.id.button1);
         Clear = findViewById(R.id.clear_supplier);
+        Clear.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Log.d("Button","Click");
+            }
+        });
+        SSB.setOnClickListener(view -> {
+            Toast.makeText(view.getContext(), "a", Toast.LENGTH_LONG).show();
+            Log.d("Button","Click");
+        });
+
         FirebaseFirestore firebaseFirestore = FirebaseFirestore.getInstance();
+
+        firebaseFirestore.collection("Suppliers").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                if(error!=null){
+                    Log.d("Error",error.toString());
+                    return;
+                }
+                List<Supplier> Suppliers = new ArrayList<>();
+                assert value != null;
+                for (QueryDocumentSnapshot doc : value) {
+                    Suppliers.add(doc.toObject(Supplier.class));
+                }
+                if(supplierAdapter==null){
+                    supplierAdapter = new SupplierAdapter(Suppliers);
+                }
+            }
+        });
+
         Supplier SupplierNew = new Supplier();
         InputFilter business = new InputFilter() {
             @Override
@@ -105,17 +159,20 @@ public class NewSupplier extends AppCompatActivity {
         MetalGroup.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
             @Override
             public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
-                for(int i =0;i<checkedIds.size();i++) {
-                    Chip chip = (Chip) group.getChildAt(i);
-                    Log.d("Chips:", chip.getText().toString());
+                List<String> NewCategory = new ArrayList<>();
+                for(int i = 0;i<checkedIds.size();i++){
+                    Chip chip = findViewById(checkedIds.get(i));
+                    Log.d("Checked Chips",chip.getText().toString());
+                    NewCategory.add(chip.getText().toString());
                 }
+                SupplierNew.setCategories(NewCategory);
             }
         });
 
         Business.setFilters(new InputFilter[]{business});
         Owner.setFilters(new InputFilter[]{owner});
         City.setFilters(new InputFilter[]{city});
-        Save.setOnClickListener(new View.OnClickListener() {
+        SSB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 if(!Business.getText().toString().isEmpty()){
@@ -142,8 +199,21 @@ public class NewSupplier extends AppCompatActivity {
                         (SupplierNew.getCity()!=null || SupplierNew.getOwner()!=null
                         || SupplierNew.getPhone()!=null || SupplierNew.getGST()!=null))
                 {
-                        //
+                        firebaseFirestore.collection("Suppliers").add(SupplierNew).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentReference> task) {
+                                if(task.isSuccessful()){
+                                    Log.d("Supplier:",task.getResult().getId());
+                                    Toast.makeText(view.getContext(),"Supplier saved.",Toast.LENGTH_LONG).show();
+                                    //refresh the supplier list.
+                                }else{
+                                    Toast.makeText(view.getContext(),"Failed to save supplier.\nTry again in few minutes.",Toast.LENGTH_LONG).show();
+                                }
+                            }
+                        });
                 }
+                SupplierForm.setVisibility(View.GONE);
+                NewSupplier.setVisibility(View.VISIBLE);
             }
         });
 

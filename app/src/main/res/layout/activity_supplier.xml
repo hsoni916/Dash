@@ -4,6 +4,28 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
+    <Button
+        android:id="@+id/NewSupplierButton"
+        android:layout_width="240dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="4dp"
+        android:layout_marginEnd="4dp"
+        android:layout_marginBottom="8dp"
+        android:elevation="2dp"
+        android:textSize="11sp"
+        android:paddingBottom="12dp"
+        android:paddingTop="12dp"
+        android:text="@string/add_supplier"
+        android:visibility="invisible"
+        android:translationZ="12dp"
+        android:drawableTop="@drawable/add"
+        android:backgroundTint="#49a078"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/NewSupplier"/>
+
     <TextView
         android:id="@+id/NewSupplier"
         android:layout_width="0dp"
@@ -18,7 +40,16 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/SupplierListHeader"/>
-
+<androidx.constraintlayout.widget.ConstraintLayout
+    android:id="@+id/SupplierForm"
+    android:layout_width="0dp"
+    android:layout_height="0dp"
+    android:visibility="visible"
+    android:translationZ="8dp"
+    app:layout_constraintTop_toBottomOf="@id/NewSupplier"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintBottom_toBottomOf="parent"
+    app:layout_constraintEnd_toEndOf="@id/NewSupplier">
     <TextView
         android:id="@+id/LabelOne"
         android:layout_width="wrap_content"
@@ -32,7 +63,7 @@
         android:layout_marginBottom="4dp"
         android:text="@string/business"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/NewSupplier"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <EditText
         android:id="@+id/Business_etv"
@@ -184,7 +215,7 @@
             android:id="@+id/ChipOne"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="B"
+            android:text="Gold"
             android:textSize="11sp"
             android:checkable="true"
             app:chipEndPadding="2dp"
@@ -194,7 +225,7 @@
             android:id="@+id/ChipTwo"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="A"
+            android:text="Silver"
             android:textSize="11sp"
             android:checkable="true"
             app:chipEndPadding="2dp"
@@ -204,7 +235,7 @@
             android:id="@+id/ChipThree"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="C"
+            android:text="Platinum"
             android:textSize="11sp"
             android:checkable="true"
             app:chipEndPadding="2dp"
@@ -224,12 +255,12 @@
         android:layout_margin="16dp"
         android:backgroundTint="@color/mattewhite"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/save_supplier"/>
+        app:layout_constraintEnd_toStartOf="@id/button1"/>
 
 
 
     <Button
-        android:id="@+id/save_supplier"
+        android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:padding="0dp"
@@ -238,26 +269,28 @@
         android:layout_margin="16dp"
         android:backgroundTint="@color/teal_700"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@id/SupplierListHeader"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- Second Half -->
 
     <TextView
         android:id="@+id/SupplierListHeader"
-        android:layout_width="366dp"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="@string/Supplier_3"
         android:padding="8dp"
         android:textSize="16sp"
         android:textStyle="bold"
-        android:layout_marginStart="4dp"
         android:textColor="@color/mattegrey1"
+        app:layout_constraintStart_toEndOf="@id/NewSupplier"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/SupplierList"
-        android:layout_width="350dp"
+        android:layout_width="375dp"
         android:layout_height="0dp"
         android:layout_margin="8dp"
         app:layout_constraintTop_toBottomOf="@id/SupplierListHeader"
