@@ -10,12 +10,16 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -37,13 +41,16 @@ public class NewSupplier extends AppCompatActivity {
     Button SSB;
     ChipGroup MetalGroup;
     SupplierAdapter supplierAdapter;
+    DocumentReference supplierReference;
     ConstraintLayout SupplierForm;
+    RecyclerView SupplierRecyclerView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_supplier);
         SupplierForm = findViewById(R.id.SupplierForm);
         NewSupplier = findViewById(R.id.NewSupplierButton);
+        SupplierRecyclerView = findViewById(R.id.SupplierList);
         NewSupplier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -80,15 +87,48 @@ public class NewSupplier extends AppCompatActivity {
                     return;
                 }
                 List<Supplier> Suppliers = new ArrayList<>();
+                List<DocumentReference> DocRef = new ArrayList<>();
                 assert value != null;
+                Suppliers = new ArrayList<>();
                 for (QueryDocumentSnapshot doc : value) {
                     Suppliers.add(doc.toObject(Supplier.class));
+                    DocRef.add(doc.getReference());
                 }
-                if(supplierAdapter==null){
-                    supplierAdapter = new SupplierAdapter(Suppliers);
-                }
+                Log.d("Success", String.valueOf(value.size()));
+                supplierAdapter = new SupplierAdapter(Suppliers);
+                supplierAdapter.DocReference(DocRef);
+                SupplierRecyclerView.setAdapter(supplierAdapter);
+                SupplierRecyclerView.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+                SupplierRecyclerView.setItemAnimator(new DefaultItemAnimator());
+                supplierAdapter.setOnItemClickListener(new SupplierAdapter.OnItemClicked() {
+                    @Override
+                    public void EditDetails(Supplier supplier, DocumentReference documentReference) {
+                        Business.setText(supplier.getBusiness());
+                        Owner.setText(supplier.getOwner());
+                        City.setText(supplier.getCity());
+                        Phone.setText(supplier.getPhone());
+                        GST.setText(supplier.getGst());
+                        for(int i = 0;i<supplier.getCategories().size();i++){
+                            Chip current = (Chip) MetalGroup.getChildAt(i);
+                            Log.d("Category:",current.getText().toString());
+                            if(current.getText().toString().equalsIgnoreCase(supplier.getCategories().get(i))){
+                                MetalGroup.check(current.getId());
+                                Log.d("Chip Match","true");
+                            }
+                        }
+                        SSB.setText(R.string.update_supplier);
+                        supplierReference = documentReference;
+                    }
+
+                    @Override
+                    public void Delete(Supplier supplier) {
+
+                    }
+                });
             }
         });
+
+
 
         Supplier SupplierNew = new Supplier();
         InputFilter business = new InputFilter() {
@@ -130,7 +170,60 @@ public class NewSupplier extends AppCompatActivity {
                 return validity ? null : builder.toString();
             }
         };
+        Business.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!Business.getText().toString().isEmpty()){
+                    SupplierNew.setBusiness(Business.getText().toString());
+                }
+            }
+        });
+        Owner.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!Owner.getText().toString().isEmpty()){
+                    SupplierNew.setOwner(Owner.getText().toString());
+                }
+            }
+        });
+        City.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!City.getText().toString().isEmpty()){
+                    SupplierNew.setCity(City.getText().toString());
+                }
+            }
+        });
         GST.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -146,16 +239,33 @@ public class NewSupplier extends AppCompatActivity {
             public void afterTextChanged(Editable editable) {
                 if(!GST.getText().toString().isEmpty() || (GST.getText().toString().length()==15)){
                     if(GST.getText().toString().matches("\\d\\d[A-Z]{5}[0-9]{4}[A-Z][0-9][A-Z]{2}")){
-                        SupplierNew.setGST(GST.getText().toString());
+                        SupplierNew.setGst(GST.getText().toString());
                     }else{
-                        SupplierNew.setGST(null);
+                        SupplierNew.setGst(null);
                     }
                 }else{
-                    SupplierNew.setGST(null);
+                    SupplierNew.setGst(null);
                 }
             }
         });
+        Phone.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!Phone.getText().toString().isEmpty()){
+                    SupplierNew.setPhone(Phone.getText().toString());
+                }
+            }
+        });
         MetalGroup.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
             @Override
             public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
@@ -175,48 +285,76 @@ public class NewSupplier extends AppCompatActivity {
         SSB.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(!Business.getText().toString().isEmpty()){
-                    SupplierNew.setBusiness(Business.getText().toString());
+                SupplierForm.setEnabled(false);
+                if(SSB.getText()==getString(R.string.update_supplier)){
+                    firebaseFirestore.collection("Suppliers").document(supplierReference.getId())
+                            .set(SupplierNew)
+                            .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    if(task.isSuccessful()){
+                                        Business.setText(null);
+                                        Owner.setText(null);
+                                        City.setText(null);
+                                        GST.setText(null);
+                                        Phone.setText(null);
+                                        MetalGroup.clearCheck();
+                                        Toast.makeText(view.getContext(),"Update Successful.",Toast.LENGTH_LONG).show();
+                                    }else{
+                                        Toast.makeText(view.getContext(),"Update Unsuccessful.\nTry Again after few minutes.",Toast.LENGTH_LONG).show();
+                                    }
+                                    SupplierForm.setEnabled(true);
+                                }
+                            });
                 }else{
-                    SupplierNew.setBusiness(null);
-                }
-                if(!Owner.getText().toString().isEmpty()){
-                    SupplierNew.setOwner(Owner.getText().toString());
-                }else{
-                    SupplierNew.setOwner(null);
-                }
-                if(!City.getText().toString().isEmpty()){
-                    SupplierNew.setCity(City.getText().toString());
-                }else{
-                    SupplierNew.setCity(null);
-                }
-                if(!Phone.getText().toString().isEmpty()){
-                    SupplierNew.setPhone(Phone.getText().toString());
-                }else{
-                    SupplierNew.setPhone(null);
-                }
-                if(SupplierNew.getBusiness()!=null &&
-                        (SupplierNew.getCity()!=null || SupplierNew.getOwner()!=null
-                        || SupplierNew.getPhone()!=null || SupplierNew.getGST()!=null))
-                {
+                    SupplierForm.setEnabled(false);
+                    if(!Business.getText().toString().isEmpty()){
+                        SupplierNew.setBusiness(Business.getText().toString());
+                    }else{
+                        SupplierNew.setBusiness(null);
+                    }
+                    if(!Owner.getText().toString().isEmpty()){
+                        SupplierNew.setOwner(Owner.getText().toString());
+                    }else{
+                        SupplierNew.setOwner(null);
+                    }
+                    if(!City.getText().toString().isEmpty()){
+                        SupplierNew.setCity(City.getText().toString());
+                    }else{
+                        SupplierNew.setCity(null);
+                    }
+                    if(!Phone.getText().toString().isEmpty()){
+                        SupplierNew.setPhone(Phone.getText().toString());
+                    }else{
+                        SupplierNew.setPhone(null);
+                    }
+                    if(SupplierNew.getBusiness()!=null &&
+                            (SupplierNew.getCity()!=null || SupplierNew.getOwner()!=null
+                                    || SupplierNew.getPhone()!=null || SupplierNew.getGst()!=null))
+                    {
                         firebaseFirestore.collection("Suppliers").add(SupplierNew).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                             @Override
                             public void onComplete(@NonNull Task<DocumentReference> task) {
                                 if(task.isSuccessful()){
+                                    Business.setText(null);
+                                    Owner.setText(null);
+                                    City.setText(null);
+                                    GST.setText(null);
+                                    Phone.setText(null);
+                                    MetalGroup.clearCheck();
                                     Log.d("Supplier:",task.getResult().getId());
                                     Toast.makeText(view.getContext(),"Supplier saved.",Toast.LENGTH_LONG).show();
-                                    //refresh the supplier list.
                                 }else{
                                     Toast.makeText(view.getContext(),"Failed to save supplier.\nTry again in few minutes.",Toast.LENGTH_LONG).show();
                                 }
+                                SupplierForm.setEnabled(true);
                             }
                         });
+                    }
+                    SupplierForm.setVisibility(View.GONE);
+                    NewSupplier.setVisibility(View.VISIBLE);
                 }
-                SupplierForm.setVisibility(View.GONE);
-                NewSupplier.setVisibility(View.VISIBLE);
             }
         });
-
     }
-
 }

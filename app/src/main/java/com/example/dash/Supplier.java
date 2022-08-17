@@ -3,54 +3,54 @@ package com.example.dash;
 import java.util.List;
 
 public class Supplier {
-    String Business, City, Owner, Phone, GST;
-    List<String> Categories;
+    String business, city, owner, phone, gst;
+    List<String> categories;
 
     public String getBusiness() {
-        return Business;
+        return business;
     }
 
     public void setBusiness(String business) {
-        Business = business;
+        this.business = business;
     }
 
     public String getCity() {
-        return City;
+        return city;
     }
 
     public void setCity(String city) {
-        City = city;
+        this.city = city;
     }
 
     public String getOwner() {
-        return Owner;
+        return owner;
     }
 
     public void setOwner(String owner) {
-        Owner = owner;
+        this.owner = owner;
     }
 
     public String getPhone() {
-        return Phone;
+        return phone;
     }
 
     public void setPhone(String phone) {
-        Phone = phone;
+        this.phone = phone;
     }
 
-    public String getGST() {
-        return GST;
+    public String getGst() {
+        return gst;
     }
 
-    public void setGST(String GST) {
-        this.GST = GST;
+    public void setGst(String gst) {
+        this.gst = gst;
     }
 
     public List<String> getCategories() {
-        return Categories;
+        return categories;
     }
 
     public void setCategories(List<String> categories) {
-        this.Categories = categories;
+        this.categories = categories;
     }
 }

@@ -3,29 +3,40 @@ package com.example.dash;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.firestore.DocumentReference;
 
 import java.util.List;
 
 public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.ViewHolder> {
 
     List<Supplier> supplierList;
-
-
-    private OnItemClicked onClick;
+    List<DocumentReference> documentReferenceList;
+    private OnItemClicked mListener;
 
     public SupplierAdapter(List<Supplier> supplierList) {
         this.supplierList = supplierList;
     }
-
+    public void DocReference(List<DocumentReference> documentReferenceList){
+        this.documentReferenceList = documentReferenceList;
+    }
     //make interface like this
     public interface OnItemClicked {
        //What happens when supplier is clicked.
+        void EditDetails(Supplier supplier, DocumentReference documentReference);
+
+        void Delete(Supplier supplier);
+    }
+
+    void setOnItemClickListener(OnItemClicked listener){
+        this.mListener = listener;
     }
 
 
@@ -39,20 +50,38 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.ViewHo
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.SrNo.setText(String.valueOf(position+1));
-        holder.Owner.setText(supplierList.get(position).Owner);
-        holder.Firm.setText(supplierList.get(position).Business);
-        holder.GST.setText(supplierList.get(position).GST);
+        holder.Owner.setText(supplierList.get(position).owner);
+        holder.Firm.setText(supplierList.get(position).business);
+        holder.GST.setText(supplierList.get(position).gst);
+        if(supplierList.get(position).getCategories()!=null){
+            holder.Categories.setText(supplierList.get(position).
+                    getCategories().toString().replaceAll("[\\Q[\\E]?[\\Q]\\E]?",""));
+        }
+        holder.AddDetails.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.EditDetails(supplierList.get(holder.getAdapterPosition()), documentReferenceList.get(holder.getAdapterPosition()));
+            }
+        });
+
+        holder.Delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                mListener.Delete(supplierList.get(holder.getAdapterPosition()));
+            }
+        });
     }
 
     @Override
     public int getItemCount() {
-        return 0;
+        return supplierList.size();
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         View mView;
-        TextView SrNo, Owner, GST, Firm;
-        Button AddDetails,Delete;
+        TextView SrNo, Owner, GST, Firm, Categories;
+        Button AddDetails;
+        ImageButton Delete;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
@@ -62,6 +91,7 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.ViewHo
             Firm = mView.findViewById(R.id.BusinessName);
             AddDetails = mView.findViewById(R.id.EditDetails);
             Delete = mView.findViewById(R.id.DeleteSupplier);
+            Categories = mView.findViewById(R.id.Category);
         }
     }
 }
