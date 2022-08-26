@@ -106,8 +106,6 @@ public class Invoice extends AppCompatActivity {
         Purity_Levels_Gold.addAll(Arrays.asList("999 Fine Gold", "23KT958", "22KT916", "21KT875",
                 "20KT833", "18KT750", "14KT585","Others"));
 
-        //dbManager.insertAllCategoriesGold(new ArrayList<String>(){{addAll(GenericItemsGold); addAll(GenericItemsSilver);}});
-        //dbManager.insertAllCategoriesSilver(GenericItemsSilver);
         List<String> CustomerLists = dbManager.ListAllCustomer();
         List<String> PhoneNumbers = dbManager.ListAllPhone();
         List<String> Birthdays = dbManager.ListDOB();
@@ -165,7 +163,6 @@ public class Invoice extends AppCompatActivity {
             @Override
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 if(GenericItemsGold.contains(finalItemAdapter.getItem(i)) || GenericItemsSilver.contains(finalItemAdapter.getItem(i))){
-
                     Log.d("Item :","Generic");
                     Add_Barcode_Item.setEnabled(false);
                     LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);

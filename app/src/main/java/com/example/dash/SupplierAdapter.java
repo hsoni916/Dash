@@ -3,10 +3,11 @@ package com.example.dash;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ImageButton;
+import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,9 +31,9 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.ViewHo
     //make interface like this
     public interface OnItemClicked {
        //What happens when supplier is clicked.
-        void EditDetails(Supplier supplier, DocumentReference documentReference);
+        void EditDetails(Supplier supplier, DocumentReference documentReference, int adapterPosition);
 
-        void Delete(Supplier supplier);
+        boolean Delete(Supplier supplier, DocumentReference documentReference);
     }
 
     void setOnItemClickListener(OnItemClicked listener){
@@ -60,16 +61,22 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.ViewHo
         holder.AddDetails.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.EditDetails(supplierList.get(holder.getAdapterPosition()), documentReferenceList.get(holder.getAdapterPosition()));
+                mListener.EditDetails(supplierList.get(holder.getAdapterPosition()), documentReferenceList.get(holder.getAdapterPosition()), holder.getAdapterPosition());
             }
         });
 
         holder.Delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mListener.Delete(supplierList.get(holder.getAdapterPosition()));
+                holder.progressBar.setVisibility(View.VISIBLE);
+                if(mListener.Delete(supplierList.get(holder.getAdapterPosition()),documentReferenceList.get(holder.getAdapterPosition()))){
+                    Toast.makeText(view.getContext(), "Delete Successful.",Toast.LENGTH_LONG).show();
+                }else{
+                    Toast.makeText(view.getContext(), "Delete failed.",Toast.LENGTH_LONG).show();
+                }
             }
         });
+
     }
 
     @Override
@@ -82,9 +89,11 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.ViewHo
         TextView SrNo, Owner, GST, Firm, Categories;
         Button AddDetails;
         ImageButton Delete;
+        ProgressBar progressBar;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
+            progressBar = mView.findViewById(R.id.supplier_row_pb);
             SrNo = mView.findViewById(R.id.SerialNumber);
             Owner = mView.findViewById(R.id.OwnerName);
             GST = mView.findViewById(R.id.GSTIN);

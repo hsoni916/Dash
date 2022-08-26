@@ -67,6 +67,25 @@ public class DBManager {
         return result;
     }
 
+    public long insertNewSupplier(String Business, String Owner, String GSTIN, String City, String Phone, List<String> categories){
+        long result = -1;
+        String AddNewSupplier = "INSERT INTO Suppliers (Business_Name, Person_In_Charge, PhoneNumber, GSTIN, City, Categories) VALUES (?, ?, ?, ?, ?, ?)";
+        SQLiteStatement statement = database.compileStatement(AddNewSupplier);
+        statement.bindString(1, Business);
+        statement.bindString(2, Owner);
+        statement.bindString(3, GSTIN);
+        statement.bindString(4, City);
+        statement.bindString(5, Phone);
+        statement.bindString(6, String.valueOf(categories));
+        try{
+            result = statement.executeInsert();
+        }catch (Exception e){
+            e.fillInStackTrace();
+        }
+        close();
+        return result;
+    }
+
     public List<String> ListAllCustomer(){
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String sql = "SELECT Name FROM CustomersList";
@@ -386,5 +405,9 @@ public class DBManager {
         contentValues.put("Standard_Value",Purity);
         result = db.insert("Standards", null, contentValues);
         return result;
+    }
+
+    public void updateSupplier(Supplier supplierNew, int supplier_Position) {
+
     }
 }

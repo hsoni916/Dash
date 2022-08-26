@@ -58,4 +58,5 @@
     <string name="gstin">GSTIN:</string>
     <string name="add_supplier">New Supplier</string>
     <string name="update_supplier">Update</string>
+    <string name="name_error_1">Name cannot be empty.</string>
 </resources>

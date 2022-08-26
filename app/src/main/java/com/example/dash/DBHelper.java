@@ -46,7 +46,11 @@ public class DBHelper extends SQLiteOpenHelper {
             "(" + "Business_Name" + " STRING,"
             + "Person_In_Charge" + " STRING,"
             + "PhoneNumber" + " STRING CHECK (length(PhoneNumber)==10),"
+            + "GSTIN" + " STRING CHECK (length(GSTIN)==15),"
+            + "City" + " STRING,"
+            + "Categories" + " STRING,"
             + "SupplierCode" + " INTEGER PRIMARY KEY" + ");";
+    //GST, Categories.
 
     private static final String CREATE_TABLE_3_1 = "create table if not exists " + "Sundry_Supplies"
             + "("

@@ -141,8 +141,12 @@ public class MainActivity extends AppCompatActivity {
                             }
                             if(NameEtv.getText().toString().length()>=2){
                                 Name = NameEtv.getText().toString();
-
                                 NameError.setVisibility(View.GONE);
+                            }else if (NameEtv.getText().toString().isEmpty()){
+                                if(!NameEtv.hasFocus()){
+                                    NameError.setText(R.string.name_error_1);
+                                    NameError.setVisibility(View.VISIBLE);
+                                }
                             }else{
                                 if(!NameEtv.hasFocus()){
                                     NameError.setText(R.string.name_error);
@@ -186,9 +190,14 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onFocusChange(View view, boolean b) {
                             if(!b){
-                                if(NameEtv.getText().toString().length()<=2){
+                                if(NameEtv.getText().toString().isEmpty()){
+                                    NameError.setText(R.string.name_error_1);
+                                    NameError.setVisibility(View.VISIBLE);
+                                }else if(NameEtv.getText().toString().length()<=2){
                                     NameError.setText(R.string.name_error);
                                     NameError.setVisibility(View.VISIBLE);
+                                }else{
+                                    NameError.setVisibility(View.GONE);
                                 }
                             }
                         }

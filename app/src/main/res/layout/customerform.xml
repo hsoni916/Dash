@@ -34,6 +34,7 @@
         android:paddingBottom="8dp"
         android:layout_marginBottom="8dp"
         android:background="@drawable/textview_background"
+        android:backgroundTint="@color/space_cadet_dark"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>

@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -44,6 +43,9 @@ public class NewSupplier extends AppCompatActivity {
     DocumentReference supplierReference;
     ConstraintLayout SupplierForm;
     RecyclerView SupplierRecyclerView;
+    boolean result;
+    private DBManager dbManager;
+    private int Supplier_Position;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -51,6 +53,7 @@ public class NewSupplier extends AppCompatActivity {
         SupplierForm = findViewById(R.id.SupplierForm);
         NewSupplier = findViewById(R.id.NewSupplierButton);
         SupplierRecyclerView = findViewById(R.id.SupplierList);
+        dbManager = new DBManager(this);
         NewSupplier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -102,7 +105,7 @@ public class NewSupplier extends AppCompatActivity {
                 SupplierRecyclerView.setItemAnimator(new DefaultItemAnimator());
                 supplierAdapter.setOnItemClickListener(new SupplierAdapter.OnItemClicked() {
                     @Override
-                    public void EditDetails(Supplier supplier, DocumentReference documentReference) {
+                    public void EditDetails(Supplier supplier, DocumentReference documentReference, int adapterPosition) {
                         Business.setText(supplier.getBusiness());
                         Owner.setText(supplier.getOwner());
                         City.setText(supplier.getCity());
@@ -118,11 +121,24 @@ public class NewSupplier extends AppCompatActivity {
                         }
                         SSB.setText(R.string.update_supplier);
                         supplierReference = documentReference;
+                        Supplier_Position = adapterPosition;
+
                     }
 
                     @Override
-                    public void Delete(Supplier supplier) {
+                    public boolean Delete(Supplier supplier, DocumentReference documentReference) {
 
+                        firebaseFirestore.document(documentReference.getPath()).delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if(task.isSuccessful()){
+                                    result = true;
+                                }else{
+                                    result = false;
+                                }
+                            }
+                        });
+                        return result;
                     }
                 });
             }
@@ -287,6 +303,7 @@ public class NewSupplier extends AppCompatActivity {
             public void onClick(View view) {
                 SupplierForm.setEnabled(false);
                 if(SSB.getText()==getString(R.string.update_supplier)){
+                    dbManager.updateSupplier(SupplierNew, Supplier_Position);
                     firebaseFirestore.collection("Suppliers").document(supplierReference.getId())
                             .set(SupplierNew)
                             .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -336,6 +353,8 @@ public class NewSupplier extends AppCompatActivity {
                             @Override
                             public void onComplete(@NonNull Task<DocumentReference> task) {
                                 if(task.isSuccessful()){
+                                    dbManager.insertNewSupplier(SupplierNew.getBusiness(),SupplierNew.getOwner(),
+                                            SupplierNew.getGst(),SupplierNew.getCity(),SupplierNew.getPhone(),SupplierNew.getCategories());
                                     Business.setText(null);
                                     Owner.setText(null);
                                     City.setText(null);
