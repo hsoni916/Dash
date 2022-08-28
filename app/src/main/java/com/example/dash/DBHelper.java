@@ -24,6 +24,7 @@ public class DBHelper extends SQLiteOpenHelper {
             "(" + "Name" +" TEXT NOT NULL,"
             + "PhoneNumber" + " STRING PRIMARY KEY NOT NULL CHECK (length(PhoneNumber)==10),"
             + "DateofBirth" + " STRING NOT NULL,"
+            + "Address" + " STRING,"
             + "Points" + " INTEGER,"
             + "Reference" + " TEXT,"
             + "AccountCreatedOn" + " TEXT NOT NULL,"

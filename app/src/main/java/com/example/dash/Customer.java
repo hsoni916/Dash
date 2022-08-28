@@ -8,10 +8,7 @@ public class Customer {
     Date dateOfBirth;
     String phoneNumber;
     String address;
-
-
     String Reference;
-
     public Customer() {
 
     }

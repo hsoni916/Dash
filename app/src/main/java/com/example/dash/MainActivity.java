@@ -1,5 +1,6 @@
 package com.example.dash;
 
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -11,6 +12,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,13 @@ import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.google.firebase.firestore.DocumentChange;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.EventListener;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -37,6 +46,8 @@ public class MainActivity extends AppCompatActivity {
     List<Customer> recordList = new ArrayList<>();
     List<Customer> recordList2 = new ArrayList<>();
     customer_adapter Custom_Adapter;
+    TextView ItemsSold, InvoicesMade, NewCustomers, TotalSales, TotalRevenue, RevenueUnit, SalesUnit;
+    FirebaseFirestore firebaseFirestore;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -48,6 +59,42 @@ public class MainActivity extends AppCompatActivity {
         newInventory = findViewById(R.id.AddInventory);
         CashDeposit = findViewById(R.id.CashEntry);
         NewSupplier = findViewById(R.id.NewSupplier);
+
+        //Metrics
+        ItemsSold = findViewById(R.id.ItemsSold);
+        InvoicesMade = findViewById(R.id.InvoicesMade);
+        NewCustomers = findViewById(R.id.CustomersAdded);
+        TotalSales = findViewById(R.id.SalesNW);
+        TotalRevenue = findViewById(R.id.Revenue);
+        RevenueUnit = findViewById(R.id.unit_r);
+        SalesUnit = findViewById(R.id.unit_s);
+
+        firebaseFirestore = FirebaseFirestore.getInstance();
+
+        firebaseFirestore.collection("Invoices").addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot value, @Nullable FirebaseFirestoreException error) {
+                assert value != null;
+                if(!value.getMetadata().hasPendingWrites()){
+                    int itemsold = 0;
+                    int invoicemade = 0;
+                    for(DocumentSnapshot document : value.getDocuments()){
+                        PrintData invoice = document.toObject(PrintData.class);
+                        if(invoice!=null){
+                            Log.d("Size:", String.valueOf(invoice.getSundryItemList().size()));
+                            itemsold = itemsold+invoice.getSundryItemList().size();
+                        }
+                    }
+                    invoicemade = invoicemade + value.getDocuments().size();
+                    itemsold = itemsold + Integer.parseInt(ItemsSold.getText().toString());
+                    invoicemade = invoicemade + Integer.parseInt(InvoicesMade.getText().toString());
+                    ItemsSold.setText(String.valueOf(itemsold));
+                    InvoicesMade.setText(String.valueOf(invoicemade));
+                }
+            }
+        });
+
+
         NewSupplier.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

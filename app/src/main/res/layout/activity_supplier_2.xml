@@ -242,6 +242,16 @@
                 app:chipEndPadding="2dp"
                 app:chipStartPadding="2dp"
                 app:checkedIcon="@drawable/check"/>
+            <com.google.android.material.chip.Chip
+                android:id="@+id/ChipFour"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Diamonds"
+                android:textSize="11sp"
+                android:checkable="true"
+                app:chipEndPadding="2dp"
+                app:chipStartPadding="2dp"
+                app:checkedIcon="@drawable/check"/>
         </com.google.android.material.chip.ChipGroup>
 
 
