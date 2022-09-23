@@ -126,10 +126,15 @@ public class MainActivity extends AppCompatActivity {
                             (view.getContext(),android.R.layout.select_dialog_item,dbManager.ListAllCustomer());
                     ArrayAdapter<String> PhoneAdapter = new ArrayAdapter<String>
                             (view.getContext(),android.R.layout.select_dialog_item,dbManager.ListAllPhone());
+                    Log.d("Size of customers",String.valueOf(dbManager.ListAllCustomer().size()));
+                    recordList.clear();
+                    recordList2.clear();
                     for(int i = 0;i<dbManager.ListAllCustomer().size();i++){
                         Customer customer = new Customer();
                         customer.setName(NameAdapter.getItem(i));
                         customer.setPhoneNumber(PhoneAdapter.getItem(i));
+                        Log.d("Customer:",NameAdapter.getItem(i));
+                        Log.d("Size of record:", String.valueOf(recordList.size()));
                         recordList.add(customer);
                         recordList2.add(customer);
                     }

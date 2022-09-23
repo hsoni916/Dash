@@ -42,6 +42,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
         holder.lw.setText(String.valueOf(sundryItemList.get(position).getLW()));
         holder.nw.setText(String.valueOf(sundryItemList.get(position).getNW()));
         holder.ec.setText(String.valueOf(sundryItemList.get(position).getEC()));
+        holder.ws.setText(String.valueOf(sundryItemList.get(position).getWastage()));
         holder.delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -64,7 +65,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         View mView;
-        TextView rowid,itemname,gw,lw,nw,ec;
+        TextView rowid,itemname,gw,lw,nw,ec,ws;
         Button adddetails,delete;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -75,6 +76,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
             lw = mView.findViewById(R.id.LWholder);
             nw = mView.findViewById(R.id.NWholder);
             ec = mView.findViewById(R.id.ECholder);
+            ws = mView.findViewById(R.id.WSHolder);
             adddetails = mView.findViewById(R.id.EditDetails);
             delete = mView.findViewById(R.id.RemoveItem);
 

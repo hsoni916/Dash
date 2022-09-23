@@ -4,6 +4,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -12,6 +13,7 @@ import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -50,6 +52,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Objects;
 
 public class Invoice extends AppCompatActivity {
     private DBManager dbManager;
@@ -78,6 +81,8 @@ public class Invoice extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.invoiceform);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("New Invoice");
+        Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.teal_600)));
         context = getBaseContext();
         dbManager = new DBManager(this);
         dbManager.open();
@@ -168,7 +173,7 @@ public class Invoice extends AppCompatActivity {
                     LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     if(inflater!=null){
                         final View marginView = inflater.inflate(R.layout.generic_popup,null);
-                        popupWindow = new PopupWindow(marginView, 800,600);
+                        popupWindow = new PopupWindow(marginView, 1200,800);
                         popupWindow.setAnimationStyle(R.style.popup_animation);
                         popupWindow.showAtLocation(Particular.getRootView(), Gravity.CENTER,0,0);
                         popupWindow.setFocusable(true);
@@ -488,7 +493,7 @@ public class Invoice extends AppCompatActivity {
                 if(inflater!=null){
                     final View paymentview = inflater.inflate(R.layout.payment,null);
                     PopupWindow paymentWindow;
-                    paymentWindow = new PopupWindow(paymentview, 800,615);
+                    paymentWindow = new PopupWindow(paymentview, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
                     paymentWindow.setAnimationStyle(R.style.popup_animation);
                     paymentWindow.showAtLocation(Particular.getRootView(), Gravity.CENTER,0,0);
                     paymentWindow.setFocusable(true);
@@ -685,7 +690,7 @@ public class Invoice extends AppCompatActivity {
                     LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     if(inflater!=null){
                         final View DetailsView = inflater.inflate(R.layout.details_popup,null);
-                        popupWindow = new PopupWindow(DetailsView, 800,600);
+                        popupWindow = new PopupWindow(DetailsView, 1200,800);
                         popupWindow.setAnimationStyle(R.style.popup_animation);
                         popupWindow.showAtLocation(Particular.getRootView(), Gravity.CENTER,0,0);
                         popupWindow.setFocusable(true);
