@@ -20,6 +20,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
+import android.widget.FrameLayout;
 import android.widget.ImageButton;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
@@ -34,6 +35,7 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.List;
 
@@ -48,6 +50,9 @@ public class MainActivity extends AppCompatActivity {
     customer_adapter Custom_Adapter;
     TextView ItemsSold, InvoicesMade, NewCustomers, TotalSales, TotalRevenue, RevenueUnit, SalesUnit;
     FirebaseFirestore firebaseFirestore;
+    FrameLayout CornerHub;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -410,11 +415,8 @@ public class MainActivity extends AppCompatActivity {
         newInventory.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                if(inflater!=null){
-                    final View marginView = inflater.inflate(R.layout.inventoryform,null);
-
-                }
+                Intent stockManagement = new Intent(MainActivity.this,StockManagement.class);
+                startActivity(stockManagement);
             }
         });
 

@@ -474,6 +474,7 @@ public class Invoice extends AppCompatActivity {
                     }
                 }else{
                     Add_Barcode_Item.setEnabled(true);
+
                     //Fetch details and add it to the recyclerview.
                 }
             }
@@ -924,11 +925,11 @@ public class Invoice extends AppCompatActivity {
                                 if(!TotalLabourLabel.getText().toString().isEmpty()){
                                    item.setLabour(Double.parseDouble(TotalLabourLabel.getText().toString()));
                                    popupWindow.dismiss();
+                                   Print.setVisibility(View.VISIBLE);
                                 }else{
                                     Toast.makeText(view.getContext(),"Labour details invalid",Toast.LENGTH_LONG).show();
                                 }
                             }
-
                         });
                         Clear.setOnClickListener(new View.OnClickListener() {
                             @Override

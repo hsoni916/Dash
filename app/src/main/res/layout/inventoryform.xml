@@ -8,7 +8,7 @@
 
     <TextView
         android:id="@+id/header_title"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/add_inventory"
         android:gravity="center"
@@ -18,18 +18,18 @@
         android:paddingBottom="8dp"
         android:paddingTop="4dp"
         android:layout_marginBottom="8dp"
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
         android:background="@drawable/textview_background_1"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintTop_toBottomOf="@id/header_title"
-        app:layout_constraintStart_toEndOf="@id/purity_etv"/>
+        app:layout_constraintEnd_toEndOf="parent"/>
 
     <TextView
         android:id="@+id/Label1"
@@ -237,6 +237,36 @@
         app:layout_constraintStart_toEndOf="@id/Label7"
         app:layout_constraintBottom_toBottomOf="@id/Label7"
         android:importantForAutofill="no" />
+
+
+
+    <Button
+        android:id="@+id/clear_item"
+        android:layout_width="64dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/clear"
+        android:padding="0dp"
+        android:textColor="@color/mattegrey1"
+        android:textSize="11sp"
+        android:backgroundTint="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/touch_etv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/save_item" />
+    <Button
+        android:id="@+id/save_item"
+        android:layout_width="64dp"
+        android:layout_height="36dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="8dp"
+        android:text="@string/save"
+        android:padding="0dp"
+        android:textColor="@color/white"
+        android:textSize="11sp"
+        android:backgroundTint="@color/teal_700"
+        app:layout_constraintTop_toBottomOf="@id/touch_etv"
+        app:layout_constraintEnd_toEndOf="@id/purity_etv"/>
 
 
 
