@@ -9,6 +9,7 @@
     <color name="white">#FFFFFFFF</color>
     <color name="mattewhite">#FDF5F9</color>
     <color name="teal_light">#4B9696</color>
+    <color name="matteYellow">#f7a400</color>
     <color name="mattegrey">#41949FA6</color>
     <color name="mattegrey1">#474747</color>
     <color name="matteblack">#28282B</color>

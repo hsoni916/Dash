@@ -1,5 +1,6 @@
 package com.example.dash;
 
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.InputFilter;
@@ -33,6 +34,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class NewSupplier extends AppCompatActivity {
     EditText Business, Owner, City, GST, Phone;
@@ -50,6 +52,8 @@ public class NewSupplier extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_supplier);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Supplier Management");
+        Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.matteYellow)));
         SupplierForm = findViewById(R.id.SupplierForm);
         NewSupplier = findViewById(R.id.NewSupplierButton);
         SupplierRecyclerView = findViewById(R.id.SupplierList);

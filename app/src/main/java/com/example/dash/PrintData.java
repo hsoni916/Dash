@@ -9,8 +9,16 @@ public class PrintData {
     List<SundryItem> sundryItemList = new ArrayList<>();
     String CustomerName, Phone;
     List<String> MOP;
-    String date;
+    String date, BillNo;
     double Discount;
+
+    public String getBillNo() {
+        return BillNo;
+    }
+
+    public void setBillNo(String billNo) {
+        BillNo = billNo;
+    }
 
     public double getDiscount() {
         return Discount;

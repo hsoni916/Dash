@@ -1,6 +1,7 @@
 package com.example.dash;
 
 import android.content.ContentValues;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -10,10 +11,12 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Spinner;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 public class StockManagement extends AppCompatActivity {
     List<String> GenericItemsGold = new ArrayList<>();
@@ -28,6 +31,9 @@ public class StockManagement extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.inventoryform);
+        Objects.requireNonNull(getSupportActionBar()).setTitle("Stock Entry");
+        Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(getBaseContext(),R.color.mattegrey1)));
+
         Purity = findViewById(R.id.purity_etv);
         Categories = findViewById(R.id.category_etv);
         dbManager = new DBManager(this);

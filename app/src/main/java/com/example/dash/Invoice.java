@@ -43,6 +43,8 @@ import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -77,10 +79,13 @@ public class Invoice extends AppCompatActivity {
     double WeightToCalculateLabour, baseprice;
     PrintData printData = new PrintData();
     TextView error_invoice;
+    int invoicecounter = 0;
+    FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.invoiceform);
+
         Objects.requireNonNull(getSupportActionBar()).setTitle("New Invoice");
         Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.teal_600)));
         context = getBaseContext();
@@ -209,11 +214,28 @@ public class Invoice extends AppCompatActivity {
                         Purity.setSelection(0);
                         Category.setEnabled(false);
                         Category.setText(finalItemAdapter.getItem(i));
-                        Supplier_Adapter = new ArrayAdapter<String>
-                                (marginView.getContext(), android.R.layout.simple_spinner_item,
-                                        dbManager.ListAllSuppliers());
-                        //fetch suppliers from backend.
-                        Supplier_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                        if(dbManager.ListAllSuppliers().size()>0){
+                            Supplier_Adapter = new ArrayAdapter<String>
+                                    (marginView.getContext(), android.R.layout.simple_spinner_item,
+                                            dbManager.ListAllSuppliers());
+                        }
+                        db.collection("Suppliers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                if(task.isSuccessful()){
+                                    List<String> supplierList = new ArrayList<>();
+                                    for (QueryDocumentSnapshot doc : task.getResult()) {
+                                        Supplier NewSupplier = doc.toObject(Supplier.class);
+                                        supplierList.add(NewSupplier.getBusiness());
+                                    }
+                                    Supplier_Adapter = new ArrayAdapter<String>(marginView.getContext(), android.R.layout.simple_spinner_item,
+                                            supplierList);
+                                    Supplier_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                                    Supplier.setAdapter(Supplier_Adapter);
+                                }
+                            }
+                        });
+
 
                         Purity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                             @Override
@@ -270,15 +292,7 @@ public class Invoice extends AppCompatActivity {
                             }
                         });
 
-                        if(Supplier_Adapter.getCount()<0){
-                            Log.d("Supplier count","< 0");
-                            List<String> Empty_Adapter = new ArrayList<>();
-                            Supplier_Adapter = new ArrayAdapter<String>
-                                    (marginView.getContext(), android.R.layout.simple_spinner_item,
-                                            new ArrayList<String>(){{addAll(Empty_Adapter);}});
-                            Supplier_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                        }
-                        Supplier.setAdapter(Supplier_Adapter);
+
                         //if(Supplier_Adapter.getCount()==0)
                    /*     Supplier.setOnFocusChangeListener(new View.OnFocusChangeListener() {
                             @Override
@@ -422,6 +436,7 @@ public class Invoice extends AppCompatActivity {
                                     //    + "ExtraCharges" + " INTEGER,"
                                     //    + "ADD_INFO" + " STRING,"
                                      //   + "Status" + " INTEGER NOT NULL DEFAULT 0 CHECK ( Status IN (-1,0,1))"
+                                contentValues = new ContentValues();
                                 contentValues.put("Name",Category.getText().toString());
                                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
                                 contentValues.put("Date_Of",dateFormat.format(Calendar.getInstance().getTime()));
@@ -464,7 +479,6 @@ public class Invoice extends AppCompatActivity {
                                     long id = db.insert("Sundry_Supplies", null,contentValues);
                                     if(id!=-1){
                                         Toast.makeText(marginView.getContext(),"Item Saved",Toast.LENGTH_LONG).show();
-
                                         AddItem(id);
                                         popupWindow.dismiss();
                                     }else{
@@ -585,9 +599,13 @@ public class Invoice extends AppCompatActivity {
                                     progressBar.setVisibility(View.VISIBLE);
                                     if(sundryItemList!=null && sundryItemList.size()!=0){
                                         printData.setSundryItemList(sundryItemList);
-                                        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
                                         String s = DateFormat.format("dd/MM/yyy", new java.util.Date()).toString();
                                         printData.setDate(s);
+                                        Calendar calendar = Calendar.getInstance();
+                                        dbManager.addCounter(calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.YEAR));
+                                        invoicecounter = invoicecounter + dbManager.getCounter(calendar.get(Calendar.MONTH),calendar.get(Calendar.YEAR));
+                                        printData.setBillNo(s.replaceAll("/","") + invoicecounter);
                                         db.collection("Invoices").add(printData).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                             @Override
                                             public void onSuccess(DocumentReference documentReference) {
@@ -603,6 +621,7 @@ public class Invoice extends AppCompatActivity {
                                                 Particular.setText(null);
                                                 Print.setEnabled(true);
                                                 ItemList.setAdapter(null);
+                                                itemids.clear();
                                                 progressBar.setVisibility(View.GONE);
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {

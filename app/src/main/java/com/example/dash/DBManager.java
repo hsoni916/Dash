@@ -8,7 +8,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
-import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -354,6 +353,7 @@ public class DBManager {
     }
 
 
+
     public void AddStandards() {
         long result = -1;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -409,5 +409,51 @@ public class DBManager {
 
     public void updateSupplier(Supplier supplierNew, int supplier_Position) {
 
+    }
+
+    public long addCounter(int month, int year){
+        long result = -1;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String sql = "SELECT Month FROM Invoice_Counter WHERE Month ='" + month + "' AND Year='" + year +"'";
+        Cursor fetch = db.rawQuery(sql,null);
+        if(!fetch.moveToNext()){
+            String addNewCounter = "INSERT INTO Invoice_Counter (Month, Year, Counter) VALUES (?, ?, ?)";
+            SQLiteStatement statement = database.compileStatement(addNewCounter);
+            statement.bindDouble(1, month);
+            statement.bindDouble(2, year);
+            statement.bindDouble(3, 0);
+            try{
+                result = statement.executeInsert();
+            }catch (Exception e){
+                e.fillInStackTrace();
+            }
+        }
+        close();
+        return result;
+
+    }
+
+    public int getCounter(int month, int year){
+        int c = 0;
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String sql = "SELECT Counter FROM Invoice_Counter WHERE Month ='" + month + "' AND Year='" + year +"'";
+        Cursor fetch = db.rawQuery(sql,null);
+        if(fetch.moveToFirst()){
+            c = fetch.getInt(0);
+        }
+        return c;
+    }
+    public long updateCounter(int month, int year, int D){
+        long result = -1;
+        String updateCounter = "INSERT INTO Invoice_Counter (Counter) VALUES (?) WHERE Month ='" + month + "' AND Year='" + year +"'";
+        SQLiteStatement statement = database.compileStatement(updateCounter);
+        statement.bindDouble(1, D + getCounter(month,year));
+        try{
+            result = statement.executeInsert();
+        }catch (Exception e){
+            e.fillInStackTrace();
+        }
+        close();
+        return result;
     }
 }

@@ -19,6 +19,11 @@ public class DBHelper extends SQLiteOpenHelper {
         super(context, DB_NAME,null, DB_VERSION);
     }
 
+    private static final String CREATE_TABLE_MASTER = "create table if not exists " + "Invoice_Counter" +
+            "(" + "Month" + " INTEGER NOT NULL,"
+            + "Year" + " INTEGER NOT NULL,"
+            + "Counter" + " INTEGER NOT NULL DEFAULT 0"
+            + ");";
 
     private static final String CREATE_TABLE= "create table if not exists " + "CustomersList" +
             "(" + "Name" +" TEXT NOT NULL,"
@@ -86,6 +91,7 @@ public class DBHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+        db.execSQL(CREATE_TABLE_MASTER);
         db.execSQL(CREATE_TABLE);
         db.execSQL(CREATE_TABLE_CONTROLS);
         db.execSQL(CREATE_TABLE_2);
@@ -105,6 +111,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL("DROP TABLE IF EXISTS Inventory");
         db.execSQL("DROP TABLE IF EXISTS Supplier");
         db.execSQL("DROP TABLE IF EXISTS Sundry_Supplies");
+        db.execSQL("DROP TABLE IF EXISTS Invoice_counter");
         onCreate(db);
     }
 }
