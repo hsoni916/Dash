@@ -39,14 +39,17 @@ public class DBHelper extends SQLiteOpenHelper {
     private static final String CREATE_TABLE_2 = "create table if not exists " + "Inventory" +
             "("
             + "Barcode" + " STRING,"
+            + "Date_Of" + " STRING NOT NULL,"
+            + "Name" + " STRING NOT NULL,"
             + "Purity" + " STRING NOT NULL,"
             + "Wastage" + " DECIMAL(2,2),"
+            + "ExtraCharges" + " INTEGER,"
             + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
             + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
             + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
-            + "ExtraCharges" + " INTEGER,"
             + "HUID" + " STRING,"
-            + "SupplierCode" + " INTEGER" + ");";
+            + "SupplierCode" + " INTEGER" +
+            ");";
 
     private static final String CREATE_TABLE_3 = "create table if not exists " + "Supplier" +
             "(" + "Business_Name" + " STRING,"

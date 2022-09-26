@@ -59,4 +59,15 @@
     <string name="add_supplier">New Supplier</string>
     <string name="update_supplier">Update</string>
     <string name="name_error_1">Name cannot be empty.</string>
+    <string name="HUID">HUID:</string>
+    <string name="search_inventory">Search inventory</string>
+    <string name="add_items_to_invoice">Add items to invoice</string>
+    <string name="items_sold">Items Sold</string>
+    <string name="invoices_made">Invoices Made</string>
+    <string name="new_customers">New Customers</string>
+    <string name="total_sales">Total Sales</string>
+    <string name="revenue">Revenue</string>
+    <string name="lac">Lac.</string>
+    <string name="gm">gm</string>
+    <string name="daily_reminder">Daily Reminder:</string>
 </resources>

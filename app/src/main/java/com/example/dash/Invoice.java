@@ -44,7 +44,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -87,7 +86,7 @@ public class Invoice extends AppCompatActivity {
         setContentView(R.layout.invoiceform);
 
         Objects.requireNonNull(getSupportActionBar()).setTitle("New Invoice");
-        Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(new ColorDrawable(getResources().getColor(R.color.teal_600)));
+        Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(getBaseContext(),R.color.teal_600)));
         context = getBaseContext();
         dbManager = new DBManager(this);
         dbManager.open();
@@ -119,16 +118,16 @@ public class Invoice extends AppCompatActivity {
         List<String> CustomerLists = dbManager.ListAllCustomer();
         List<String> PhoneNumbers = dbManager.ListAllPhone();
         List<String> Birthdays = dbManager.ListDOB();
-        ArrayAdapter<String> NameAdapter = new ArrayAdapter<String>
-                (this,android.R.layout.select_dialog_item,CustomerLists);
-        ArrayAdapter<String> PhoneAdapter = new ArrayAdapter<String>
+        ArrayAdapter<String> NameAdapter = new ArrayAdapter<>
+                (this, android.R.layout.select_dialog_item, CustomerLists);
+        ArrayAdapter<String> PhoneAdapter = new ArrayAdapter<>
                 (this,android.R.layout.select_dialog_item,PhoneNumbers);
-        ArrayAdapter<String> DOBAdapter = new ArrayAdapter<String>
+        ArrayAdapter<String> DOBAdapter = new ArrayAdapter<>
                 (this,android.R.layout.select_dialog_item,Birthdays);
-        ArrayAdapter<String> ItemAdapter = new ArrayAdapter<String>
+        ArrayAdapter<String> ItemAdapter = new ArrayAdapter<>
                 (this, android.R.layout.select_dialog_item,dbManager.ListAllItems());
         if(ItemAdapter.getCount()==0){
-            ItemAdapter = new ArrayAdapter<String>(this, android.R.layout.select_dialog_item,
+            ItemAdapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_item,
                     new ArrayList<String>(){{addAll(GenericItemsGold); addAll(GenericItemsSilver);}});
         }
 
@@ -140,362 +139,356 @@ public class Invoice extends AppCompatActivity {
 
         Particular.setThreshold(2);
         Particular.setAdapter(ItemAdapter);
-        Names.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedName = NameAdapter.getItem(i);
-                int indextouse = CustomerLists.indexOf(selectedName);
-                Log.d("Data",i+ "--" +selectedName+ "--" +indextouse);
-                printData.setCustomerName(CustomerLists.get(indextouse));
-                PhoneNumber.setEnabled(false);
-                PhoneNumber.setText(PhoneNumbers.get(indextouse));
-                printData.setPhone(PhoneNumbers.get(indextouse));
-                Log.d("Index", String.valueOf(indextouse));
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM");
-                try {
-                    //Date date1=new SimpleDateFormat("dd-MM", Locale.getDefault()).parse(String.valueOf(DOBAdapter.getItem(i)));
-                    Date date1 = dateFormat.parse(String.valueOf(Birthdays.get(indextouse)));
-                    Date c = Calendar.getInstance().getTime();
-                    Date today= dateFormat.parse(dateFormat.format(c));
-                    Log.d("Date comparison:",today.toString() + ":" + date1.toString());
-                    assert date1 != null;
-                    if(date1.equals(today)){
-                        Toast.makeText(getBaseContext(),"Customer's Birthday.",Toast.LENGTH_LONG).show();
-                    }
-                } catch (ParseException e) {
-                    e.printStackTrace();
+        Names.setOnItemClickListener((adapterView, view, i, l) -> {
+            String selectedName = NameAdapter.getItem(i);
+            int indextouse = CustomerLists.indexOf(selectedName);
+            Log.d("Data",i+ "--" +selectedName+ "--" +indextouse);
+            printData.setCustomerName(CustomerLists.get(indextouse));
+            PhoneNumber.setEnabled(false);
+            PhoneNumber.setText(PhoneNumbers.get(indextouse));
+            printData.setPhone(PhoneNumbers.get(indextouse));
+            Log.d("Index", String.valueOf(indextouse));
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM",Locale.getDefault());
+            try {
+                //Date date1=new SimpleDateFormat("dd-MM", Locale.getDefault()).parse(String.valueOf(DOBAdapter.getItem(i)));
+                Date date1 = dateFormat.parse(String.valueOf(Birthdays.get(indextouse)));
+                Date c = Calendar.getInstance().getTime();
+                Date today= dateFormat.parse(dateFormat.format(c));
+                if(today!=null && date1!=null){
+                    Log.d("Date comparison:",today + ":" + date1);
                 }
+                assert date1 != null;
+                if(date1.equals(today)){
+                    Toast.makeText(getBaseContext(),"Customer's Birthday.",Toast.LENGTH_LONG).show();
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
             }
         });
 
         ArrayAdapter<String> finalItemAdapter = ItemAdapter;
-        Particular.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-                if(GenericItemsGold.contains(finalItemAdapter.getItem(i)) || GenericItemsSilver.contains(finalItemAdapter.getItem(i))){
-                    Log.d("Item :","Generic");
-                    Add_Barcode_Item.setEnabled(false);
-                    LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                    if(inflater!=null){
-                        final View marginView = inflater.inflate(R.layout.generic_popup,null);
-                        popupWindow = new PopupWindow(marginView, 1200,800);
-                        popupWindow.setAnimationStyle(R.style.popup_animation);
-                        popupWindow.showAtLocation(Particular.getRootView(), Gravity.CENTER,0,0);
-                        popupWindow.setFocusable(true);
-                        popupWindow.update();
-                        InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
-                        imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
-                        Spinner Purity;
-                        Spinner Supplier;
-                        TextView Category;
-                        EditText GrossWeight, LessWeight, NetWeight, ExtraCharges, Wastage;
-                        TextView BasePurity;
-                        Purity = marginView.findViewById(R.id.purity_etv);
-                        Category = marginView.findViewById(R.id.category_etv);
-                        Supplier = marginView.findViewById(R.id.supplier_etv);
+        Particular.setOnItemClickListener((adapterView, view, i, l) -> {
+            if(GenericItemsGold.contains(finalItemAdapter.getItem(i)) || GenericItemsSilver.contains(finalItemAdapter.getItem(i))){
+                Log.d("Item :","Generic");
+                Add_Barcode_Item.setEnabled(false);
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                if(inflater!=null){
+                    final View marginView = inflater.inflate(R.layout.generic_popup,null);
+                    popupWindow = new PopupWindow(marginView, 1200,800);
+                    popupWindow.setAnimationStyle(R.style.popup_animation);
+                    popupWindow.showAtLocation(Particular.getRootView(), Gravity.CENTER,0,0);
+                    popupWindow.setFocusable(true);
+                    popupWindow.update();
+                    InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
+                    imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
+                    Spinner Purity;
+                    Spinner Supplier;
+                    TextView Category;
+                    EditText GrossWeight, LessWeight, NetWeight, ExtraCharges, Wastage;
+                    TextView BasePurity;
+                    Purity = marginView.findViewById(R.id.purity_etv);
+                    Category = marginView.findViewById(R.id.category_etv);
+                    Supplier = marginView.findViewById(R.id.supplier_etv);
 
-                        GrossWeight = marginView.findViewById(R.id.weight_etv);
-                        LessWeight = marginView.findViewById(R.id.less_weight_etv);
-                        NetWeight = marginView.findViewById(R.id.net_weight_etv);
-                        ExtraCharges = marginView.findViewById(R.id.charges_etv);
-                        Wastage = marginView.findViewById(R.id.touch_etv);
-                        BasePurity = marginView.findViewById(R.id.Label7);
-                        TextView NameError = marginView.findViewById(R.id.NameError);
-                        Button save,clear;
-                        save = marginView.findViewById(R.id.save_item);
-                        clear = marginView.findViewById(R.id.clear_item);
+                    GrossWeight = marginView.findViewById(R.id.weight_etv);
+                    LessWeight = marginView.findViewById(R.id.less_weight_etv);
+                    NetWeight = marginView.findViewById(R.id.net_weight_etv);
+                    ExtraCharges = marginView.findViewById(R.id.charges_etv);
+                    Wastage = marginView.findViewById(R.id.touch_etv);
 
-                        ArrayAdapter<String> Purity_Adapter = new ArrayAdapter<String>
+                    BasePurity = marginView.findViewById(R.id.Label7);
+                    TextView NameError = marginView.findViewById(R.id.NameError);
+                    Button save,clear;
+                    save = marginView.findViewById(R.id.save_item);
+                    clear = marginView.findViewById(R.id.clear_item);
+
+                    ArrayAdapter<String> Purity_Adapter = new ArrayAdapter<>
+                            (marginView.getContext(), android.R.layout.simple_spinner_item,
+                                    new ArrayList<String>(){{addAll(Purity_Levels_Gold); addAll(Purity_Levels_Silver);}});
+                    Purity_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+
+                    Purity.setAdapter(Purity_Adapter);
+                    Purity.setSelection(0);
+                    Category.setEnabled(false);
+                    Category.setText(finalItemAdapter.getItem(i));
+                    if(dbManager.ListAllSuppliers().size()>0){
+                        Supplier_Adapter = new ArrayAdapter<>
                                 (marginView.getContext(), android.R.layout.simple_spinner_item,
-                                        new ArrayList<String>(){{addAll(Purity_Levels_Gold); addAll(Purity_Levels_Silver);}});
-                        Purity_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-                        Purity.setAdapter(Purity_Adapter);
-                        Purity.setSelection(0);
-                        Category.setEnabled(false);
-                        Category.setText(finalItemAdapter.getItem(i));
-                        if(dbManager.ListAllSuppliers().size()>0){
-                            Supplier_Adapter = new ArrayAdapter<String>
-                                    (marginView.getContext(), android.R.layout.simple_spinner_item,
-                                            dbManager.ListAllSuppliers());
+                                        dbManager.ListAllSuppliers());
+                    }
+                    db.collection("Suppliers").get().addOnCompleteListener(task -> {
+                        if(task.isSuccessful()){
+                            List<String> supplierList = new ArrayList<>();
+                            for (QueryDocumentSnapshot doc : task.getResult()) {
+                                Supplier NewSupplier = doc.toObject(Supplier.class);
+                                supplierList.add(NewSupplier.getBusiness());
+                            }
+                            Supplier_Adapter = new ArrayAdapter<>(marginView.getContext(), android.R.layout.simple_spinner_dropdown_item,
+                                    supplierList);
+                            Supplier_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                            Supplier.setAdapter(Supplier_Adapter);
                         }
-                        db.collection("Suppliers").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                if(task.isSuccessful()){
-                                    List<String> supplierList = new ArrayList<>();
-                                    for (QueryDocumentSnapshot doc : task.getResult()) {
-                                        Supplier NewSupplier = doc.toObject(Supplier.class);
-                                        supplierList.add(NewSupplier.getBusiness());
-                                    }
-                                    Supplier_Adapter = new ArrayAdapter<String>(marginView.getContext(), android.R.layout.simple_spinner_item,
-                                            supplierList);
-                                    Supplier_Adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-                                    Supplier.setAdapter(Supplier_Adapter);
-                                }
+                    });
+
+
+                    Purity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                        @Override
+                        public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                            typeof =Purity.getItemAtPosition(i).toString();
+                            switch (i){
+                                case 0:
+                                    BasePurity.setText("99");
+                                    BasePurity.setEnabled(false);
+                                    break;
+                                case 1:
+                                    BasePurity.setText("96");
+                                    BasePurity.setEnabled(false);
+                                    break;
+                                case 2:
+                                    BasePurity.setText("92");
+                                    BasePurity.setEnabled(false);
+                                    break;
+                                case 3:
+                                    BasePurity.setText("88");
+                                    BasePurity.setEnabled(false);
+                                    break;
+                                case 4:
+                                    BasePurity.setText("84");
+                                    BasePurity.setEnabled(false);
+                                    break;
+                                case 5:
+                                    BasePurity.setText("76");
+                                    BasePurity.setEnabled(false);
+                                    break;
+                                case 6:
+                                    BasePurity.setText("59");
+                                    BasePurity.setEnabled(false);
+                                    break;
+                                case 8: BasePurity.setText("92.5");
+                                    BasePurity.setEnabled(false);
+                                    break;
+                                case 9: BasePurity.setText("72");
+                                    BasePurity.setEnabled(false);
+                                    break;
+                                case 10:
+                                case 11:
+                                    BasePurity.setText("62");
+                                    BasePurity.setEnabled(false);
+                                    break;
+                                case 7:
+                                case 12:
+                                    BasePurity.setEnabled(true);
+                                    break;
                             }
-                        });
+                        }
+                        @Override
+                        public void onNothingSelected(AdapterView<?> adapterView) {
+                        }
+                    });
 
 
-                        Purity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                            @Override
-                            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                                typeof =Purity.getItemAtPosition(i).toString();
-                                switch (i){
-                                    case 0:
-                                        BasePurity.setText("99");
-                                        BasePurity.setEnabled(false);
-                                        break;
-                                    case 1:
-                                        BasePurity.setText("96");
-                                        BasePurity.setEnabled(false);
-                                        break;
-                                    case 2:
-                                        BasePurity.setText("92");
-                                        BasePurity.setEnabled(false);
-                                        break;
-                                    case 3:
-                                        BasePurity.setText("88");
-                                        BasePurity.setEnabled(false);
-                                        break;
-                                    case 4:
-                                        BasePurity.setText("84");
-                                        BasePurity.setEnabled(false);
-                                        break;
-                                    case 5:
-                                        BasePurity.setText("76");
-                                        BasePurity.setEnabled(false);
-                                        break;
-                                    case 6:
-                                        BasePurity.setText("59");
-                                        BasePurity.setEnabled(false);
-                                        break;
-                                    case 8: BasePurity.setText("92.5");
-                                        BasePurity.setEnabled(false);
-                                        break;
-                                    case 9: BasePurity.setText("72");
-                                        BasePurity.setEnabled(false);
-                                        break;
-                                    case 10:
-                                    case 11:
-                                        BasePurity.setText("62");
-                                        BasePurity.setEnabled(false);
-                                        break;
-                                    case 7:
-                                    case 12:
-                                        BasePurity.setEnabled(true);
-                                        break;
-                                }
-                            }
-                            @Override
-                            public void onNothingSelected(AdapterView<?> adapterView) {
-                            }
-                        });
-
-
-                        //if(Supplier_Adapter.getCount()==0)
-                   /*     Supplier.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                            @Override
-                            public void onFocusChange(View view, boolean b) {
-                                if(!b){
-                                    if(Supplier.getSelectedItem().toString().length()>=3){
-                                        if(!Supplier_Adapter.toString().contains(Supplier.getSelectedItem().toString())){
-                                            //Bubble to add that to the
-                                            ConstraintLayout add_supplier_layout = marginView.findViewById(R.id.supplier_add_layout);
-                                            add_supplier_layout.setVisibility(View.VISIBLE);
-                                            Button Add,Close;
-                                            Add = marginView.findViewById(R.id.add_supplier);
-                                            Close = marginView.findViewById(R.id.don't_add_supplier);
-                                            Add.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View view) {
-                                                    long result = dbManager.AddNewSupplier(Supplier.getSelectedItem().toString());
-                                                    if(result!=-1){
-                                                        TextView Attention_text = marginView.findViewById(R.id.Attention_text);
-                                                        Attention_text.setText(R.string.supplier_success);
-                                                        Attention_text.setCompoundDrawablesWithIntrinsicBounds(R.drawable.success, 0, 0, 0);
-                                                        Attention_text.setCompoundDrawablePadding(4);
-                                                        final Handler handler = new Handler();
-                                                        handler.postDelayed(new Runnable() {
-                                                            @Override
-                                                            public void run() {
-                                                                // Do something after 5s = 5000ms
-                                                                add_supplier_layout.setVisibility(View.GONE);
-                                                            }
-                                                        }, 2500);
-                                                    }
+                    //if(Supplier_Adapter.getCount()==0)
+               /*     Supplier.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        @Override
+                        public void onFocusChange(View view, boolean b) {
+                            if(!b){
+                                if(Supplier.getSelectedItem().toString().length()>=3){
+                                    if(!Supplier_Adapter.toString().contains(Supplier.getSelectedItem().toString())){
+                                        //Bubble to add that to the
+                                        ConstraintLayout add_supplier_layout = marginView.findViewById(R.id.supplier_add_layout);
+                                        add_supplier_layout.setVisibility(View.VISIBLE);
+                                        Button Add,Close;
+                                        Add = marginView.findViewById(R.id.add_supplier);
+                                        Close = marginView.findViewById(R.id.don't_add_supplier);
+                                        Add.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                long result = dbManager.AddNewSupplier(Supplier.getSelectedItem().toString());
+                                                if(result!=-1){
+                                                    TextView Attention_text = marginView.findViewById(R.id.Attention_text);
+                                                    Attention_text.setText(R.string.supplier_success);
+                                                    Attention_text.setCompoundDrawablesWithIntrinsicBounds(R.drawable.success, 0, 0, 0);
+                                                    Attention_text.setCompoundDrawablePadding(4);
+                                                    final Handler handler = new Handler();
+                                                    handler.postDelayed(new Runnable() {
+                                                        @Override
+                                                        public void run() {
+                                                            // Do something after 5s = 5000ms
+                                                            add_supplier_layout.setVisibility(View.GONE);
+                                                        }
+                                                    }, 2500);
                                                 }
-                                            });
-
-                                            Close.setOnClickListener(new View.OnClickListener() {
-                                                @Override
-                                                public void onClick(View view) {
-                                                    add_supplier_layout.setVisibility(View.GONE);
-                                                }
-                                            });
-                                        }
-                                    }
-                                }else{
-                                    if(!Supplier.getSelectedItem().toString().isEmpty()){
-                                        TextView attention = marginView.findViewById(R.id.Attention_text_1);
-                                        if(attention.getVisibility()==View.INVISIBLE || attention.getVisibility()==View.GONE){
-                                            attention.setVisibility(View.VISIBLE);
-                                        }
-                                    }else{
-                                        TextView attention = marginView.findViewById(R.id.Attention_text_1);
-                                        attention.setVisibility(View.GONE);
-                                    }
-                                }
-                            }
-                        }); */
-                        //Receive input from user and save it.
-                        //in a separate database as to avoid adding it to inventory.
-
-                        GrossWeight.addTextChangedListener(new TextWatcher() {
-                            @Override
-                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                            }
-
-                            @Override
-                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                            }
-
-                            @Override
-                            public void afterTextChanged(Editable editable) {
-                                if(!GrossWeight.getText().toString().isEmpty()){
-                                    if(!LessWeight.getText().toString().isEmpty()){
-                                        double diff = Double.parseDouble(GrossWeight.getText().toString())-Double.parseDouble(LessWeight.getText().toString());
-                                        NetWeight.setText(String.format(Locale.getDefault(),"%.2f",diff));
-                                    }else{
-                                     NetWeight.setText(GrossWeight.getText().toString());
-                                    }
-                                }else{
-                                    NetWeight.setText(null);
-                                    if(NameError.getVisibility()==View.VISIBLE){
-                                        NameError.setText(null);
-                                        NameError.setVisibility(View.INVISIBLE);
-                                    }
-                                }
-                            }
-                        });
-
-                        LessWeight.addTextChangedListener(new TextWatcher() {
-                            @Override
-                            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                            }
-
-                            @Override
-                            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
-
-                            }
-
-                            @Override
-                            public void afterTextChanged(Editable editable) {
-                                if(!GrossWeight.getText().toString().isEmpty()){
-                                    double GW = Double.parseDouble(GrossWeight.getText().toString());
-                                    if(!LessWeight.getText().toString().isEmpty()){
-                                        try{
-                                            double LW = Double.parseDouble(LessWeight.getText().toString());
-                                            if(LW<GW){
-                                                save.setEnabled(true);
-                                                double NW = GW-LW;
-                                                NetWeight.setText(String.format(Locale.getDefault(),"%.3f", NW));
-                                            }else{
-                                                save.setEnabled(false);
-                                                Toast.makeText(getBaseContext(),"Invalid weight",Toast.LENGTH_LONG).show();
                                             }
-                                        }catch (Exception e){
-                                            e.printStackTrace();
-                                        }
-                                    }else{
-                                        NetWeight.setText(GrossWeight.getText().toString());
+                                        });
+
+                                        Close.setOnClickListener(new View.OnClickListener() {
+                                            @Override
+                                            public void onClick(View view) {
+                                                add_supplier_layout.setVisibility(View.GONE);
+                                            }
+                                        });
                                     }
                                 }
-                            }
-                        });
-
-                        LessWeight.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                            @Override
-                            public void onFocusChange(View view, boolean b) {
-                                if(!b){
-                                    if(LessWeight.getText().toString().isEmpty()){
-                                        double zero =0;
-                                        LessWeight.setText(String.format(Locale.getDefault(),"%.3f",zero));
+                            }else{
+                                if(!Supplier.getSelectedItem().toString().isEmpty()){
+                                    TextView attention = marginView.findViewById(R.id.Attention_text_1);
+                                    if(attention.getVisibility()==View.INVISIBLE || attention.getVisibility()==View.GONE){
+                                        attention.setVisibility(View.VISIBLE);
                                     }
+                                }else{
+                                    TextView attention = marginView.findViewById(R.id.Attention_text_1);
+                                    attention.setVisibility(View.GONE);
                                 }
                             }
-                        });
+                        }
+                    }); */
+                    //Receive input from user and save it.
+                    //in a separate database as to avoid adding it to inventory.
 
-                        save.setOnClickListener(new View.OnClickListener() {
-                            @Override
-                            public void onClick(View view) {
-                                    //    + "Wastage" + " DECIMAL(3,3) NOT NULL,"
-                                    //    + "ExtraCharges" + " INTEGER,"
-                                    //    + "ADD_INFO" + " STRING,"
-                                     //   + "Status" + " INTEGER NOT NULL DEFAULT 0 CHECK ( Status IN (-1,0,1))"
-                                contentValues = new ContentValues();
-                                contentValues.put("Name",Category.getText().toString());
-                                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
-                                contentValues.put("Date_Of",dateFormat.format(Calendar.getInstance().getTime()));
-                                String example = dateFormat.format(Calendar.getInstance().getTime());
-                                if(!GrossWeight.getText().toString().isEmpty()){
-                                    contentValues.put("GrossWeight",Double.parseDouble(GrossWeight.getText().toString()));
-                                    if(!LessWeight.getText().toString().isEmpty()){
-                                        try{
-                                            contentValues.put("LessWeight",Double.parseDouble(LessWeight.getText().toString()));
-                                            contentValues.put("NetWeight",Double.parseDouble(GrossWeight.getText().toString())-Double.parseDouble(LessWeight.getText().toString()));
-                                        }catch (Exception e){
-                                            e.printStackTrace();
-                                            contentValues.put("LessWeight",0.00);
-                                            contentValues.put("NetWeight",Double.parseDouble(GrossWeight.getText().toString()));
+                    GrossWeight.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                            if(!GrossWeight.getText().toString().isEmpty()){
+                                if(!LessWeight.getText().toString().isEmpty()){
+                                    double diff = Double.parseDouble(GrossWeight.getText().toString())-Double.parseDouble(LessWeight.getText().toString());
+                                    NetWeight.setText(String.format(Locale.getDefault(),"%.2f",diff));
+                                }else{
+                                 NetWeight.setText(GrossWeight.getText().toString());
+                                }
+                            }else{
+                                NetWeight.setText(null);
+                                if(NameError.getVisibility()==View.VISIBLE){
+                                    NameError.setText(null);
+                                    NameError.setVisibility(View.INVISIBLE);
+                                }
+                            }
+                        }
+                    });
+
+                    LessWeight.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                            if(!GrossWeight.getText().toString().isEmpty()){
+                                double GW = Double.parseDouble(GrossWeight.getText().toString());
+                                if(!LessWeight.getText().toString().isEmpty()){
+                                    try{
+                                        double LW = Double.parseDouble(LessWeight.getText().toString());
+                                        if(LW<GW){
+                                            save.setEnabled(true);
+                                            double NW = GW-LW;
+                                            NetWeight.setText(String.format(Locale.getDefault(),"%.3f", NW));
+                                        }else{
+                                            save.setEnabled(false);
+                                            Toast.makeText(getBaseContext(),"Invalid weight",Toast.LENGTH_LONG).show();
                                         }
-                                    }else{
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }else{
+                                    NetWeight.setText(GrossWeight.getText().toString());
+                                }
+                            }
+                        }
+                    });
+
+                    LessWeight.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                        @Override
+                        public void onFocusChange(View view, boolean b) {
+                            if(!b){
+                                if(LessWeight.getText().toString().isEmpty()){
+                                    double zero =0;
+                                    LessWeight.setText(String.format(Locale.getDefault(),"%.3f",zero));
+                                }
+                            }
+                        }
+                    });
+
+                    save.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                                //    + "Wastage" + " DECIMAL(3,3) NOT NULL,"
+                                //    + "ExtraCharges" + " INTEGER,"
+                                //    + "ADD_INFO" + " STRING,"
+                                 //   + "Status" + " INTEGER NOT NULL DEFAULT 0 CHECK ( Status IN (-1,0,1))"
+                            contentValues = new ContentValues();
+                            contentValues.put("Name",Category.getText().toString());
+                            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
+                            contentValues.put("Date_Of",dateFormat.format(Calendar.getInstance().getTime()));
+                            String example = dateFormat.format(Calendar.getInstance().getTime());
+                            if(!GrossWeight.getText().toString().isEmpty()){
+                                contentValues.put("GrossWeight",Double.parseDouble(GrossWeight.getText().toString()));
+                                if(!LessWeight.getText().toString().isEmpty()){
+                                    try{
+                                        contentValues.put("LessWeight",Double.parseDouble(LessWeight.getText().toString()));
+                                        contentValues.put("NetWeight",Double.parseDouble(GrossWeight.getText().toString())-Double.parseDouble(LessWeight.getText().toString()));
+                                    }catch (Exception e){
+                                        e.printStackTrace();
                                         contentValues.put("LessWeight",0.00);
                                         contentValues.put("NetWeight",Double.parseDouble(GrossWeight.getText().toString()));
                                     }
-                                    contentValues.put("TypeOfArticle",typeof);
-                                    if(!Wastage.getText().toString().isEmpty()){
-                                        try{
-                                            contentValues.put("Wastage",Double.parseDouble(Wastage.getText().toString())
-                                                    +Double.parseDouble(BasePurity.getText().toString()));
-                                        }catch (Exception e){
-                                            e.printStackTrace();
-                                        }
-                                    }else{
-                                        contentValues.put("Wastage",0.00);
-                                    }
-                                    if(!ExtraCharges.getText().toString().isEmpty()){
-                                        try{
-                                            contentValues.put("ExtraCharges",Double.parseDouble(ExtraCharges.getText().toString()));
-                                        }catch (Exception e){
-                                            e.printStackTrace();
-                                        }
-                                    }
-                                    dbHelper = new DBHelper(marginView.getContext());
-                                    SQLiteDatabase db = dbHelper.getWritableDatabase();
-                                    long id = db.insert("Sundry_Supplies", null,contentValues);
-                                    if(id!=-1){
-                                        Toast.makeText(marginView.getContext(),"Item Saved",Toast.LENGTH_LONG).show();
-                                        AddItem(id);
-                                        popupWindow.dismiss();
-                                    }else{
-                                        Toast.makeText(marginView.getContext(),"Item Save Unsuccessful",Toast.LENGTH_LONG).show();
+                                }else{
+                                    contentValues.put("LessWeight",0.00);
+                                    contentValues.put("NetWeight",Double.parseDouble(GrossWeight.getText().toString()));
+                                }
+                                contentValues.put("TypeOfArticle",typeof);
+                                if(!Wastage.getText().toString().isEmpty()){
+                                    try{
+                                        contentValues.put("Wastage",Double.parseDouble(Wastage.getText().toString())
+                                                +Double.parseDouble(BasePurity.getText().toString()));
+                                    }catch (Exception e){
+                                        e.printStackTrace();
                                     }
                                 }else{
-                                    NameError.setText(R.string.gross_weight_error);
-                                    NameError.setVisibility(View.VISIBLE);
+                                    contentValues.put("Wastage",0.00);
                                 }
+                                if(!ExtraCharges.getText().toString().isEmpty()){
+                                    try{
+                                        contentValues.put("ExtraCharges",Double.parseDouble(ExtraCharges.getText().toString()));
+                                    }catch (Exception e){
+                                        e.printStackTrace();
+                                    }
+                                }
+                                dbHelper = new DBHelper(marginView.getContext());
+                                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                                long id = db.insert("Sundry_Supplies", null,contentValues);
+                                if(id!=-1){
+                                    Toast.makeText(marginView.getContext(),"Item Saved",Toast.LENGTH_LONG).show();
+                                    AddItem(id);
+                                    popupWindow.dismiss();
+                                }else{
+                                    Toast.makeText(marginView.getContext(),"Item Save Unsuccessful",Toast.LENGTH_LONG).show();
+                                }
+                            }else{
+                                NameError.setText(R.string.gross_weight_error);
+                                NameError.setVisibility(View.VISIBLE);
                             }
-                        });
-                    }
-                }else{
-                    Add_Barcode_Item.setEnabled(true);
-
-                    //Fetch details and add it to the recyclerview.
+                        }
+                    });
                 }
+            }else{
+                Add_Barcode_Item.setEnabled(true);
+
+                //Fetch details and add it to the recyclerview.
             }
         });
 
@@ -840,9 +833,6 @@ public class Invoice extends AppCompatActivity {
                                     item.setLabourType("Percent");
                                     LabourSubType1.removeAllViews();
                                     Log.d("Percent","True");
-                                    //view = getLayoutInflater().inflate(R.layout.labourbypercent,null);
-                                    //LabourSubType1.addView(view);
-                                    //LabourSubType1.setVisibility(View.VISIBLE);
                                     MetalPrice.addTextChangedListener(new TextWatcher() {
                                         @Override
                                         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {

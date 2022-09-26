@@ -43,19 +43,8 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
         holder.nw.setText(String.valueOf(sundryItemList.get(position).getNW()));
         holder.ec.setText(String.valueOf(sundryItemList.get(position).getEC()));
         holder.ws.setText(String.valueOf(sundryItemList.get(position).getWastage()));
-        holder.delete.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onClick.DeleteThisItem(holder.getAdapterPosition());
-            }
-        });
-        holder.adddetails.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                onClick.AddDetails(holder.getAdapterPosition());
-            }
-        });
-
+        holder.delete.setOnClickListener(view -> onClick.DeleteThisItem(holder.getAdapterPosition()));
+        holder.adddetails.setOnClickListener(view -> onClick.AddDetails(holder.getAdapterPosition()));
     }
 
     @Override
