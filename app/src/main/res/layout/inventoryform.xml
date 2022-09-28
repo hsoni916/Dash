@@ -6,7 +6,7 @@
 
     <EditText
         android:id="@+id/header_title"
-        android:layout_width="0dp"
+        android:layout_width="240dp"
         android:layout_height="30dp"
         android:textSize="16sp"
         android:visibility="visible"
@@ -19,19 +19,17 @@
         android:autofillHints="name"
         android:background="@drawable/etv_background"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="180dp"
+        android:layout_marginEnd="8dp"
         android:drawableEnd="@drawable/search"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="@id/inventory_list"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintStart_toStartOf="@id/inventory_list"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/inventory_list"
-        android:layout_width="0dp"
+        android:layout_width="360dp"
         android:layout_height="300dp"
         android:layout_margin="8dp"
         android:visibility="visible"
-        app:layout_constraintStart_toEndOf="@id/purity_etv"
         app:layout_constraintTop_toBottomOf="@id/header_title"
         app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -290,9 +288,10 @@
         android:padding="0dp"
         android:textSize="14sp"
         android:text="@string/save"
-        android:layout_margin="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_marginStart="36dp"
         android:backgroundTint="@color/teal_700"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/purity_etv"
         app:layout_constraintBottom_toBottomOf="parent" />
 
 

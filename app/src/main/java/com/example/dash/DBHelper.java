@@ -48,7 +48,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
             + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
             + "HUID" + " STRING,"
-            + "SupplierCode" + " INTEGER" +
+            + "Supplier" + " STRING" +
             ");";
 
     private static final String CREATE_TABLE_3 = "create table if not exists " + "Supplier" +

@@ -16,15 +16,11 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -42,15 +38,17 @@ public class StockManagement extends AppCompatActivity {
     List<Supplier> Suppliers = new ArrayList<>();
     List<String> SupplierNames = new ArrayList<>();
     Spinner Categories, Purity;
-    AutoCompleteTextView Supplier;
+    AutoCompleteTextView Supplier_tv;
     private DBManager dbManager;
     private DBHelper dbHelper;
     EditText BasePurity;
     ContentValues contentValues = new ContentValues();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    EditText GrossWeight, LessWeight, NetWeight, ExtraCharges, Wastage;
+    EditText GrossWeight, LessWeight, NetWeight, ExtraCharges, Wastage, HUID;
     Button save,clear;
-    String typeof = "";
+    String typeof = "", huidString ="";
+    private String SelectedSupplier;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,18 +58,17 @@ public class StockManagement extends AppCompatActivity {
 
         Purity = findViewById(R.id.purity_etv);
         Categories = findViewById(R.id.category_etv);
-        Supplier = findViewById(R.id.supplier_etv);
-
+        Supplier_tv = findViewById(R.id.supplier_etv);
         dbManager = new DBManager(this);
         dbManager.open();
-        BasePurity = findViewById(R.id.Label7);
+        BasePurity = findViewById(R.id.Label8);
 
         GrossWeight = findViewById(R.id.weight_etv);
         LessWeight = findViewById(R.id.less_weight_etv);
         NetWeight = findViewById(R.id.net_weight_etv);
         ExtraCharges = findViewById(R.id.charges_etv);
         Wastage = findViewById(R.id.touch_etv);
-
+        HUID = findViewById(R.id.HUID_etv);
         save = findViewById(R.id.save_item);
         clear = findViewById(R.id.clear_item);
 
@@ -94,6 +91,7 @@ public class StockManagement extends AppCompatActivity {
                     addAll(GenericItemsGold);
                     addAll(GenericItemsSilver);
                 }});
+
         Categories.setAdapter(ItemAdapter);
         ArrayAdapter<String> Purity_Adapter = new ArrayAdapter<>
                 (getBaseContext(), android.R.layout.simple_spinner_dropdown_item,
@@ -101,6 +99,26 @@ public class StockManagement extends AppCompatActivity {
                             addAll(Purity_Levels_Gold);
                             addAll(Purity_Levels_Silver);
                         }});
+
+        HUID.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(HUID.getText().toString().length()==6){
+                    huidString = HUID.getText().toString();
+                }
+            }
+        });
+
         Purity.setAdapter(Purity_Adapter);
 
         Purity.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -159,6 +177,7 @@ public class StockManagement extends AppCompatActivity {
 
             }
         });
+
         db.collection("Suppliers").get().addOnCompleteListener(task -> {
             if(task.isSuccessful()){
                 if(task.getResult()!=null){
@@ -167,13 +186,45 @@ public class StockManagement extends AppCompatActivity {
                         Suppliers.add(NewSupplier);
                         SupplierNames.add(NewSupplier.getBusiness());
                     }
+
                     ArrayAdapter<String> SupplierAdapter = new ArrayAdapter<>(getBaseContext(),
-                            android.R.layout.simple_spinner_dropdown_item, SupplierNames);
-                    Supplier.setAdapter(SupplierAdapter);
+                            android.R.layout.select_dialog_item, SupplierNames);
+                    Supplier_tv.setThreshold(2);
+                    Supplier_tv.setAdapter(SupplierAdapter);
+                    Supplier_tv.setOnItemClickListener((adapterView, view, i, l) -> {
+                        SelectedSupplier = SupplierAdapter.getItem(i);
+                    });
                 }
             }
         });
 
+        Supplier_tv.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                Supplier_tv.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                    @Override
+                    public void onFocusChange(View view, boolean b) {
+                        if(!b){
+                            if(!Supplier_tv.getText().toString().isEmpty()){
+                                if(!SupplierNames.contains(Supplier_tv.getText().toString())){
+                                    SelectedSupplier = Supplier_tv.getText().toString();
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
         GrossWeight.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -250,16 +301,12 @@ public class StockManagement extends AppCompatActivity {
         });
 
         save.setOnClickListener(view -> {
-            //            + "Purity" + " STRING NOT NULL,"
-            //            + "Name" + " STRING NOT NULL,"
-            //            + "Wastage" + " DECIMAL(2,2),"
-            //            + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
-            //            + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
-            //            + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
-            //            + "ExtraCharges" + " INTEGER,"
-            //            + "HUID" + " STRING,"
-            //            + "SupplierCode" + " INTEGER" + ");";
+
             contentValues = new ContentValues();
+
+            if(!huidString.isEmpty()){
+                contentValues.put("HUID", huidString);
+            }
             contentValues.put("Name",Categories.getSelectedItem().toString());
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
             contentValues.put("Date_Of",dateFormat.format(Calendar.getInstance().getTime()));
