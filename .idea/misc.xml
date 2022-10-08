@@ -11,12 +11,14 @@
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/drawable/button_background.xml" value="0.215" />
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/drawable/button_background_1.xml" value="0.2515" />
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/drawable/cardview_bg.xml" value="0.2595" />
+        <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/drawable/disable_layout.xml" value="0.1615" />
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/drawable/etv_background.xml" value="0.172" />
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/drawable/fab_background.xml" value="0.256" />
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/drawable/not_selected.xml" value="0.249" />
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/drawable/popup_background.xml" value="0.172" />
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/drawable/radio_background.xml" value="0.194" />
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/drawable/radio_background_selected.xml" value="0.254" />
+        <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/drawable/table_background.xml" value="0.228" />
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/drawable/textview_background.xml" value="0.172" />
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/drawable/textview_background_1.xml" value="0.227" />
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/drawable/textview_background_2.xml" value="0.2595" />
@@ -28,7 +30,7 @@
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/layout/customerform.xml" value="0.536" />
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/layout/details_popup.xml" value="0.6" />
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/layout/generic_popup.xml" value="0.536" />
-        <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/layout/inventoryform.xml" value="0.4" />
+        <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/layout/inventoryform.xml" value="0.536" />
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/layout/invoice_choice.xml" value="0.3796875" />
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/layout/invoiceform.xml" value="0.4" />
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/layout/itemrow.xml" value="0.536" />
@@ -38,6 +40,7 @@
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/layout/not_selected.xml" value="0.38125" />
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/layout/payment.xml" value="0.4" />
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/layout/payment_popup.xml" value="0.4" />
+        <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/layout/stock_entry_list.xml" value="0.6" />
         <entry key="..\:/Users/Harsh/AndroidStudioProjects/Dash/app/src/main/res/layout/supplier_row.xml" value="0.4" />
         <entry key="..\:/Users/Harsh/AppData/Local/Android/Sdk/platforms/android-31/data/res/layout/select_dialog_item.xml" value="0.25416666666666665" />
       </map>

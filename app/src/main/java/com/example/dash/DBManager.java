@@ -38,159 +38,8 @@ public class DBManager {
     }
 
 
-    public long insertNewCustomer(String Name, String PhoneNumber, String DOB) {
-        long result = -1;
-        Log.d("SQL","insert");
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-        Date c = Calendar.getInstance().getTime();
-        Date today = new Date();
-        try{
-            today= dateFormat.parse(dateFormat.format(c));
-        }catch (Exception e){
-            e.printStackTrace();
-        }
-        String AddNewCustomer = "INSERT INTO CustomersList (Name, PhoneNumber, DateofBirth, AccountCreatedOn, LastActiveOn) VALUES (?, ?, ?, ?, ?)";
-        SQLiteStatement statement = database.compileStatement(AddNewCustomer);
-        statement.bindString(1, Name);
-        statement.bindString(2,PhoneNumber);
-        statement.bindString(3, DOB);
-        statement.bindString(4, String.valueOf(today));
-        statement.bindString(5, String.valueOf(today));
-        try{
-            result = statement.executeInsert();
-        }catch (Exception e){
-            e.fillInStackTrace();
-        }
-        close();
 
-        return result;
-    }
 
-    public long insertNewSupplier(String Business, String Owner, String GSTIN, String City, String Phone, List<String> categories){
-        long result = -1;
-        String AddNewSupplier = "INSERT INTO Suppliers (Business_Name, Person_In_Charge, PhoneNumber, GSTIN, City, Categories) VALUES (?, ?, ?, ?, ?, ?)";
-        SQLiteStatement statement = database.compileStatement(AddNewSupplier);
-        statement.bindString(1, Business);
-        statement.bindString(2, Owner);
-        statement.bindString(3, GSTIN);
-        statement.bindString(4, City);
-        statement.bindString(5, Phone);
-        statement.bindString(6, String.valueOf(categories));
-        try{
-            result = statement.executeInsert();
-        }catch (Exception e){
-            e.fillInStackTrace();
-        }
-        close();
-        return result;
-    }
-
-    public List<String> ListAllCustomer(){
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String sql = "SELECT Name FROM CustomersList";
-        Cursor fetch = db.rawQuery(sql,null);
-        List<String> NamesOfCustomer = new ArrayList<>();
-        while(fetch.moveToNext()){
-            NamesOfCustomer.add(fetch.getString(0));
-        }
-        return NamesOfCustomer;
-        //run a loop to return all the names and phone numbers to the popup.
-    }
-
-    public List<String> ListAllPhone() {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String sql = "SELECT PhoneNumber FROM CustomersList";
-        Cursor fetch = db.rawQuery(sql,null);
-        List<String> PhoneOfCustomer = new ArrayList<>();
-        while(fetch.moveToNext()){
-            PhoneOfCustomer.add(fetch.getString(0));
-        }
-        return PhoneOfCustomer;
-    }
-
-    public long insertAllCategoriesGold(List<String> Categories){
-
-        long result = -1;
-        ContentValues contentValues = new ContentValues();
-        String sql = "SELECT Category FROM Categories";
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor fetch = db.rawQuery(sql,null);
-             String delete_statement= "DELETE FROM Categories";
-             Cursor delete_execute = db.rawQuery(delete_statement,null);
-            for(int j=0;j<Categories.size();j++){
-                contentValues.put("Category",Categories.get(j));
-                if(Categories.get(j).contains("Silver") || Categories.get(j).contains("silver")){
-                    contentValues.put("BaseMetal","Silver");
-                }else{
-                    contentValues.put("BaseMetal","Gold");
-                }
-                result = result+db.insert("Categories", null,contentValues);
-                String label = Categories.get(j).replace(" ","_");
-                String table_name = label.replace("-","_");
-                String create_table = "create table if not exists " + table_name +
-                        "("
-                        + "Barcode" + " STRING,"
-                        + "Purity" + " STRING NOT NULL,"
-                        + "Wastage" + " DECIMAL(2,2),"
-                        + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
-                        + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
-                        + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
-                        + "ExtraCharges" + " INTEGER,"
-                        + "HUID" + " STRING,"
-                        + "SupplierCode" + " INTEGER" +
-                        ");";
-                String table_name2 = table_name+"_uid";
-                String create_table_backup = "create table if not exists " + table_name2 +
-                        "(" + "Barcode" + " STRING NOT NULL" + ");";
-                dbHelper.getWritableDatabase().execSQL(create_table_backup);
-                String triggerName = table_name+"_barcode_trigger";
-                String triggerName2 = table_name+"_rowid_trigger";
-                String prefix = "MJ"+Categories.get(j).substring(0,2).replace("-","").toUpperCase();
-                String prefixbuildersql = "SELECT Category_Code FROM Categories WHERE Category = '" +Categories.get(j)+ "'";
-                Cursor PFB = db.rawQuery(prefixbuildersql,null);
-                while (PFB.moveToNext()){
-                    Log.d("Prefix:","MJ"+PFB.getInt(0));
-                }
-                String triggers = "CREATE TRIGGER IF NOT EXISTS " + triggerName + " AFTER INSERT ON "
-                        + table_name + " WHEN new.Barcode IS null " + " BEGIN UPDATE " + table_name + " SET Barcode = '"+prefix+"'||rowid; END;";
-                Log.d("Triggers:",triggers);
-                String trigger2 = "CREATE TRIGGER IF NOT EXISTS " + triggerName2 + " AFTER DELETE ON "
-                        + table_name +" BEGIN INSERT INTO " + table_name2 + " (Barcode) " + " VALUES ( old.Barcode ); END;";
-                dbHelper.getWritableDatabase().execSQL(create_table);
-                dbHelper.getWritableDatabase().execSQL(triggers);
-                dbHelper.getWritableDatabase().execSQL(trigger2);
-            }
-        return result;
-    }
-
-    public long insertAllCategoriesSilver(List<String> Categories){
-        long result = -1;
-        ContentValues contentValues = new ContentValues();
-        String sql = "SELECT Category FROM Categories_Silver";
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor fetch = db.rawQuery(sql,null);
-        String delete_statement= "DELETE FROM Categories_Silver";
-        Cursor delete_execute = db.rawQuery(delete_statement,null);
-        for(int j=0;j<Categories.size();j++){
-            contentValues.put("Category",Categories.get(j));
-            result = result+db.insert("Categories_Silver", null,contentValues);
-            String label = Categories.get(j).replace(" ","_");
-            String table_name = label.replace("-","_")+"Silver";
-            String create_table = "create table if not exists " + table_name +
-                    "("
-                    + "Barcode" + " INTEGER,"
-                    + "Purity" + " STRING NOT NULL,"
-                    + "Wastage" + " DECIMAL(2,2),"
-                    + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
-                    + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
-                    + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
-                    + "ExtraCharges" + " INTEGER,"
-                    + "HUID" + " STRING,"
-                    + "SupplierCode" + " INTEGER" + ");";
-            dbHelper.getWritableDatabase().execSQL(create_table);
-        }
-        return result;
-    }
 
     public long insertCategorySilver(String Category, boolean b){
         long result = -1;
@@ -219,6 +68,7 @@ public class DBManager {
                         + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
                         + "ExtraCharges" + " INTEGER,"
                         + "HUID" + " STRING,"
+                        + "DateofEntry" + " STRING NOT NULL,"
                         + "SupplierCode" + " INTEGER" + ");";
                 dbHelper.getWritableDatabase().execSQL(create_table);
             }
@@ -332,16 +182,7 @@ public class DBManager {
         return GenericItemCodeList;
     }
 
-    public List<String> ListAllSuppliers() {
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String sql = "SELECT Business_Name FROM Supplier";
-        Cursor fetch = db.rawQuery(sql,null);
-        List<String> SupplierList = new ArrayList<>();
-        while(fetch.moveToFirst() && fetch.moveToNext() && !fetch.isAfterLast()){
-            SupplierList.add("(" + fetch.getInt(3)+ ")" + " " +fetch.getString(0));
-        }
-        return SupplierList;
-    }
+
 
     public long AddNewSupplier(String Supplier_Name) {
         long result = -1;
@@ -354,7 +195,17 @@ public class DBManager {
 
 
 
-    public void AddStandards() {
+
+
+
+
+    public void updateSupplier(Supplier supplierNew, int supplier_Position) {
+
+    }
+
+    //Initial setup to be called in part One.
+        //ADD CURRENT STANDARDS
+            public void AddStandards() {
         long result = -1;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -397,7 +248,105 @@ public class DBManager {
         db.insert("Standards", null, contentValues);
     }
 
-    public long AddStandard(String Label, int Purity){
+        //BASIC GOLD CATEGORIES ADDED
+            public long insertAllCategoriesGold(List<String> Categories){
+                long result = -1;
+                ContentValues contentValues = new ContentValues();
+                String sql = "SELECT Category FROM Categories";
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                Cursor fetch = db.rawQuery(sql,null);
+                Log.d("Cursor Count",String.valueOf(fetch.getCount()));
+                if(fetch.getCount()==0){
+                    for(int j=0;j<Categories.size();j++){
+                        contentValues.put("Category",Categories.get(j));
+                        contentValues.put("BaseMetal","Gold");
+                        result = result+db.insert("Categories", null,contentValues);
+                    }
+                }else{
+                    fetch.moveToFirst();
+                    while (fetch.moveToNext()){
+                        if(!Categories.contains(fetch.getString(0))){
+                            contentValues.put("Category",Categories.indexOf(fetch.getString(0)));
+                            contentValues.put("BaseMetal","Gold");
+                            result = result+db.insert("Categories", null,contentValues);
+                        }
+                    }
+                }
+                for(int j=0;j<Categories.size();j++){
+                    String label = Categories.get(j).replace(" ","_");
+                    String table_name = label.replace("-","_");
+                    String create_table = "create table if not exists " + table_name +
+                            "("
+                            + "Barcode" + " STRING,"
+                            + "Purity" + " STRING NOT NULL,"
+                            + "Wastage" + " DECIMAL(2,2),"
+                            + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
+                            + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
+                            + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
+                            + "ExtraCharges" + " INTEGER,"
+                            + "HUID" + " STRING,"
+                            + "DateofEntry" + " STRING NOT NULL,"
+                            + "SupplierCode" + " INTEGER" +
+                            ");";
+                    String table_name2 = table_name+"_uid";
+                    String create_table_backup = "create table if not exists " + table_name2 + "(" + "Barcode" + " STRING NOT NULL" + ");";
+                    dbHelper.getWritableDatabase().execSQL(create_table_backup);
+                    String triggerName = table_name+"_barcode_trigger";
+                    String triggerName2 = table_name+"_rowid_trigger";
+                    StringBuilder prefix = new StringBuilder("MJ" + Categories.get(j).substring(0, 2).replace("-", "").toUpperCase());
+                    String prefixbuildersql = "SELECT Category_Code FROM Categories WHERE Category = '" +Categories.get(j)+ "'";
+                    Cursor PFB = db.rawQuery(prefixbuildersql,null);
+                    while (PFB.moveToNext()){
+                        prefix.append(PFB.getInt(0));
+                        prefix.append(".");
+                        Log.d("Prefix:","MJ"+PFB.getInt(0));
+                    }
+                    String triggers = "CREATE TRIGGER IF NOT EXISTS " + triggerName + " AFTER INSERT ON "
+                            + table_name + " WHEN new.Barcode IS null " + " BEGIN UPDATE " + table_name + " SET Barcode = '"+prefix+"'||rowid; END;";
+                    Log.d("Triggers:",triggers);
+                    String trigger2 = "CREATE TRIGGER IF NOT EXISTS " + triggerName2 + " AFTER DELETE ON "
+                            + table_name +" BEGIN INSERT INTO " + table_name2 + " (Barcode) " + " VALUES ( old.Barcode ); END;";
+                    dbHelper.getWritableDatabase().execSQL(create_table);
+                    dbHelper.getWritableDatabase().execSQL(triggers);
+                    dbHelper.getWritableDatabase().execSQL(trigger2);
+                }
+                return result;
+        }
+
+        //BASIC SILVER CATEGORIES ADDED
+            public long insertAllCategoriesSilver(List<String> Categories){
+        long result = -1;
+        ContentValues contentValues = new ContentValues();
+        String sql = "SELECT Category FROM Categories_Silver";
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        Cursor fetch = db.rawQuery(sql,null);
+        String delete_statement= "DELETE FROM Categories";
+        Cursor delete_execute = db.rawQuery(delete_statement,null);
+        for(int j=0;j<Categories.size();j++){
+            contentValues.put("Category",Categories.get(j));
+            result = result+db.insert("Categories_Silver", null,contentValues);
+            String label = Categories.get(j).replace(" ","_");
+            String table_name = label.replace("-","_")+"Silver";
+            String create_table = "create table if not exists " + table_name +
+                    "("
+                    + "Barcode" + " INTEGER,"
+                    + "Purity" + " STRING NOT NULL,"
+                    + "Wastage" + " DECIMAL(2,2),"
+                    + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
+                    + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
+                    + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
+                    + "ExtraCharges" + " INTEGER,"
+                    + "HUID" + " STRING,"
+                    + "DateofEntry" + " STRING NOT NULL,"
+                    + "SupplierCode" + " INTEGER" + ");";
+            dbHelper.getWritableDatabase().execSQL(create_table);
+        }
+        return result;
+    }
+
+    //Additional methods for adding data on the go in part Two.
+        //ADD NEW STANDARD
+            public long AddStandard(String Label, int Purity){
         long result = -1;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
@@ -407,53 +356,153 @@ public class DBManager {
         return result;
     }
 
-    public void updateSupplier(Supplier supplierNew, int supplier_Position) {
-
-    }
-
-    public long addCounter(int month, int year){
-        long result = -1;
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String sql = "SELECT Month FROM Invoice_Counter WHERE Month ='" + month + "' AND Year='" + year +"'";
-        Cursor fetch = db.rawQuery(sql,null);
-        if(!fetch.moveToNext()){
-            String addNewCounter = "INSERT INTO Invoice_Counter (Month, Year, Counter) VALUES (?, ?, ?)";
-            SQLiteStatement statement = database.compileStatement(addNewCounter);
-            statement.bindDouble(1, month);
-            statement.bindDouble(2, year);
-            statement.bindDouble(3, 0);
+        //ADD NEW CUSTOMER
+            public long insertNewCustomer(String Name, String PhoneNumber, String DOB) {
+            long result = -1;
+            Log.d("SQL","insert");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            Date c = Calendar.getInstance().getTime();
+            Date today = new Date();
+            try{
+                today= dateFormat.parse(dateFormat.format(c));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            String AddNewCustomer = "INSERT INTO CustomersList (Name, PhoneNumber, DateofBirth, AccountCreatedOn, LastActiveOn) VALUES (?, ?, ?, ?, ?)";
+            SQLiteStatement statement = database.compileStatement(AddNewCustomer);
+            statement.bindString(1, Name);
+            statement.bindString(2,PhoneNumber);
+            statement.bindString(3, DOB);
+            statement.bindString(4, String.valueOf(today));
+            statement.bindString(5, String.valueOf(today));
             try{
                 result = statement.executeInsert();
             }catch (Exception e){
                 e.fillInStackTrace();
             }
-        }
-        close();
-        return result;
+            close();
 
-    }
+            return result;
+        }
 
-    public int getCounter(int month, int year){
-        int c = 0;
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        String sql = "SELECT Counter FROM Invoice_Counter WHERE Month ='" + month + "' AND Year='" + year +"'";
-        Cursor fetch = db.rawQuery(sql,null);
-        if(fetch.moveToFirst()){
-            c = fetch.getInt(0);
+        //ADD NEW SUPPLIER
+            public long insertNewSupplier(String Business, String Owner, String GSTIN,
+                                          String City, String Phone, List<String> categories){
+            long result = -1;
+            String AddNewSupplier = "INSERT INTO Suppliers (Business_Name, Person_In_Charge, PhoneNumber, GSTIN, City, Categories) VALUES (?, ?, ?, ?, ?, ?)";
+            SQLiteStatement statement = database.compileStatement(AddNewSupplier);
+            statement.bindString(1, Business);
+            statement.bindString(2, Owner);
+            statement.bindString(3, GSTIN);
+            statement.bindString(4, City);
+            statement.bindString(5, Phone);
+            statement.bindString(6, String.valueOf(categories));
+            try{
+                result = statement.executeInsert();
+            }catch (Exception e){
+                e.fillInStackTrace();
+            }
+            close();
+            return result;
         }
-        return c;
-    }
-    public long updateCounter(int month, int year, int D){
-        long result = -1;
-        String updateCounter = "INSERT INTO Invoice_Counter (Counter) VALUES (?) WHERE Month ='" + month + "' AND Year='" + year +"'";
-        SQLiteStatement statement = database.compileStatement(updateCounter);
-        statement.bindDouble(1, D + getCounter(month,year));
-        try{
-            result = statement.executeInsert();
-        }catch (Exception e){
-            e.fillInStackTrace();
+
+        //LIST ALL SUPPLIERS
+            public List<String> ListAllSuppliers() {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            String sql = "SELECT Business_Name FROM Supplier";
+            Cursor fetch = db.rawQuery(sql,null);
+            List<String> SupplierList = new ArrayList<>();
+            while(fetch.moveToFirst() && fetch.moveToNext() && !fetch.isAfterLast()){
+                SupplierList.add("(" + fetch.getInt(3)+ ")" + " " +fetch.getString(0));
+            }
+            return SupplierList;
         }
-        close();
-        return result;
-    }
+
+        //LIST ALL CUSTOMER
+            public List<String> ListAllCustomer(){
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            String sql = "SELECT Name FROM CustomersList";
+            Cursor fetch = db.rawQuery(sql,null);
+            List<String> NamesOfCustomer = new ArrayList<>();
+            while(fetch.moveToNext()){
+                NamesOfCustomer.add(fetch.getString(0));
+            }
+            return NamesOfCustomer;
+        }
+
+        //LIST ALL PHONENUMBERS OF CUSTOMER
+            public List<String> ListAllPhone() {
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            String sql = "SELECT PhoneNumber FROM CustomersList";
+            Cursor fetch = db.rawQuery(sql,null);
+            List<String> PhoneOfCustomer = new ArrayList<>();
+            while(fetch.moveToNext()){
+                PhoneOfCustomer.add(fetch.getString(0));
+            }
+            return PhoneOfCustomer;
+        }
+
+        //GET BARCODE OF AN ITEM
+            public String getBarCode(long rowid, String s){
+                String returnvalue = "";
+                Log.d("Table:",s);
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                String sql = "SELECT Barcode FROM " + s + " WHERE rowid ='" + rowid + "'";
+                Cursor fetch = db.rawQuery(sql, null);
+                while (fetch.moveToNext()){
+                    returnvalue = fetch.getString(0);
+                    Log.d("Fetch", fetch.getString(0));
+                }
+                return returnvalue;
+            }
+
+        //ADDING A COUNTER FOR NUMBER OF BILLS IN SPECIFIC MONTH-YEAR
+            public long addCounter(int month, int year){
+                long result = -1;
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                String sql = "SELECT Month FROM Invoice_Counter WHERE Month ='" + month + "' AND Year='" + year +"'";
+                Cursor fetch = db.rawQuery(sql,null);
+                if(!fetch.moveToNext()){
+                    String addNewCounter = "INSERT INTO Invoice_Counter (Month, Year, Counter) VALUES (?, ?, ?)";
+                    SQLiteStatement statement = database.compileStatement(addNewCounter);
+                    statement.bindDouble(1, month);
+                    statement.bindDouble(2, year);
+                    statement.bindDouble(3, 0);
+                    try{
+                        result = statement.executeInsert();
+                    }catch (Exception e){
+                        e.fillInStackTrace();
+                    }
+                }
+                close();
+                return result;
+            }
+
+        //GET CURRENT NUMBER OF BILLS IN SPECIFIC MONTH-YEAR
+            public int getCounter(int month, int year){
+            int c = 0;
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            String sql = "SELECT Counter FROM Invoice_Counter WHERE Month ='" + month + "' AND Year='" + year +"'";
+            Cursor fetch = db.rawQuery(sql,null);
+            if(fetch.moveToFirst()){
+                c = fetch.getInt(0);
+            }
+            return c;
+        }
+
+        //STORE NUMBER OF BILLS IN SPECIFIC MONTH-YEAR
+            public long updateCounter(int month, int year, int D){
+            long result = -1;
+            String updateCounter = "INSERT INTO Invoice_Counter (Counter) VALUES (?) WHERE Month ='" + month + "' AND Year='" + year +"'";
+            SQLiteStatement statement = database.compileStatement(updateCounter);
+            statement.bindDouble(1, D + getCounter(month,year));
+            try{
+                result = statement.executeInsert();
+            }catch (Exception e){
+                e.fillInStackTrace();
+            }
+            close();
+            return result;
+        }
+
 }

@@ -6,19 +6,25 @@ import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -48,7 +54,9 @@ public class StockManagement extends AppCompatActivity {
     Button save,clear;
     String typeof = "", huidString ="";
     private String SelectedSupplier;
-
+    View disableView;
+    ProgressBar progressBar;
+    FirebaseFirestore inventory = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +70,9 @@ public class StockManagement extends AppCompatActivity {
         dbManager = new DBManager(this);
         dbManager.open();
         BasePurity = findViewById(R.id.Label8);
+
+        disableView = findViewById(R.id.disable_layout);
+        progressBar = findViewById(R.id.progress_circular);
 
         GrossWeight = findViewById(R.id.weight_etv);
         LessWeight = findViewById(R.id.less_weight_etv);
@@ -91,6 +102,10 @@ public class StockManagement extends AppCompatActivity {
                     addAll(GenericItemsGold);
                     addAll(GenericItemsSilver);
                 }});
+
+        dbManager.insertAllCategoriesGold(GenericItemsGold);
+        //dbManager.insertAllCategoriesSilver(GenericItemsSilver);
+
 
         Categories.setAdapter(ItemAdapter);
         ArrayAdapter<String> Purity_Adapter = new ArrayAdapter<>
@@ -246,7 +261,7 @@ public class StockManagement extends AppCompatActivity {
                         NetWeight.setText(GrossWeight.getText().toString());
                     }
                 }else{
-                    NetWeight.setText(null);
+                    NetWeight.setText(String.valueOf(0.00));
                     if(NameError.getVisibility()==View.VISIBLE){
                         NameError.setText(null);
                         NameError.setVisibility(View.INVISIBLE);
@@ -301,32 +316,59 @@ public class StockManagement extends AppCompatActivity {
         });
 
         save.setOnClickListener(view -> {
-
+            //Disable layout.
+            if(disableView.getVisibility()==View.GONE){
+                disableView.setVisibility(View.VISIBLE);
+            }
+            if(progressBar.getVisibility()==View.GONE){
+                disableView.setVisibility(View.VISIBLE);
+            }
+            Label label = new Label();
             contentValues = new ContentValues();
 
             if(!huidString.isEmpty()){
                 contentValues.put("HUID", huidString);
+                label.setHUID(huidString);
+            }else{
+                label.setHUID("");
             }
-            contentValues.put("Name",Categories.getSelectedItem().toString());
+            if(!Wastage.getText().toString().isEmpty()){
+                label.setTouch(Wastage.getText().toString());
+            }else{
+                label.setTouch(BasePurity.getText().toString());
+            }
+            if(!SelectedSupplier.isEmpty()){
+                contentValues.put("SupplierCode", SelectedSupplier);
+            }else{
+                contentValues.put("SupplierCode", "None");
+            }
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
-            contentValues.put("Date_Of",dateFormat.format(Calendar.getInstance().getTime()));
+            label.setDate(dateFormat.format(Calendar.getInstance().getTime()));
+            contentValues.put("DateOfEntry",dateFormat.format(Calendar.getInstance().getTime()));
             String example = dateFormat.format(Calendar.getInstance().getTime());
             if(!GrossWeight.getText().toString().isEmpty()){
                 contentValues.put("GrossWeight",Double.parseDouble(GrossWeight.getText().toString()));
+                label.setGW(GrossWeight.getText().toString());
                 if(!LessWeight.getText().toString().isEmpty()){
                     try{
                         contentValues.put("LessWeight",Double.parseDouble(LessWeight.getText().toString()));
                         contentValues.put("NetWeight",Double.parseDouble(GrossWeight.getText().toString())-Double.parseDouble(LessWeight.getText().toString()));
+                        label.setLW(LessWeight.getText().toString());
+                        label.setNW(String.valueOf(Double.parseDouble(GrossWeight.getText().toString())-Double.parseDouble(LessWeight.getText().toString())));
                     }catch (Exception e){
                         e.printStackTrace();
                         contentValues.put("LessWeight",0.00);
                         contentValues.put("NetWeight",Double.parseDouble(GrossWeight.getText().toString()));
+                        label.setLW("");
+                        label.setNW(GrossWeight.getText().toString());
                     }
                 }else{
                     contentValues.put("LessWeight",0.00);
                     contentValues.put("NetWeight",Double.parseDouble(GrossWeight.getText().toString()));
+                    label.setLW("");
+                    label.setNW(GrossWeight.getText().toString());
                 }
-                contentValues.put("TypeOfArticle",typeof);
+                contentValues.put("Purity",typeof);
                 if(!Wastage.getText().toString().isEmpty()){
                     try{
                         contentValues.put("Wastage",Double.parseDouble(Wastage.getText().toString())
@@ -337,18 +379,48 @@ public class StockManagement extends AppCompatActivity {
                 }else{
                     contentValues.put("Wastage",0.00);
                 }
+                contentValues.put("Purity",BasePurity.getText().toString());
                 if(!ExtraCharges.getText().toString().isEmpty()){
                     try{
                         contentValues.put("ExtraCharges",Double.parseDouble(ExtraCharges.getText().toString()));
+                        label.setEC(ExtraCharges.getText().toString()+"/-");
                     }catch (Exception e){
                         e.printStackTrace();
                     }
+                }else{
+                    label.setEC("");
                 }
                 dbHelper = new DBHelper(getBaseContext());
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
-                long id = db.insert("Inventory", null,contentValues);
+                long id = db.insertOrThrow(Categories.getSelectedItem().toString().replaceAll(" ","_"), null,contentValues);
                 if(id!=-1){
                     Toast.makeText(getBaseContext(),"Item Saved",Toast.LENGTH_LONG).show();
+                    String RV = dbManager.getBarCode(id,Categories.getSelectedItem().toString().replaceAll(" ","_"));
+                    if(!RV.isEmpty()){
+                        label.setBarcode(RV);
+                        inventory.collection("Inventory").document(RV)
+                                .set(label)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()){
+                                            Log.d("Label Saved",RV);
+                                            //Clear all controls
+                                            GrossWeight.setText(null);
+                                            LessWeight.setText(null);
+                                            NetWeight.setText(null);
+                                            ExtraCharges.setText(null);
+                                            HUID.setText(null);
+                                            Wastage.setText(null);
+                                        }
+                                        disableView.setVisibility(View.GONE);
+                                        progressBar.setVisibility(View.GONE);
+                                    }
+                                });
+                    }else{
+                        label.setBarcode("");
+                        Log.d("Barcode"," is NULL!");
+                    }
                     //AddItem(id);
                 }else{
                     Toast.makeText(getBaseContext(),"Item Save Unsuccessful",Toast.LENGTH_LONG).show();
@@ -358,6 +430,5 @@ public class StockManagement extends AppCompatActivity {
                 NameError.setVisibility(View.VISIBLE);
             }
         });
-
     }
 }

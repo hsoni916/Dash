@@ -84,7 +84,6 @@ public class Invoice extends AppCompatActivity {
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.invoiceform);
-
         Objects.requireNonNull(getSupportActionBar()).setTitle("New Invoice");
         Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(getBaseContext(),R.color.teal_600)));
         context = getBaseContext();
