@@ -21,6 +21,9 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
+import androidx.recyclerview.widget.DefaultItemAnimator;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -57,6 +60,10 @@ public class StockManagement extends AppCompatActivity {
     View disableView;
     ProgressBar progressBar;
     FirebaseFirestore inventory = FirebaseFirestore.getInstance();
+    RecyclerView inventorylist;
+    StockAdapter stockAdapter;
+    List<Label> labels = new ArrayList<>();
+    Label label = new Label();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,7 +80,8 @@ public class StockManagement extends AppCompatActivity {
 
         disableView = findViewById(R.id.disable_layout);
         progressBar = findViewById(R.id.progress_circular);
-
+        inventorylist = findViewById(R.id.inventory_list_1);
+        stockAdapter = new StockAdapter(labels);
         GrossWeight = findViewById(R.id.weight_etv);
         LessWeight = findViewById(R.id.less_weight_etv);
         NetWeight = findViewById(R.id.net_weight_etv);
@@ -102,7 +110,6 @@ public class StockManagement extends AppCompatActivity {
                     addAll(GenericItemsGold);
                     addAll(GenericItemsSilver);
                 }});
-
         dbManager.insertAllCategoriesGold(GenericItemsGold);
         //dbManager.insertAllCategoriesSilver(GenericItemsSilver);
 
@@ -114,7 +121,17 @@ public class StockManagement extends AppCompatActivity {
                             addAll(Purity_Levels_Gold);
                             addAll(Purity_Levels_Silver);
                         }});
+        Categories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                label.setName(ItemAdapter.getItem(i));
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                label.setName(null);
+            }
+        });
         HUID.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -317,13 +334,15 @@ public class StockManagement extends AppCompatActivity {
 
         save.setOnClickListener(view -> {
             //Disable layout.
+
+            label = new Label();
             if(disableView.getVisibility()==View.GONE){
                 disableView.setVisibility(View.VISIBLE);
             }
             if(progressBar.getVisibility()==View.GONE){
                 disableView.setVisibility(View.VISIBLE);
             }
-            Label label = new Label();
+
             contentValues = new ContentValues();
 
             if(!huidString.isEmpty()){
@@ -342,6 +361,7 @@ public class StockManagement extends AppCompatActivity {
             }else{
                 contentValues.put("SupplierCode", "None");
             }
+            label.setName(Categories.getSelectedItem().toString());
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
             label.setDate(dateFormat.format(Calendar.getInstance().getTime()));
             contentValues.put("DateOfEntry",dateFormat.format(Calendar.getInstance().getTime()));
@@ -412,6 +432,22 @@ public class StockManagement extends AppCompatActivity {
                                             ExtraCharges.setText(null);
                                             HUID.setText(null);
                                             Wastage.setText(null);
+                                            labels.add(label);
+                                            Supplier_tv.setText(null);
+                                            Purity.setSelected(false);
+                                            Categories.setSelected(false);
+                                            inventorylist.setAdapter(stockAdapter);
+                                            inventorylist.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+                                            inventorylist.setItemAnimator(new DefaultItemAnimator());
+                                            inventorylist.setVisibility(View.VISIBLE);
+                                            //ItemList.setAdapter(adapter);
+                                            //            ItemList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+                                            //            ItemList.setItemAnimator(new DefaultItemAnimator());
+                                            //            ItemList.setVisibility(View.VISIBLE);
+                                        }else{
+                                            Toast.makeText(getBaseContext(),"Item not saved.",Toast.LENGTH_LONG).show();
+                                            savetobackend(label);
+
                                         }
                                         disableView.setVisibility(View.GONE);
                                         progressBar.setVisibility(View.GONE);
@@ -428,6 +464,33 @@ public class StockManagement extends AppCompatActivity {
             }else{
                 NameError.setText(R.string.gross_weight_error);
                 NameError.setVisibility(View.VISIBLE);
+            }
+            //label = null;
+        });
+    }
+
+    private void savetobackend(Label label) {
+        save.setText(R.string.retry);
+        save.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                inventory.collection("Inventory").document(label.getBarcode())
+                        .set(label)
+                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                            @Override
+                            public void onComplete(@NonNull Task<Void> task) {
+                                if (task.isSuccessful()) {
+                                    Log.d("Label Saved", label.getBarcode());
+                                    //Clear all controls
+                                    GrossWeight.setText(null);
+                                    LessWeight.setText(null);
+                                    NetWeight.setText(null);
+                                    ExtraCharges.setText(null);
+                                    HUID.setText(null);
+                                    Wastage.setText(null);
+                                }
+                            }
+                        });
             }
         });
     }

@@ -2,6 +2,7 @@ package com.example.dash;
 
 public class Label {
     String Barcode, GW, NW, LW, EC, HUID, Touch, Date;
+    private String Name;
 
     public String getBarcode() {
         return Barcode;
@@ -68,4 +69,22 @@ public class Label {
     }
 
 
+    public void clearself() {
+        this.setBarcode(null);
+        this.setTouch(null);
+        this.setEC(null);
+        this.setDate(null);
+        this.setNW(null);
+        this.setGW(null);
+        this.setLW(null);
+        this.setHUID(null);
+    }
+
+    public String getname() {
+        return Name;
+    }
+
+    public void setName(String name){
+        Name = name;
+    }
 }

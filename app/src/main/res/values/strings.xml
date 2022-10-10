@@ -70,4 +70,5 @@
     <string name="lac">Lac.</string>
     <string name="gm">gm</string>
     <string name="daily_reminder">Daily Reminder:</string>
+    <string name="retry">Try Again?</string>
 </resources>

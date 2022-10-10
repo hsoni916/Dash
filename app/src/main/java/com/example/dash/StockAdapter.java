@@ -3,7 +3,6 @@ package com.example.dash;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -24,12 +23,18 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder>{
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.stock_entry_list,parent,false);
         return new ViewHolder(view);
-
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
+        holder.SrNo.setText(String.valueOf(position+1));
+        holder.barcode.setText(stocklist.get(position).getBarcode());
+        holder.itemname.setText(stocklist.get(position).getname());
+        holder.gw.setText(stocklist.get(position).getGW());
+        holder.nw.setText(stocklist.get(position).getNW());
+        holder.ec.setText(stocklist.get(position).getEC());
+        holder.purity.setText(stocklist.get(position).getTouch());
+        holder.huid.setText(stocklist.get(position).getHUID());
     }
 
     @Override
@@ -39,11 +44,11 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder>{
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         View mView;
-        TextView rowid,barcode,itemname,purity,gw,nw,ec,huid;
+        TextView SrNo,barcode,itemname,purity,gw,nw,ec,huid;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
-            rowid = mView.findViewById(R.id.Sr);
+            SrNo = mView.findViewById(R.id.Sr);
             itemname = mView.findViewById(R.id.Name);
             purity = mView.findViewById(R.id.Purity);
             barcode = mView.findViewById(R.id.Barcode);
