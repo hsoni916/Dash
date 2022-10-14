@@ -16,6 +16,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Display;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -171,7 +172,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-                popupWindow = new PopupWindow(marginView, 800,600);
+                popupWindow = new PopupWindow(marginView, 1200,800);
                 popupWindow.setAnimationStyle(R.style.popup_animation);
                 popupWindow.showAtLocation(view, Gravity.CENTER,0,0);
                 popupWindow.setFocusable(true);
@@ -423,13 +424,21 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
                         List<String> NewCategory = new ArrayList<>();
-                        for(int i = 0;i<checkedIds.size();i++){
-                            Chip chip = findViewById(checkedIds.get(i));
-                            Log.d("Checked Chips",chip.getText().toString());
-                            NewCategory.add(chip.getText().toString());
+                        for(int i =0;i<group.getChildCount();i++){
+                            Chip chip = (Chip) group.getChildAt(i);
+                            if(chip.isChecked()){
+                                NewCategory.add(chip.getText().toString());
+                            }
                         }
+                        Log.d("Checked",NewCategory.toString());
                     }
                 });
+
+                popupWindow = new PopupWindow(CashDepositView, 1200,800);
+                popupWindow.setAnimationStyle(R.style.popup_animation);
+                popupWindow.showAtLocation(view, Gravity.CENTER,0,0);
+                popupWindow.setFocusable(true);
+                popupWindow.update();
             }
         });
     }
