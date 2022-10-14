@@ -179,6 +179,7 @@ public class Invoice extends AppCompatActivity {
 
         PhoneNumber.setOnItemClickListener((adapterView, view, i, l) -> {
             String selectedPhone = PhoneAdapter.getItem(i);
+            ExistingCustomer = true;
             int indextouse = PhoneNumbers.indexOf(selectedPhone);
             printData.setPhone(PhoneNumbers.get(indextouse));
             Names.setEnabled(false);
@@ -665,7 +666,11 @@ public class Invoice extends AppCompatActivity {
                         public void onClick(View view) {
                             if(!ExistingCustomer){
                                 dbManager.open();
-                                long result = dbManager.insertNewCustomer(printData.getCustomerName(),printData.getPhone(),"");
+                                long result = dbManager.insertNewCustomer(Names.getText().toString(),PhoneNumber.getText().toString(),"");
+                                if(result!=-1){
+                                    printData.setCustomerName(Names.getText().toString());
+                                    printData.setPhone(PhoneNumber.getText().toString());
+                                }
                             }
 
                             if(!Discount.getText().toString().isEmpty()){
