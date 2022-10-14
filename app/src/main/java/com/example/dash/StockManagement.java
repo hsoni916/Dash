@@ -46,14 +46,13 @@ public class StockManagement extends AppCompatActivity {
     List<String> Purity_Levels_Silver = new ArrayList<>();
     List<Supplier> Suppliers = new ArrayList<>();
     List<String> SupplierNames = new ArrayList<>();
-    Spinner Categories, Purity;
+    Spinner Categories, FilterCategories, Purity;
     AutoCompleteTextView Supplier_tv;
     private DBManager dbManager;
     private DBHelper dbHelper;
-    EditText BasePurity;
     ContentValues contentValues = new ContentValues();
     FirebaseFirestore db = FirebaseFirestore.getInstance();
-    EditText GrossWeight, LessWeight, NetWeight, ExtraCharges, Wastage, HUID;
+    EditText GrossWeight, LessWeight, NetWeight, ExtraCharges, Wastage, HUID, BasePurity, SearchInventory;
     Button save,clear;
     String typeof = "", huidString ="";
     private String SelectedSupplier;
@@ -61,9 +60,14 @@ public class StockManagement extends AppCompatActivity {
     ProgressBar progressBar;
     FirebaseFirestore inventory = FirebaseFirestore.getInstance();
     RecyclerView inventorylist;
+    RecyclerView inventorySearchList;
     StockAdapter stockAdapter;
+    StockSearchAdapter stockSearchAdapter;
     List<Label> labels = new ArrayList<>();
+    ArrayList<Label> labelList = new ArrayList<>();
+    ArrayList<Label> PrimaryLabelList = new ArrayList<>();
     Label label = new Label();
+    String FilterString = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -73,6 +77,7 @@ public class StockManagement extends AppCompatActivity {
 
         Purity = findViewById(R.id.purity_etv);
         Categories = findViewById(R.id.category_etv);
+        FilterCategories = findViewById(R.id.category_spinner);
         Supplier_tv = findViewById(R.id.supplier_etv);
         dbManager = new DBManager(this);
         dbManager.open();
@@ -81,7 +86,10 @@ public class StockManagement extends AppCompatActivity {
         disableView = findViewById(R.id.disable_layout);
         progressBar = findViewById(R.id.progress_circular);
         inventorylist = findViewById(R.id.inventory_list_1);
+        inventorySearchList = findViewById(R.id.inventory_list);
+        SearchInventory = findViewById(R.id.search_inventory);
         stockAdapter = new StockAdapter(labels);
+        stockSearchAdapter = new StockSearchAdapter(PrimaryLabelList);
         GrossWeight = findViewById(R.id.weight_etv);
         LessWeight = findViewById(R.id.less_weight_etv);
         NetWeight = findViewById(R.id.net_weight_etv);
@@ -90,6 +98,26 @@ public class StockManagement extends AppCompatActivity {
         HUID = findViewById(R.id.HUID_etv);
         save = findViewById(R.id.save_item);
         clear = findViewById(R.id.clear_item);
+
+
+        SearchInventory.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(!SearchInventory.getText().toString().isEmpty()){
+                    FilterByText(SearchInventory.getText().toString());
+                }
+            }
+        });
 
         TextView NameError = findViewById(R.id.NameError);
         GenericItemsGold.addAll(Arrays.asList("Mens Ring", "Women Ring", "Chain",
@@ -115,6 +143,7 @@ public class StockManagement extends AppCompatActivity {
 
 
         Categories.setAdapter(ItemAdapter);
+        FilterCategories.setAdapter(ItemAdapter);
         ArrayAdapter<String> Purity_Adapter = new ArrayAdapter<>
                 (getBaseContext(), android.R.layout.simple_spinner_dropdown_item,
                         new ArrayList<String>() {{
@@ -132,6 +161,28 @@ public class StockManagement extends AppCompatActivity {
                 label.setName(null);
             }
         });
+        FilterCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                PrimaryLabelList.clear();
+                FilterString = ItemAdapter.getItem(i);
+                SearchInventory.setEnabled(true);
+                stockSearchAdapter = new StockSearchAdapter(PrimaryLabelList);
+                PrimaryLabelList.addAll(dbManager.ListAllItems(FilterString));
+                inventorySearchList.setAdapter(stockSearchAdapter);
+                inventorySearchList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+                inventorySearchList.setItemAnimator(new DefaultItemAnimator());
+                inventorySearchList.setVisibility(View.VISIBLE);
+                stockSearchAdapter.notifyDataSetChanged();
+                Log.d("Size of inventory", String.valueOf(PrimaryLabelList.size()));
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                FilterString = null;
+                SearchInventory.setEnabled(false);
+            }
+        });
         HUID.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -146,7 +197,7 @@ public class StockManagement extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable editable) {
                 if(HUID.getText().toString().length()==6){
-                    huidString = HUID.getText().toString();
+                    huidString = HUID.getText().toString().toUpperCase();
                 }
             }
         });
@@ -157,6 +208,7 @@ public class StockManagement extends AppCompatActivity {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 typeof =Purity.getItemAtPosition(i).toString();
+                label.setHMStandard(typeof);
                 switch (i){
                     case 0:
                         BasePurity.setText("99");
@@ -202,6 +254,7 @@ public class StockManagement extends AppCompatActivity {
                         BasePurity.setEnabled(true);
                         break;
                 }
+
             }
 
             @Override
@@ -257,6 +310,7 @@ public class StockManagement extends AppCompatActivity {
                 });
             }
         });
+
         GrossWeight.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -273,7 +327,7 @@ public class StockManagement extends AppCompatActivity {
                 if(!GrossWeight.getText().toString().isEmpty()){
                     if(!LessWeight.getText().toString().isEmpty()){
                         double diff = Double.parseDouble(GrossWeight.getText().toString())-Double.parseDouble(LessWeight.getText().toString());
-                        NetWeight.setText(String.format(Locale.getDefault(),"%.2f",diff));
+                        NetWeight.setText(String.format(Locale.getDefault(),"%.3f",diff));
                     }else{
                         NetWeight.setText(GrossWeight.getText().toString());
                     }
@@ -336,6 +390,7 @@ public class StockManagement extends AppCompatActivity {
             //Disable layout.
 
             label = new Label();
+            label.setPurity(Double.parseDouble(BasePurity.getText().toString()));
             if(disableView.getVisibility()==View.GONE){
                 disableView.setVisibility(View.VISIBLE);
             }
@@ -350,11 +405,6 @@ public class StockManagement extends AppCompatActivity {
                 label.setHUID(huidString);
             }else{
                 label.setHUID("");
-            }
-            if(!Wastage.getText().toString().isEmpty()){
-                label.setTouch(Wastage.getText().toString());
-            }else{
-                label.setTouch(BasePurity.getText().toString());
             }
             if(!SelectedSupplier.isEmpty()){
                 contentValues.put("SupplierCode", SelectedSupplier);
@@ -412,10 +462,11 @@ public class StockManagement extends AppCompatActivity {
                 }
                 dbHelper = new DBHelper(getBaseContext());
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
-                long id = db.insertOrThrow(Categories.getSelectedItem().toString().replaceAll(" ","_"), null,contentValues);
+                String CategoriesString = Categories.getSelectedItem().toString().replaceAll("-","_");
+                long id = db.insertOrThrow(CategoriesString.replaceAll(" ","_"), null,contentValues);
                 if(id!=-1){
                     Toast.makeText(getBaseContext(),"Item Saved",Toast.LENGTH_LONG).show();
-                    String RV = dbManager.getBarCode(id,Categories.getSelectedItem().toString().replaceAll(" ","_"));
+                    String RV = dbManager.getBarCode(id,CategoriesString.replaceAll(" ","_"));
                     if(!RV.isEmpty()){
                         label.setBarcode(RV);
                         inventory.collection("Inventory").document(RV)
@@ -440,10 +491,7 @@ public class StockManagement extends AppCompatActivity {
                                             inventorylist.setLayoutManager(new LinearLayoutManager(getBaseContext()));
                                             inventorylist.setItemAnimator(new DefaultItemAnimator());
                                             inventorylist.setVisibility(View.VISIBLE);
-                                            //ItemList.setAdapter(adapter);
-                                            //            ItemList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
-                                            //            ItemList.setItemAnimator(new DefaultItemAnimator());
-                                            //            ItemList.setVisibility(View.VISIBLE);
+
                                         }else{
                                             Toast.makeText(getBaseContext(),"Item not saved.",Toast.LENGTH_LONG).show();
                                             savetobackend(label);
@@ -467,6 +515,34 @@ public class StockManagement extends AppCompatActivity {
             }
             //label = null;
         });
+    }
+
+    private void FilterByText(String toString) {
+        //Filter Inventory Data Based on selection in categories.
+        if(FilterString!=null){
+            labelList = new ArrayList<>();
+            stockSearchAdapter = new StockSearchAdapter(labelList);
+            inventorySearchList.setAdapter(stockSearchAdapter);
+            inventorySearchList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+            inventorySearchList.setItemAnimator(new DefaultItemAnimator());
+            inventorySearchList.setVisibility(View.VISIBLE);
+            for (int i=0;i<PrimaryLabelList.size();i++){
+                Log.d("Search String", toString);
+                Log.d("Inventory:",PrimaryLabelList.get(i).getInventory());
+                if(PrimaryLabelList.get(i).getInventory().contains(toString.toUpperCase())){
+                    labelList.add(PrimaryLabelList.get(i));
+                    Log.d("Match","Found");
+                }else{
+                    Log.d("Match"," Not Found");
+                }
+            }
+            if(labelList.isEmpty()){
+                //Show no barcodes.
+            }else{
+                //there are barcodes.
+            }
+            stockSearchAdapter.notifyDataSetChanged();
+        }
     }
 
     private void savetobackend(Label label) {

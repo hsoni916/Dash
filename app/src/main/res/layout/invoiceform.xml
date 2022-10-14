@@ -101,10 +101,12 @@
 
     <AutoCompleteTextView
         android:id="@+id/particular"
-        android:layout_width="300dp"
+        android:layout_width="360dp"
         android:paddingStart="8dp"
         android:paddingEnd="4dp"
         android:layout_height="30dp"
+        android:inputType="text"
+        android:imeOptions="actionNext"
         android:background="@drawable/etv_background"
         app:layout_constraintTop_toTopOf="@id/label3"
         app:layout_constraintBottom_toBottomOf="@id/label3"
@@ -116,6 +118,7 @@
         android:layout_height="40dp"
         android:src="@drawable/add"
         android:drawablePadding="8dp"
+        android:visibility="gone"
         android:layout_marginStart="5dp"
         android:backgroundTint="@color/teal_700"
         app:layout_constraintTop_toTopOf="@id/particular"
@@ -132,9 +135,8 @@
         android:drawablePadding="8dp"
         android:padding="4dp"
         android:gravity="center_vertical"
-        app:layout_constraintTop_toBottomOf="@id/Add_item"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="@id/Add_item"
+        app:layout_constraintTop_toBottomOf="@id/particular"
+        app:layout_constraintStart_toStartOf="@id/label3"
         app:drawableLeftCompat="@drawable/error" />
 
     <androidx.recyclerview.widget.RecyclerView

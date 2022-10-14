@@ -1,5 +1,6 @@
 package com.example.dash;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -31,6 +32,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.material.chip.Chip;
+import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.firestore.DocumentChange;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
@@ -46,7 +49,7 @@ import java.util.Objects;
 
 public class MainActivity extends AppCompatActivity {
     final Calendar calendar = Calendar.getInstance();
-    Button NewCustomer, newInvoiceButton, newInventory, CashDeposit, NewSupplier;
+    Button NewCustomer, newInvoiceButton, newInventory, CashDeposit, NewSupplier, PersonalInfo;
     PopupWindow popupWindow;
     private DBManager dbManager;
     String Name="",PhoneNumber="",DateOfBirth="",City="";
@@ -71,7 +74,7 @@ public class MainActivity extends AppCompatActivity {
         newInventory = findViewById(R.id.AddInventory);
         CashDeposit = findViewById(R.id.CashEntry);
         NewSupplier = findViewById(R.id.NewSupplier);
-
+        PersonalInfo = findViewById(R.id.PersonalInfo);
         //Metrics
         ItemsSold = findViewById(R.id.ItemsSold);
         InvoicesMade = findViewById(R.id.InvoicesMade);
@@ -340,10 +343,12 @@ public class MainActivity extends AppCompatActivity {
                         if(Name.length()>=2 && !PhoneNumber.isEmpty() && !DateOfBirth.isEmpty()){
                             dbManager.open();
                             long result = dbManager.insertNewCustomer(Name,PhoneNumber,DateOfBirth);
+
                             NameEtv.setEnabled(true);
                             PhoneEtv.setEnabled(true);
                             CalendarButton.setEnabled(true);
                             progressBar.setVisibility(View.INVISIBLE);
+
                             if(result!=-1){
                                 Toast.makeText(view14.getContext(),"Customer added successfully",Toast.LENGTH_LONG).show();
                                 popupWindow.dismiss();
@@ -351,6 +356,7 @@ public class MainActivity extends AppCompatActivity {
                             }else{
                                 Toast.makeText(view14.getContext(),"Failure, an error occurred.",Toast.LENGTH_LONG).show();
                             }
+
                         }
                         if(Name.isEmpty() || Name.length()<=2){
                             NameError.setText(R.string.name_error);
@@ -398,12 +404,33 @@ public class MainActivity extends AppCompatActivity {
         CashDeposit.setOnClickListener(view -> {
             LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             if(inflater!=null){
-                RecyclerView recordContainer;
                 final View CashDepositView = inflater.inflate(R.layout.cash_deposit,null);
+                TextView NameError,PhoneError,CashError;
+                Button cancel = CashDepositView.findViewById(R.id.cancel);
+                Button save = CashDepositView.findViewById(R.id.save);
+                ChipGroup ModeOfPayments = CashDepositView.findViewById(R.id.ModeOfPaymentChips);
+                NameError = CashDepositView.findViewById(R.id.NameError);
+                PhoneError = CashDepositView.findViewById(R.id.PhoneError);
+                CashError = CashDepositView.findViewById(R.id.cash_error);
 
+                EditText NameEtv = CashDepositView.findViewById(R.id.name_etv);
+                ArrayAdapter<String> NameAdapter = new ArrayAdapter<>
+                        (view.getContext(), android.R.layout.select_dialog_item, dbManager.ListAllCustomer());
+                ArrayAdapter<String> PhoneAdapter = new ArrayAdapter<>
+                        (view.getContext(), android.R.layout.select_dialog_item, dbManager.ListAllPhone());
 
+                ModeOfPayments.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
+                    @Override
+                    public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
+                        List<String> NewCategory = new ArrayList<>();
+                        for(int i = 0;i<checkedIds.size();i++){
+                            Chip chip = findViewById(checkedIds.get(i));
+                            Log.d("Checked Chips",chip.getText().toString());
+                            NewCategory.add(chip.getText().toString());
+                        }
+                    }
+                });
             }
         });
-
     }
 }

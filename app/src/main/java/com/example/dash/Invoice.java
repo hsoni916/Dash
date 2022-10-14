@@ -54,6 +54,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.jar.Attributes;
 
 public class Invoice extends AppCompatActivity {
     private DBManager dbManager;
@@ -79,6 +80,7 @@ public class Invoice extends AppCompatActivity {
     PrintData printData = new PrintData();
     TextView error_invoice;
     int invoicecounter = 0;
+    boolean ExistingCustomer = false;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -133,35 +135,117 @@ public class Invoice extends AppCompatActivity {
         Names.setThreshold(2);
         Names.setAdapter(NameAdapter);
 
-        PhoneNumber.setThreshold(1);
+        PhoneNumber.setThreshold(2);
         PhoneNumber.setAdapter(PhoneAdapter);
 
         Particular.setThreshold(2);
         Particular.setAdapter(ItemAdapter);
         Names.setOnItemClickListener((adapterView, view, i, l) -> {
             String selectedName = NameAdapter.getItem(i);
+            ExistingCustomer = true;
             int indextouse = CustomerLists.indexOf(selectedName);
-            Log.d("Data",i+ "--" +selectedName+ "--" +indextouse);
+            Log.d("Data", i + "--" + selectedName + "--" + indextouse);
             printData.setCustomerName(CustomerLists.get(indextouse));
             PhoneNumber.setEnabled(false);
             PhoneNumber.setText(PhoneNumbers.get(indextouse));
             printData.setPhone(PhoneNumbers.get(indextouse));
             Log.d("Index", String.valueOf(indextouse));
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM",Locale.getDefault());
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM", Locale.getDefault());
             try {
                 //Date date1=new SimpleDateFormat("dd-MM", Locale.getDefault()).parse(String.valueOf(DOBAdapter.getItem(i)));
                 Date date1 = dateFormat.parse(String.valueOf(Birthdays.get(indextouse)));
                 Date c = Calendar.getInstance().getTime();
-                Date today= dateFormat.parse(dateFormat.format(c));
-                if(today!=null && date1!=null){
-                    Log.d("Date comparison:",today + ":" + date1);
+                Date today = dateFormat.parse(dateFormat.format(c));
+                if (today != null && date1 != null) {
+                    Log.d("Date comparison:", today + ":" + date1);
                 }
                 assert date1 != null;
-                if(date1.equals(today)){
-                    Toast.makeText(getBaseContext(),"Customer's Birthday.",Toast.LENGTH_LONG).show();
+                if (date1.equals(today)) {
+                    Toast.makeText(Invoice.this.getBaseContext(), "Customer's Birthday.", Toast.LENGTH_LONG).show();
                 }
             } catch (ParseException e) {
                 e.printStackTrace();
+            }
+        });
+
+        Names.setOnDismissListener(new AutoCompleteTextView.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                if(!Names.getText().toString().isEmpty()){
+                    printData.setCustomerName(Names.getText().toString());
+                }
+            }
+        });
+
+        PhoneNumber.setOnItemClickListener((adapterView, view, i, l) -> {
+            String selectedPhone = PhoneAdapter.getItem(i);
+            int indextouse = PhoneNumbers.indexOf(selectedPhone);
+            printData.setPhone(PhoneNumbers.get(indextouse));
+            Names.setEnabled(false);
+            Names.setText(CustomerLists.get(indextouse));
+            printData.setCustomerName(CustomerLists.get(indextouse));
+
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM", Locale.getDefault());
+            try {
+                //Date date1=new SimpleDateFormat("dd-MM", Locale.getDefault()).parse(String.valueOf(DOBAdapter.getItem(i)));
+                Date date1 = dateFormat.parse(String.valueOf(Birthdays.get(indextouse)));
+                Date c = Calendar.getInstance().getTime();
+                Date today = dateFormat.parse(dateFormat.format(c));
+                if (today != null && date1 != null) {
+                    Log.d("Date comparison:", today + ":" + date1);
+                }
+                assert date1 != null;
+                if (date1.equals(today)) {
+                    Toast.makeText(Invoice.this.getBaseContext(), "Customer's Birthday.", Toast.LENGTH_LONG).show();
+                }
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+        });
+        PhoneNumber.setOnDismissListener(new AutoCompleteTextView.OnDismissListener() {
+            @Override
+            public void onDismiss() {
+                if(!PhoneNumber.getText().toString().isEmpty()){
+                    printData.setDate(PhoneNumber.getText().toString());
+                }
+            }
+        });
+
+        Names.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(Names.getText().toString().isEmpty()){
+                    PhoneNumber.setEnabled(true);
+                }
+            }
+        });
+        PhoneNumber.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+                if(PhoneNumber.getText().toString().isEmpty()){
+                    Names.setEnabled(true);
+                }
             }
         });
 
@@ -458,7 +542,8 @@ public class Invoice extends AppCompatActivity {
                                         e.printStackTrace();
                                     }
                                 }else{
-                                    contentValues.put("Wastage",0.00);
+
+                                    contentValues.put("Wastage",6.5+Double.parseDouble(BasePurity.getText().toString()));
                                 }
                                 if(!ExtraCharges.getText().toString().isEmpty()){
                                     try{
@@ -578,6 +663,11 @@ public class Invoice extends AppCompatActivity {
                     SavePayment.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
+                            if(!ExistingCustomer){
+                                dbManager.open();
+                                long result = dbManager.insertNewCustomer(printData.getCustomerName(),printData.getPhone(),"");
+                            }
+
                             if(!Discount.getText().toString().isEmpty()){
                                 printData.setDiscount(Double.parseDouble(Discount.getText().toString()));
                             }else{
@@ -615,6 +705,7 @@ public class Invoice extends AppCompatActivity {
                                                 ItemList.setAdapter(null);
                                                 itemids.clear();
                                                 progressBar.setVisibility(View.GONE);
+                                                Toast.makeText(getBaseContext(),"Invoice sent for Print.",Toast.LENGTH_LONG).show();
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {
                                             @Override
@@ -631,6 +722,7 @@ public class Invoice extends AppCompatActivity {
                                                 Print.setEnabled(true);
                                                 progressBar.setVisibility(View.GONE);
                                                 paymentWindow.dismiss();
+                                                Toast.makeText(getBaseContext(),"Invoice sent for Print.",Toast.LENGTH_LONG).show();
                                             }
                                         });
                                     }

@@ -31,7 +31,7 @@
             android:paddingTop="12dp"
             android:layout_weight="1"
             android:drawableTop="@drawable/add"
-            android:backgroundTint="@color/space_cadet_dark"/>
+            android:backgroundTint="#49a078"/>
 
         <Button
             android:id="@+id/NewInvoice"
@@ -44,6 +44,7 @@
             android:elevation="2dp"
             android:textSize="11sp"
             android:paddingBottom="12dp"
+            android:visibility="gone"
             android:paddingTop="12dp"
             android:text="@string/new_invoice"
             android:drawableTop="@drawable/invoice"
@@ -85,25 +86,11 @@
             android:drawableTop="@drawable/cash"
             android:backgroundTint="@color/space_cadet"/>
 
-
-
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/Button_Layout_2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal"
-        android:weightSum="4"
-        app:layout_constraintTop_toBottomOf="@id/Button_Layout"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent">
-
         <Button
             android:id="@+id/NewSupplier"
             android:layout_width="0dp"
             android:layout_height="match_parent"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="8dp"
             android:layout_marginStart="4dp"
             android:layout_marginEnd="4dp"
             android:layout_marginBottom="8dp"
@@ -120,8 +107,23 @@
             android:drawableTop="@drawable/add"
             android:backgroundTint="@color/matteYellow"/>
 
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/Button_Layout_2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:weightSum="4"
+        app:layout_constraintTop_toBottomOf="@id/Button_Layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
+
+
+
         <Button
-            android:id="@+id/ControlPanel"
+            android:id="@+id/PersonalInfo"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_marginTop="4dp"
@@ -132,7 +134,7 @@
             android:textSize="11sp"
             android:paddingBottom="12dp"
             android:paddingTop="12dp"
-            android:layout_weight="0.6"
+            android:layout_weight="1"
             android:text="@string/profile"
             android:drawableTop="@drawable/profile"
             android:backgroundTint="@color/cool_grey_dark"/>

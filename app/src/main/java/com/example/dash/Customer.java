@@ -9,6 +9,7 @@ public class Customer {
     String phoneNumber;
     String address;
     String Reference;
+
     public Customer() {
 
     }

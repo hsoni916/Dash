@@ -71,4 +71,11 @@
     <string name="gm">gm</string>
     <string name="daily_reminder">Daily Reminder:</string>
     <string name="retry">Try Again?</string>
+    <string name="Category_1">Category</string>
+    <string name="print">Print</string>
+    <string name="advanced_options"><u>Advanced Options</u></string>
+    <string name="Amount">Amount:</string>
+    <string name="Mode">Mode:</string>
+    <string name="ModeBank">NEFT/RTGS</string>
+    <string name="ModeCheque">Cheque</string>
 </resources>

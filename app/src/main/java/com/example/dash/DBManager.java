@@ -385,6 +385,7 @@ public class DBManager {
             return result;
         }
 
+
         //ADD NEW SUPPLIER
             public long insertNewSupplier(String Business, String Owner, String GSTIN,
                                           String City, String Phone, List<String> categories){
@@ -505,4 +506,27 @@ public class DBManager {
             return result;
         }
 
+    public List<Label> ListAllItems(String filterString) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        filterString = filterString.replaceAll(" ","_");
+        filterString = filterString.replaceAll("-","_");
+        String sql = "SELECT * FROM '" + filterString.replaceAll(" ","_") + "'";
+        Cursor fetch = db.rawQuery(sql,null);
+        List<Label> InventoryList = new ArrayList<>();
+        while(fetch.moveToNext()){
+            Label newLabel = new Label();
+            fetch.getColumnIndex("Wastage");
+            newLabel.setBarcode(fetch.getString(0));
+            newLabel.setHMStandard(fetch.getString(1));
+            newLabel.setPurity(fetch.getDouble(2));
+            newLabel.setGW(fetch.getString(3));
+            newLabel.setLW(fetch.getString(4));
+            newLabel.setNW(fetch.getString(5));
+            newLabel.setEC(fetch.getString(6));
+            newLabel.setHUID(fetch.getString(7));
+            newLabel.setDate(fetch.getString(8));
+            InventoryList.add(newLabel);
+        }
+        return InventoryList;
+    }
 }

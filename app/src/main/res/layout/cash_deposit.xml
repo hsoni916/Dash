@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
-    android:layout_height="340dp"
+    android:layout_width="520dp"
+    android:layout_height="360dp"
     android:layout_gravity="center"
     android:elevation="8dp"
     android:focusable="true"
@@ -25,7 +25,7 @@
         android:id="@+id/header_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:text="Add new customer"
+        android:text="New Cash Deposit"
         android:textAlignment="center"
         android:textStyle="bold"
         android:textSize="16sp"
@@ -42,27 +42,24 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/name"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_margin="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header_title"/>
 
     <EditText
         android:id="@+id/name_etv"
-        android:layout_width="240dp"
-        android:layout_height="wrap_content"
+        android:layout_width="320dp"
+        android:layout_height="30dp"
         android:layout_marginStart="32dp"
-        android:layout_marginEnd="32dp"
+        android:layout_marginEnd="48dp"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
+        android:imeOptions="actionNext"
         android:inputType="textPersonName"
         android:background="@drawable/etv_background"
         app:layout_constraintTop_toTopOf="@id/label1"
         app:layout_constraintBottom_toBottomOf="@id/label1"
-        app:layout_constraintStart_toEndOf="@id/label1"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintStart_toEndOf="@id/label1"/>
 
     <TextView
         android:id="@+id/NameError"
@@ -83,20 +80,20 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/phone"
-        android:layout_marginStart="32dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        android:layout_marginBottom="8dp"
+        android:layout_margin="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/NameError"/>
 
     <EditText
         android:id="@+id/phone_etv"
-        android:layout_width="240dp"
-        android:layout_height="wrap_content"
-        android:inputType="phone"
+        android:layout_width="320dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginTop="8dp"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
+        android:singleLine="true"
+        android:imeOptions="actionNext"
         android:background="@drawable/etv_background"
         app:layout_constraintTop_toTopOf="@id/label2"
         app:layout_constraintBottom_toBottomOf="@id/label2"
@@ -115,6 +112,90 @@
         app:layout_constraintTop_toBottomOf="@id/phone_etv"
         app:layout_constraintStart_toStartOf="@id/phone_etv"
         app:drawableStartCompat="@drawable/warning"/>
+
+    <TextView
+        android:id="@+id/label3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Amount"
+        android:layout_margin="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/PhoneError"/>
+
+
+    <EditText
+        android:id="@+id/cash_etv"
+        android:layout_width="320dp"
+        android:layout_height="30dp"
+        android:layout_marginEnd="48dp"
+        android:layout_marginTop="8dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:singleLine="true"
+        android:imeOptions="actionNext"
+        android:inputType="numberDecimal"
+        android:background="@drawable/etv_background"
+        app:layout_constraintTop_toTopOf="@id/label3"
+        app:layout_constraintBottom_toBottomOf="@id/label3"
+        app:layout_constraintStart_toStartOf="@id/name_etv"/>
+
+    <TextView
+        android:id="@+id/cash_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:gravity="center_vertical"
+        android:textSize="11sp"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:layout_marginTop="4dp"
+        app:layout_constraintTop_toBottomOf="@id/cash_etv"
+        app:layout_constraintStart_toStartOf="@id/name_etv"
+        app:drawableStartCompat="@drawable/warning"/>
+
+    <TextView
+        android:id="@+id/label4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/Mode"
+        android:layout_margin="8dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/cash_error"/>
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/ModeOfPaymentChips"
+        android:layout_width="320dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintTop_toBottomOf="@id/cash_error"
+        app:layout_constraintStart_toStartOf="@id/name_etv">
+        <com.google.android.material.chip.Chip
+            android:id="@+id/ModeIsCash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ModeCash"/>
+        <com.google.android.material.chip.Chip
+            android:id="@+id/ModeIsUpi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ModeUPI"/>
+        <com.google.android.material.chip.Chip
+            android:id="@+id/ModeIsCard"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ModeCard"/>
+        <com.google.android.material.chip.Chip
+            android:id="@+id/ModeIsBankTransfer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ModeBank"/>
+        <com.google.android.material.chip.Chip
+            android:id="@+id/ModeCheque"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/ModeCheque"/>
+    </com.google.android.material.chip.ChipGroup>
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/Fetch_Customer_Details"

@@ -1,7 +1,8 @@
 package com.example.dash;
 
 public class Label {
-    String Barcode, GW, NW, LW, EC, HUID, Touch, Date;
+    String Barcode, GW, NW, LW, EC, HUID, HMStandard, Date;
+    Double Purity;
     private String Name;
 
     public String getBarcode() {
@@ -40,6 +41,18 @@ public class Label {
         return EC;
     }
 
+    public double getPurity() {
+        return Purity;
+    }
+
+    public void setPurity(double purity) {
+        Purity = purity;
+    }
+
+    public String getName() {
+        return Name;
+    }
+
     public void setEC(String EC) {
         this.EC = EC;
     }
@@ -52,12 +65,12 @@ public class Label {
         this.HUID = HUID;
     }
 
-    public String getTouch() {
-        return Touch;
+    public String getHMStandard() {
+        return HMStandard;
     }
 
-    public void setTouch(String touch) {
-        Touch = touch;
+    public void setHMStandard(String HMStandard) {
+        this.HMStandard = HMStandard;
     }
 
     public String getDate() {
@@ -68,23 +81,13 @@ public class Label {
         Date = date;
     }
 
-
-    public void clearself() {
-        this.setBarcode(null);
-        this.setTouch(null);
-        this.setEC(null);
-        this.setDate(null);
-        this.setNW(null);
-        this.setGW(null);
-        this.setLW(null);
-        this.setHUID(null);
-    }
-
-    public String getname() {
-        return Name;
-    }
-
     public void setName(String name){
         Name = name;
+    }
+
+    public String getInventory(){
+        return getBarcode() + ":" + getHMStandard() + ":" + getName() + ":" + getGW()
+                + ":" + getLW() + ":" + getNW() + ":" + getEC() + ":" + getHUID()
+                + ":" + getDate();
     }
 }
