@@ -138,9 +138,9 @@ public class StockManagement extends AppCompatActivity {
                     addAll(GenericItemsGold);
                     addAll(GenericItemsSilver);
                 }});
-        dbManager.insertAllCategoriesGold(GenericItemsGold);
-        //dbManager.insertAllCategoriesSilver(GenericItemsSilver);
 
+        dbManager.insertAllCategoriesGold(GenericItemsGold);
+        dbManager.insertAllCategoriesSilver(GenericItemsSilver);
 
         Categories.setAdapter(ItemAdapter);
         FilterCategories.setAdapter(ItemAdapter);

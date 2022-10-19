@@ -36,13 +36,14 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+
         holder.rowid.setText(String.valueOf(position+1));
         holder.itemname.setText(sundryItemList.get(position).getName());
         holder.gw.setText(String.valueOf(sundryItemList.get(position).getGW()));
         holder.lw.setText(String.valueOf(sundryItemList.get(position).getLW()));
         holder.nw.setText(String.valueOf(sundryItemList.get(position).getNW()));
         holder.ec.setText(String.valueOf(sundryItemList.get(position).getEC()));
-        holder.ws.setText(String.valueOf(sundryItemList.get(position).getWastage()));
+        holder.ws.setText(String.valueOf(sundryItemList.get(position).getLabour()));
         holder.delete.setOnClickListener(view -> onClick.DeleteThisItem(holder.getAdapterPosition()));
         holder.adddetails.setOnClickListener(view -> onClick.AddDetails(holder.getAdapterPosition()));
     }
@@ -65,7 +66,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
             lw = mView.findViewById(R.id.LWholder);
             nw = mView.findViewById(R.id.NWholder);
             ec = mView.findViewById(R.id.ECholder);
-            ws = mView.findViewById(R.id.WSHolder);
+            ws = mView.findViewById(R.id.LabourHolder);
             adddetails = mView.findViewById(R.id.EditDetails);
             delete = mView.findViewById(R.id.RemoveItem);
 

@@ -87,7 +87,7 @@
         app:layout_constraintStart_toEndOf="@id/NWholder"/>
 
     <TextView
-        android:id="@+id/WSHolder"
+        android:id="@+id/LabourHolder"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
         android:textAlignment="textStart"
@@ -109,9 +109,9 @@
         android:textAllCaps="false"
         android:layout_marginStart="12dp"
         android:backgroundTint="@color/space_cadet"
-        app:layout_constraintTop_toTopOf="@id/WSHolder"
-        app:layout_constraintStart_toEndOf="@id/WSHolder"
-        app:layout_constraintBottom_toBottomOf="@id/WSHolder"/>
+        app:layout_constraintTop_toTopOf="@id/LabourHolder"
+        app:layout_constraintStart_toEndOf="@id/LabourHolder"
+        app:layout_constraintBottom_toBottomOf="@id/LabourHolder"/>
         <Button
             android:id="@+id/RemoveItem"
             android:layout_width="wrap_content"

@@ -54,7 +54,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
-import java.util.jar.Attributes;
 
 public class Invoice extends AppCompatActivity {
     private DBManager dbManager;
@@ -75,6 +74,7 @@ public class Invoice extends AppCompatActivity {
     RecyclerView ItemList;
     ItemListAdapter adapter;
     ImageButton Print;
+    TextView GoldWeightHolder,SilverWeightHolder,AmountHolder,TaxHolder,TotalAmountHolder;
     List<SundryItem> sundryItemList = new ArrayList<>();
     double WeightToCalculateLabour, baseprice;
     PrintData printData = new PrintData();
@@ -87,7 +87,8 @@ public class Invoice extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.invoiceform);
         Objects.requireNonNull(getSupportActionBar()).setTitle("New Invoice");
-        Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(getBaseContext(),R.color.teal_600)));
+        Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(new ColorDrawable(ContextCompat.
+                getColor(getBaseContext(),R.color.teal_600)));
         context = getBaseContext();
         dbManager = new DBManager(this);
         dbManager.open();
@@ -98,6 +99,13 @@ public class Invoice extends AppCompatActivity {
         ItemList = findViewById(R.id.item_list);
         Print = findViewById(R.id.Print);
         error_invoice = findViewById(R.id.error_invoice);
+
+        GoldWeightHolder = findViewById(R.id.TotalGoldHolder);
+        SilverWeightHolder = findViewById(R.id.TotalSilverHolder);
+        AmountHolder = findViewById(R.id.AmountHolder);
+        TaxHolder = findViewById(R.id.TaxAmountHolder);
+        TotalAmountHolder = findViewById(R.id.TotalAmountHolder);
+
         GenericItemsGold.addAll(Arrays.asList("Mens Ring", "Women Ring", "Chain",
                 "Plastic Paatla", "Gold Set", "Gold Haar",
                 "Earring", "Tops", "Gents Bracelets",
@@ -115,7 +123,6 @@ public class Invoice extends AppCompatActivity {
 
         Purity_Levels_Gold.addAll(Arrays.asList("999 Fine Gold", "23KT958", "22KT916", "21KT875",
                 "20KT833", "18KT750", "14KT585","Others"));
-
         List<String> CustomerLists = dbManager.ListAllCustomer();
         List<String> PhoneNumbers = dbManager.ListAllPhone();
         List<String> Birthdays = dbManager.ListDOB();
@@ -263,6 +270,7 @@ public class Invoice extends AppCompatActivity {
                     popupWindow.showAtLocation(Particular.getRootView(), Gravity.CENTER,0,0);
                     popupWindow.setFocusable(true);
                     popupWindow.update();
+                    popupWindow.setOutsideTouchable(false);
                     InputMethodManager imm = (InputMethodManager)getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
                     Spinner Purity;
@@ -370,65 +378,6 @@ public class Invoice extends AppCompatActivity {
                         }
                     });
 
-
-                    //if(Supplier_Adapter.getCount()==0)
-               /*     Supplier.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-                        @Override
-                        public void onFocusChange(View view, boolean b) {
-                            if(!b){
-                                if(Supplier.getSelectedItem().toString().length()>=3){
-                                    if(!Supplier_Adapter.toString().contains(Supplier.getSelectedItem().toString())){
-                                        //Bubble to add that to the
-                                        ConstraintLayout add_supplier_layout = marginView.findViewById(R.id.supplier_add_layout);
-                                        add_supplier_layout.setVisibility(View.VISIBLE);
-                                        Button Add,Close;
-                                        Add = marginView.findViewById(R.id.add_supplier);
-                                        Close = marginView.findViewById(R.id.don't_add_supplier);
-                                        Add.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                long result = dbManager.AddNewSupplier(Supplier.getSelectedItem().toString());
-                                                if(result!=-1){
-                                                    TextView Attention_text = marginView.findViewById(R.id.Attention_text);
-                                                    Attention_text.setText(R.string.supplier_success);
-                                                    Attention_text.setCompoundDrawablesWithIntrinsicBounds(R.drawable.success, 0, 0, 0);
-                                                    Attention_text.setCompoundDrawablePadding(4);
-                                                    final Handler handler = new Handler();
-                                                    handler.postDelayed(new Runnable() {
-                                                        @Override
-                                                        public void run() {
-                                                            // Do something after 5s = 5000ms
-                                                            add_supplier_layout.setVisibility(View.GONE);
-                                                        }
-                                                    }, 2500);
-                                                }
-                                            }
-                                        });
-
-                                        Close.setOnClickListener(new View.OnClickListener() {
-                                            @Override
-                                            public void onClick(View view) {
-                                                add_supplier_layout.setVisibility(View.GONE);
-                                            }
-                                        });
-                                    }
-                                }
-                            }else{
-                                if(!Supplier.getSelectedItem().toString().isEmpty()){
-                                    TextView attention = marginView.findViewById(R.id.Attention_text_1);
-                                    if(attention.getVisibility()==View.INVISIBLE || attention.getVisibility()==View.GONE){
-                                        attention.setVisibility(View.VISIBLE);
-                                    }
-                                }else{
-                                    TextView attention = marginView.findViewById(R.id.Attention_text_1);
-                                    attention.setVisibility(View.GONE);
-                                }
-                            }
-                        }
-                    }); */
-                    //Receive input from user and save it.
-                    //in a separate database as to avoid adding it to inventory.
-
                     GrossWeight.addTextChangedListener(new TextWatcher() {
                         @Override
                         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -448,6 +397,7 @@ public class Invoice extends AppCompatActivity {
                                     NetWeight.setText(String.format(Locale.getDefault(),"%.2f",diff));
                                 }else{
                                  NetWeight.setText(GrossWeight.getText().toString());
+
                                 }
                             }else{
                                 NetWeight.setText(null);
@@ -476,7 +426,13 @@ public class Invoice extends AppCompatActivity {
                                 double GW = Double.parseDouble(GrossWeight.getText().toString());
                                 if(!LessWeight.getText().toString().isEmpty()){
                                     try{
+                                        String format = String.format(Locale.getDefault(),"%.2f", Double.parseDouble(LessWeight.
+                                                getText().toString()));
+
                                         double LW = Double.parseDouble(LessWeight.getText().toString());
+                                        if(!LessWeight.isFocused() && !LessWeight.getText().toString().isEmpty()){
+                                            LessWeight.setText(format);
+                                        }
                                         if(LW<GW){
                                             save.setEnabled(true);
                                             double NW = GW-LW;
@@ -686,13 +642,23 @@ public class Invoice extends AppCompatActivity {
                                     progressBar.setVisibility(View.VISIBLE);
                                     if(sundryItemList!=null && sundryItemList.size()!=0){
                                         printData.setSundryItemList(sundryItemList);
-
                                         String s = DateFormat.format("dd/MM/yyy", new java.util.Date()).toString();
+                                        Calendar cal=Calendar.getInstance();
+                                        SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
+                                        String month_name = month_date.format(cal.getTime());
                                         printData.setDate(s);
                                         Calendar calendar = Calendar.getInstance();
                                         dbManager.addCounter(calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.YEAR));
                                         invoicecounter = invoicecounter + dbManager.getCounter(calendar.get(Calendar.MONTH),calendar.get(Calendar.YEAR));
                                         printData.setBillNo(s.replaceAll("/","") + invoicecounter);
+                                        db.collection("Invoices"+"/"+month_date.format(cal.getTime())+"/"+"Sales").add(printData).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<DocumentReference> task) {
+                                                if(task.isSuccessful()){
+                                                    Log.d("Invoice saved", "to month");
+                                                }
+                                            }
+                                        });
                                         db.collection("Invoices").add(printData).addOnSuccessListener(new OnSuccessListener<DocumentReference>() {
                                             @Override
                                             public void onSuccess(DocumentReference documentReference) {
@@ -777,6 +743,14 @@ public class Invoice extends AppCompatActivity {
                     CI = fetch.getColumnIndex("Wastage");
                     newitem.setWastage(fetch.getDouble(CI));
                     sundryItemList.add(newitem);
+                    updateWeightCounters(sundryItemList);
+                    //Update Details about invoice.
+                    //GoldWeightHolder = findViewById(R.id.TotalGoldHolder);
+                    //        SilverWeightHolder = findViewById(R.id.TotalSilverHolder);
+                    //        AmountHolder = findViewById(R.id.AmountHolder);
+                    //        TaxHolder = findViewById(R.id.TaxAmountHolder);
+                    //        TotalAmountHolder = findViewById(R.id.TotalAmountHolder);
+
                 }
             }
             adapter = new ItemListAdapter(sundryItemList, new ItemListAdapter.OnItemClicked() {
@@ -784,11 +758,15 @@ public class Invoice extends AppCompatActivity {
                 public void DeleteThisItem(int position) {
                     sundryItemList.remove(position);
                     adapter.notifyItemRemoved(position);
+                    updateWeightCounters(sundryItemList);
+                    updateAmountCounters(sundryItemList);
                     if(sundryItemList.size()==0){
                         Print.setVisibility(View.GONE);
                     }else{
                         Print.setVisibility(View.VISIBLE);
                     }
+
+
                 }
 
                 @Override
@@ -828,7 +806,12 @@ public class Invoice extends AppCompatActivity {
                             }else if(item.getLabourType().contentEquals("LumpSum")){
                                 LabourType.check(R.id.lumpsum);
                             }
+                        }else{
+                            MetalPrice.setEnabled(false);
+                            Labour.setEnabled(false);
+                            ExtraCharges.setEnabled(false);
                         }
+
                         if(item.getRate()!=0){
                             MetalPrice.setText(String.valueOf(item.getRate()));
                         }
@@ -853,6 +836,9 @@ public class Invoice extends AppCompatActivity {
                                 View view;
                                 Labour.setText(null);
                                 if(i == R.id.pergm){
+                                    MetalPrice.setEnabled(false);
+                                    Labour.setEnabled(false);
+                                    ExtraCharges.setEnabled(false);
                                     item.setLabourType("PerGram");
                                     RadioGroup LabourSubType;
                                     LabourSubType1.removeAllViews();
@@ -861,6 +847,22 @@ public class Invoice extends AppCompatActivity {
                                     LabourSubType1.addView(view);
                                     LabourSubType1.setVisibility(View.VISIBLE);
                                     LabourSubType = view.findViewById(R.id.Labour_Sub_Type);
+                                    ExtraCharges.addTextChangedListener(new TextWatcher() {
+                                        @Override
+                                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                        }
+
+                                        @Override
+                                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                        }
+
+                                        @Override
+                                        public void afterTextChanged(Editable editable) {
+
+                                        }
+                                    });
                                     MetalPrice.addTextChangedListener(new TextWatcher() {
                                         @Override
                                         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -884,6 +886,9 @@ public class Invoice extends AppCompatActivity {
                                         @Override
                                         public void onCheckedChanged(RadioGroup radioGroup, int i) {
                                             Labour.setText(null);
+                                            MetalPrice.setEnabled(true);
+                                            Labour.setEnabled(true);
+                                            ExtraCharges.setEnabled(true);
                                             if(i==R.id.WithGW){
                                                 WeightToCalculateLabour = item.getGW();
                                             }
@@ -926,6 +931,9 @@ public class Invoice extends AppCompatActivity {
                                     });
                                 }
                                 else if(i == R.id.Percent){
+                                    MetalPrice.setEnabled(true);
+                                    Labour.setEnabled(true);
+                                    ExtraCharges.setEnabled(true);
                                     item.setLabourType("Percent");
                                     LabourSubType1.removeAllViews();
                                     Log.d("Percent","True");
@@ -979,6 +987,9 @@ public class Invoice extends AppCompatActivity {
                                     });
                                 }
                                 else if(i == R.id.lumpsum){
+                                    MetalPrice.setEnabled(true);
+                                    Labour.setEnabled(true);
+                                    ExtraCharges.setEnabled(true);
                                     item.setLabourType("LumpSum");
                                     Log.d("Lumpsum","True");
                                     LabourSubType1.removeAllViews();
@@ -1000,6 +1011,25 @@ public class Invoice extends AppCompatActivity {
                                                 baseprice= Double.parseDouble(MetalPrice.getText().toString());
                                                 item.setRate(baseprice);
                                             }catch (Exception e){e.printStackTrace();}
+                                        }
+                                    });
+                                    ExtraCharges.addTextChangedListener(new TextWatcher() {
+                                        @Override
+                                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                        }
+
+                                        @Override
+                                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                        }
+
+                                        @Override
+                                        public void afterTextChanged(Editable editable) {
+                                            if(!ExtraCharges.getText().toString().isEmpty()){
+                                                item.setEC(Double.parseDouble(ExtraCharges.getText().toString()));
+                                            }
+
                                         }
                                     });
                                     Labour.addTextChangedListener(new TextWatcher() {
@@ -1035,7 +1065,9 @@ public class Invoice extends AppCompatActivity {
                                 if(!TotalLabourLabel.getText().toString().isEmpty()){
                                    item.setLabour(Double.parseDouble(TotalLabourLabel.getText().toString()));
                                    popupWindow.dismiss();
+                                   adapter.notifyItemChanged(position);
                                    Print.setVisibility(View.VISIBLE);
+                                    updateAmountCounters(sundryItemList);
                                 }else{
                                     Toast.makeText(view.getContext(),"Labour details invalid",Toast.LENGTH_LONG).show();
                                 }
@@ -1058,5 +1090,65 @@ public class Invoice extends AppCompatActivity {
             ItemList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
             ItemList.setItemAnimator(new DefaultItemAnimator());
             ItemList.setVisibility(View.VISIBLE);
+    }
+
+    private void updateWeightCounters(List<SundryItem> newitem) {
+        Log.d("Size:",String.valueOf(newitem.size()));
+        double GoldWeight = 0;
+        double SilverWeight = 0;
+        if(newitem.isEmpty()){
+            GoldWeightHolder.setText("0.00 gm");
+            SilverWeightHolder.setText("0.00 gm");
+        }
+        for(int j=0;j<newitem.size();j++) {
+            if(Purity_Levels_Gold.contains(newitem.get(j).getTypeOf())){
+                GoldWeight = GoldWeight+newitem.get(j).getNW();
+            }
+            if(Purity_Levels_Silver.contains(newitem.get(j).getTypeOf())){
+                SilverWeight = SilverWeight+newitem.get(j).getNW();
+            }
+        }
+        Double getcurrentweight = Double.valueOf(GoldWeightHolder.getText().toString().replace("gm",""));
+        GoldWeight = GoldWeight + getcurrentweight;
+        String weight = String.format(String.valueOf(GoldWeight),"%.2f", Locale.getDefault());
+        weight = weight + " gm";
+        GoldWeightHolder.setText(weight);
+        getcurrentweight = Double.valueOf(SilverWeightHolder.getText().toString().replace("gm",""));
+        SilverWeight = SilverWeight + getcurrentweight;
+        weight = String.format(String.valueOf(SilverWeight),"%.2f",Locale.getDefault());
+        weight = weight + " gm";
+        SilverWeightHolder.setText(weight);
+    }
+
+    private void updateAmountCounters(List<SundryItem> newitem){
+        Log.d("Amount>Size", String.valueOf(newitem.size()));
+        if(newitem.isEmpty()){
+            AmountHolder.setText("0.0 /-");
+            TaxHolder.setText("0.0 /-");
+            TotalAmountHolder.setText("0.0 /-");
+        }else{
+            double amount =  0;
+            double tax = 0;
+            for (SundryItem sundryItem:newitem){
+                if(sundryItem.getRate()!=0 && sundryItem.getLabour()!=0) {
+                    amount = amount + ((sundryItem.getRate() / 10)*sundryItem.getNW());
+                    Log.d("Amount:",String.valueOf(amount));
+                    amount = amount + sundryItem.getLabour();
+                    if (sundryItem.getEC() != 0) {
+                        amount = amount + sundryItem.getEC();
+                    }
+                }
+            }
+            tax = (amount * 3)/100;
+            String amountString = String.format(String.valueOf(amount),"%.1f",Locale.getDefault()) + " /-";
+            AmountHolder.setText(amountString);
+            amountString = String.format(String.valueOf(tax),"%.1f",Locale.getDefault()) + " /-";
+            TaxHolder.setText(amountString);
+            double total = amount+tax;
+            amountString = String.format(String.valueOf(total),"%.1f",Locale.getDefault()) + " /-";
+            TotalAmountHolder.setText(amountString);
+        }
+
+
     }
 }

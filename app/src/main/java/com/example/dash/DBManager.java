@@ -272,6 +272,7 @@ public class DBManager {
                         }
                     }
                 }
+
                 for(int j=0;j<Categories.size();j++){
                     String label = Categories.get(j).replace(" ","_");
                     String table_name = label.replace("-","_");
@@ -314,47 +315,82 @@ public class DBManager {
         }
 
         //BASIC SILVER CATEGORIES ADDED
-            public long insertAllCategoriesSilver(List<String> Categories){
-        long result = -1;
-        ContentValues contentValues = new ContentValues();
-        String sql = "SELECT Category FROM Categories_Silver";
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        Cursor fetch = db.rawQuery(sql,null);
-        String delete_statement= "DELETE FROM Categories";
-        Cursor delete_execute = db.rawQuery(delete_statement,null);
-        for(int j=0;j<Categories.size();j++){
-            contentValues.put("Category",Categories.get(j));
-            result = result+db.insert("Categories_Silver", null,contentValues);
-            String label = Categories.get(j).replace(" ","_");
-            String table_name = label.replace("-","_")+"Silver";
-            String create_table = "create table if not exists " + table_name +
-                    "("
-                    + "Barcode" + " INTEGER,"
-                    + "Purity" + " STRING NOT NULL,"
-                    + "Wastage" + " DECIMAL(2,2),"
-                    + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
-                    + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
-                    + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
-                    + "ExtraCharges" + " INTEGER,"
-                    + "HUID" + " STRING,"
-                    + "DateofEntry" + " STRING NOT NULL,"
-                    + "SupplierCode" + " INTEGER" + ");";
-            dbHelper.getWritableDatabase().execSQL(create_table);
-        }
-        return result;
+        public long insertAllCategoriesSilver(List<String> Categories){
+            long result = -1;
+            ContentValues contentValues = new ContentValues();
+            String sql = "SELECT Category FROM Categories";
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            Cursor fetch = db.rawQuery(sql,null);
+            Log.d("Cursor Count",String.valueOf(fetch.getCount()));
+            if(fetch.getCount()==0){
+                for(int j=0;j<Categories.size();j++){
+                    contentValues.put("Category",Categories.get(j));
+                    contentValues.put("BaseMetal","Silver");
+                    result = result+db.insert("Categories", null,contentValues);
+                }
+            }else{
+                fetch.moveToFirst();
+                while (fetch.moveToNext()){
+                    if(!Categories.contains(fetch.getString(0))){
+                        contentValues.put("Category",Categories.indexOf(fetch.getString(0)));
+                        contentValues.put("BaseMetal","Silver");
+                        result = result+db.insert("Categories", null,contentValues);
+                    }
+                }
+            }
+
+            for(int j=0;j<Categories.size();j++){
+                String label = Categories.get(j).replace(" ","_");
+                String table_name = label.replace("-","_");
+                String create_table = "create table if not exists " + table_name +
+                        "("
+                        + "Barcode" + " STRING,"
+                        + "Purity" + " STRING NOT NULL,"
+                        + "Wastage" + " DECIMAL(2,2),"
+                        + "GrossWeight" + " DECIMAL(7,3) NOT NULL,"
+                        + "LessWeight" + " DECIMAL(7,3) NOT NULL,"
+                        + "NetWeight" + " DECIMAL(7,3) NOT NULL,"
+                        + "ExtraCharges" + " INTEGER,"
+                        + "HUID" + " STRING,"
+                        + "DateofEntry" + " STRING NOT NULL,"
+                        + "SupplierCode" + " INTEGER" +
+                        ");";
+                String table_name2 = table_name+"_uid";
+                String create_table_backup = "create table if not exists " + table_name2 + "(" + "Barcode" + " STRING NOT NULL" + ");";
+                dbHelper.getWritableDatabase().execSQL(create_table_backup);
+                String triggerName = table_name+"_barcode_trigger";
+                String triggerName2 = table_name+"_rowid_trigger";
+                StringBuilder prefix = new StringBuilder("MJ" + Categories.get(j).substring(0, 2).replace("-", "").toUpperCase());
+                String prefixbuildersql = "SELECT Category_Code FROM Categories WHERE Category = '" +Categories.get(j)+ "'";
+                Cursor PFB = db.rawQuery(prefixbuildersql,null);
+                while (PFB.moveToNext()){
+                    prefix.append(PFB.getInt(0));
+                    prefix.append(".");
+                    Log.d("Prefix:","MJ"+PFB.getInt(0));
+                }
+                String triggers = "CREATE TRIGGER IF NOT EXISTS " + triggerName + " AFTER INSERT ON "
+                        + table_name + " WHEN new.Barcode IS null " + " BEGIN UPDATE " + table_name + " SET Barcode = '"+prefix+"'||rowid; END;";
+                Log.d("Triggers:",triggers);
+                String trigger2 = "CREATE TRIGGER IF NOT EXISTS " + triggerName2 + " AFTER DELETE ON "
+                        + table_name +" BEGIN INSERT INTO " + table_name2 + " (Barcode) " + " VALUES ( old.Barcode ); END;";
+                dbHelper.getWritableDatabase().execSQL(create_table);
+                dbHelper.getWritableDatabase().execSQL(triggers);
+                dbHelper.getWritableDatabase().execSQL(trigger2);
+            }
+            return result;
     }
 
     //Additional methods for adding data on the go in part Two.
         //ADD NEW STANDARD
             public long AddStandard(String Label, int Purity){
-        long result = -1;
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
-        ContentValues contentValues = new ContentValues();
-        contentValues.put("Standard_Name",Label);
-        contentValues.put("Standard_Value",Purity);
-        result = db.insert("Standards", null, contentValues);
-        return result;
-    }
+                long result = -1;
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                ContentValues contentValues = new ContentValues();
+                contentValues.put("Standard_Name",Label);
+                contentValues.put("Standard_Value",Purity);
+                result = db.insert("Standards", null, contentValues);
+                return result;
+            }
 
         //ADD NEW CUSTOMER
             public long insertNewCustomer(String Name, String PhoneNumber, String DOB) {

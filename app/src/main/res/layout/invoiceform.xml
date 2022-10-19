@@ -64,6 +64,9 @@
         app:layout_constraintBottom_toBottomOf="@id/label1"
         app:layout_constraintStart_toEndOf="@id/label1"/>
 
+    <!-- android:drawableLeft="@drawable/profile"
+    android:drawableTint="@color/black"
+    android:drawablePadding="8dp" -!-->
     <TextView
         android:id="@+id/label2"
         android:layout_width="wrap_content"
@@ -178,5 +181,146 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
+    <TextView
+        android:id="@+id/Summary"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/invoice_summary"
+        android:layout_marginBottom="48dp"
+        android:layout_marginStart="8dp"
+        android:textSize="16sp"
+        android:textStyle="italic|bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
+
+    <TextView
+        android:id="@+id/TotalGold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:text="@string/Gold"
+        android:textSize="16sp"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        app:layout_constraintTop_toBottomOf="@id/Summary"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <TextView
+        android:id="@+id/TotalGoldHolder"
+        android:layout_width="72dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:text="0.00 gm"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/Summary"
+        app:layout_constraintStart_toEndOf="@id/TotalGold"/>
+
+    <TextView
+        android:id="@+id/TotalSilver"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="12dp"
+        android:text="@string/Silver"
+        android:textSize="16sp"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        app:layout_constraintStart_toEndOf="@id/TotalGoldHolder"
+        app:layout_constraintTop_toTopOf="@id/TotalGold"/>
+
+    <TextView
+        android:id="@+id/TotalSilverHolder"
+        android:layout_width="72dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:text="0.00 gm"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/Summary"
+        app:layout_constraintStart_toEndOf="@id/TotalSilver"/>
+
+    <TextView
+        android:id="@+id/Amount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="12dp"
+        android:text="@string/Amount"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/Summary"
+        app:layout_constraintStart_toEndOf="@id/TotalSilverHolder"/>
+
+    <TextView
+        android:id="@+id/AmountHolder"
+        android:layout_width="96dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:text="0.00/-"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/Summary"
+        app:layout_constraintStart_toEndOf="@id/Amount"/>
+
+    <TextView
+        android:id="@+id/TaxAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="12dp"
+        android:text="@string/Tax"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/Summary"
+        app:layout_constraintStart_toEndOf="@id/AmountHolder"/>
+
+    <TextView
+        android:id="@+id/TaxAmountHolder"
+        android:layout_width="72dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="12dp"
+        android:text="0.00/-"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/Summary"
+        app:layout_constraintStart_toEndOf="@id/TaxAmount"/>
+
+    <TextView
+        android:id="@+id/TotalAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="12dp"
+        android:text="@string/Total"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/Summary"
+        app:layout_constraintStart_toEndOf="@id/TaxAmountHolder"/>
+
+
+    <TextView
+        android:id="@+id/TotalAmountHolder"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginStart="12dp"
+        android:text="0.00/-"
+        android:paddingStart="8dp"
+        android:paddingEnd="4dp"
+        android:textSize="16sp"
+        app:layout_constraintTop_toBottomOf="@id/Summary"
+        app:layout_constraintStart_toEndOf="@id/TotalAmount"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

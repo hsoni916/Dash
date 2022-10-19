@@ -78,4 +78,9 @@
     <string name="Mode">Mode:</string>
     <string name="ModeBank">NEFT/RTGS</string>
     <string name="ModeCheque">Cheque</string>
+    <string name="Gold">Gold:</string>
+    <string name="Silver">Silver:</string>
+    <string name="invoice_summary">Invoice Summary:</string>
+    <string name="Tax">GST:</string>
+    <string name="Total">Gross Total</string>
 </resources>
