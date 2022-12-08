@@ -208,10 +208,10 @@
 
     <TextView
         android:id="@+id/TotalGoldHolder"
-        android:layout_width="72dp"
+        android:layout_width="84dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:text="0.00 gm"
         android:paddingStart="8dp"
         android:paddingEnd="4dp"
@@ -233,10 +233,10 @@
 
     <TextView
         android:id="@+id/TotalSilverHolder"
-        android:layout_width="72dp"
+        android:layout_width="84dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:text="0.00 gm"
         android:paddingStart="8dp"
         android:paddingEnd="4dp"
@@ -259,10 +259,10 @@
 
     <TextView
         android:id="@+id/AmountHolder"
-        android:layout_width="96dp"
+        android:layout_width="108dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginStart="8dp"
+        android:layout_marginStart="4dp"
         android:text="0.00/-"
         android:paddingStart="8dp"
         android:paddingEnd="4dp"
@@ -285,10 +285,10 @@
 
     <TextView
         android:id="@+id/TaxAmountHolder"
-        android:layout_width="72dp"
+        android:layout_width="108dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="4dp"
         android:text="0.00/-"
         android:paddingStart="8dp"
         android:paddingEnd="4dp"
@@ -312,10 +312,10 @@
 
     <TextView
         android:id="@+id/TotalAmountHolder"
-        android:layout_width="wrap_content"
+        android:layout_width="108dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="4dp"
         android:text="0.00/-"
         android:paddingStart="8dp"
         android:paddingEnd="4dp"

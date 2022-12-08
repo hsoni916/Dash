@@ -21,6 +21,10 @@ public class StockSearchAdapter extends RecyclerView.Adapter<StockSearchAdapter.
         this.stocklist = stocklist;
     }
 
+    void setOnItemClickListener(OnItemClickListener listener){
+        this.mListener = listener;
+    }
+
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -30,6 +34,8 @@ public class StockSearchAdapter extends RecyclerView.Adapter<StockSearchAdapter.
     public interface OnItemClickListener{
 
         void RequestInventoryLabel(Label label);
+
+        void RequestDeleteLabel(Label label, int adapterPosition);
     }
 
     @Override
@@ -37,6 +43,7 @@ public class StockSearchAdapter extends RecyclerView.Adapter<StockSearchAdapter.
 
         final boolean isExpanded = holder.getAdapterPosition()==mExpandedPosition;
         holder.PrintLabel.setVisibility(isExpanded?View.VISIBLE:View.GONE);
+        holder.DeleteLabel.setVisibility(isExpanded?View.VISIBLE:View.GONE);
         holder.itemView.setActivated(isExpanded);
 
         if (isExpanded)
@@ -56,6 +63,12 @@ public class StockSearchAdapter extends RecyclerView.Adapter<StockSearchAdapter.
                 @Override
                 public void onClick(View view) {
                     mListener.RequestInventoryLabel(stocklist.get(holder.getAdapterPosition()));
+                }
+            });
+            holder.DeleteLabel.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mListener.RequestDeleteLabel(stocklist.get(holder.getAdapterPosition()),holder.getAdapterPosition());
                 }
             });
         }
@@ -78,7 +91,7 @@ public class StockSearchAdapter extends RecyclerView.Adapter<StockSearchAdapter.
     public class ViewHolder extends RecyclerView.ViewHolder {
         View mView;
         TextView SrNo,barcode,itemname,purity,gw,nw,ec,huid;
-        Button PrintLabel;
+        Button PrintLabel, DeleteLabel;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
@@ -91,6 +104,7 @@ public class StockSearchAdapter extends RecyclerView.Adapter<StockSearchAdapter.
             ec = mView.findViewById(R.id.EC);
             huid = mView.findViewById(R.id.HUID);
             PrintLabel = mView.findViewById(R.id.PrintLabel);
+            DeleteLabel = mView.findViewById(R.id.DeleteLabel);
         }
     }
 }

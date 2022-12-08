@@ -175,12 +175,9 @@ public class Invoice extends AppCompatActivity {
             }
         });
 
-        Names.setOnDismissListener(new AutoCompleteTextView.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                if(!Names.getText().toString().isEmpty()){
-                    printData.setCustomerName(Names.getText().toString());
-                }
+        Names.setOnDismissListener(() -> {
+            if(!Names.getText().toString().isEmpty()){
+                printData.setCustomerName(Names.getText().toString());
             }
         });
 
@@ -211,12 +208,9 @@ public class Invoice extends AppCompatActivity {
             }
 
         });
-        PhoneNumber.setOnDismissListener(new AutoCompleteTextView.OnDismissListener() {
-            @Override
-            public void onDismiss() {
-                if(!PhoneNumber.getText().toString().isEmpty()){
-                    printData.setDate(PhoneNumber.getText().toString());
-                }
+        PhoneNumber.setOnDismissListener(() -> {
+            if(!PhoneNumber.getText().toString().isEmpty()){
+                printData.setDate(PhoneNumber.getText().toString());
             }
         });
 
@@ -375,6 +369,7 @@ public class Invoice extends AppCompatActivity {
                         }
                         @Override
                         public void onNothingSelected(AdapterView<?> adapterView) {
+
                         }
                     });
 
@@ -397,7 +392,6 @@ public class Invoice extends AppCompatActivity {
                                     NetWeight.setText(String.format(Locale.getDefault(),"%.2f",diff));
                                 }else{
                                  NetWeight.setText(GrossWeight.getText().toString());
-
                                 }
                             }else{
                                 NetWeight.setText(null);
@@ -426,17 +420,13 @@ public class Invoice extends AppCompatActivity {
                                 double GW = Double.parseDouble(GrossWeight.getText().toString());
                                 if(!LessWeight.getText().toString().isEmpty()){
                                     try{
-                                        String format = String.format(Locale.getDefault(),"%.2f", Double.parseDouble(LessWeight.
-                                                getText().toString()));
 
                                         double LW = Double.parseDouble(LessWeight.getText().toString());
-                                        if(!LessWeight.isFocused() && !LessWeight.getText().toString().isEmpty()){
-                                            LessWeight.setText(format);
-                                        }
+
                                         if(LW<GW){
                                             save.setEnabled(true);
                                             double NW = GW-LW;
-                                            NetWeight.setText(String.format(Locale.getDefault(),"%.3f", NW));
+                                            NetWeight.setText(String.format(Locale.getDefault(),"%.2f", NW));
                                         }else{
                                             save.setEnabled(false);
                                             Toast.makeText(getBaseContext(),"Invalid weight",Toast.LENGTH_LONG).show();
@@ -457,7 +447,11 @@ public class Invoice extends AppCompatActivity {
                             if(!b){
                                 if(LessWeight.getText().toString().isEmpty()){
                                     double zero =0;
-                                    LessWeight.setText(String.format(Locale.getDefault(),"%.3f",zero));
+                                    LessWeight.setText(String.format(Locale.getDefault(),"%.2f",zero));
+                                }else{
+                                    String format = String.format(Locale.getDefault(),"%.2f", Double.parseDouble(LessWeight.
+                                            getText().toString()));
+                                    LessWeight.setText(format);
                                 }
                             }
                         }
@@ -648,6 +642,7 @@ public class Invoice extends AppCompatActivity {
                                         String month_name = month_date.format(cal.getTime());
                                         printData.setDate(s);
                                         Calendar calendar = Calendar.getInstance();
+                                        dbManager.open();
                                         dbManager.addCounter(calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.YEAR));
                                         invoicecounter = invoicecounter + dbManager.getCounter(calendar.get(Calendar.MONTH),calendar.get(Calendar.YEAR));
                                         printData.setBillNo(s.replaceAll("/","") + invoicecounter);
@@ -668,11 +663,14 @@ public class Invoice extends AppCompatActivity {
                                                     error_invoice.setVisibility(View.GONE);
                                                 }
                                                 sundryItemList = new ArrayList<>();
+                                                updateWeightCounters(sundryItemList);
+                                                updateAmountCounters(sundryItemList);
                                                 printData = new PrintData();
                                                 Names.setText(null);
                                                 PhoneNumber.setText(null);
                                                 Particular.setText(null);
                                                 Print.setEnabled(true);
+                                                Print.setVisibility(View.GONE);
                                                 ItemList.setAdapter(null);
                                                 itemids.clear();
                                                 progressBar.setVisibility(View.GONE);
@@ -686,14 +684,6 @@ public class Invoice extends AppCompatActivity {
                                                 error_invoice.setVisibility(View.VISIBLE);
                                                 Print.setEnabled(true);
                                                 ItemList.setAdapter(null);
-                                            }
-                                        }).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
-                                            @Override
-                                            public void onComplete(@NonNull Task<DocumentReference> task) {
-                                                Print.setEnabled(true);
-                                                progressBar.setVisibility(View.GONE);
-                                                paymentWindow.dismiss();
-                                                Toast.makeText(getBaseContext(),"Invoice sent for Print.",Toast.LENGTH_LONG).show();
                                             }
                                         });
                                     }
@@ -757,6 +747,7 @@ public class Invoice extends AppCompatActivity {
                 @Override
                 public void DeleteThisItem(int position) {
                     sundryItemList.remove(position);
+                    itemids.remove(position);
                     adapter.notifyItemRemoved(position);
                     updateWeightCounters(sundryItemList);
                     updateAmountCounters(sundryItemList);
@@ -847,6 +838,22 @@ public class Invoice extends AppCompatActivity {
                                     LabourSubType1.addView(view);
                                     LabourSubType1.setVisibility(View.VISIBLE);
                                     LabourSubType = view.findViewById(R.id.Labour_Sub_Type);
+                                    LabourSubType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                                        @Override
+                                        public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                                            Labour.setText(null);
+                                            MetalPrice.setEnabled(true);
+                                            Labour.setEnabled(true);
+                                            ExtraCharges.setEnabled(true);
+                                            if(i==R.id.WithGW){
+                                                WeightToCalculateLabour = item.getGW();
+                                            }
+                                            if(i==R.id.WithNW){
+                                                WeightToCalculateLabour = item.getNW();
+                                            }
+                                            Log.d("Weight:",String.valueOf(WeightToCalculateLabour));
+                                        }
+                                    });
                                     ExtraCharges.addTextChangedListener(new TextWatcher() {
                                         @Override
                                         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -860,7 +867,28 @@ public class Invoice extends AppCompatActivity {
 
                                         @Override
                                         public void afterTextChanged(Editable editable) {
-
+                                            if(ExtraCharges.getText().toString().isEmpty() && !ExtraCharges.isFocused()){
+                                                ExtraCharges.setText(R.string.zero);
+                                            }
+                                            try{
+                                                item.setEC(Double.parseDouble(ExtraCharges.getText().toString()));
+                                            }catch (Exception e){e.printStackTrace();}
+                                            Log.d("pergm labour","true");
+                                            if(!Labour.getText().toString().isEmpty()) {
+                                                Log.d("pergm labour not empty","true");
+                                                double value = Double.parseDouble(Labour.getText().toString()) * WeightToCalculateLabour;
+                                                double total = value + item.getEC();
+                                                Log.d("Values:",value+"--"+total);
+                                                TotalLabourLabel.setVisibility(View.VISIBLE);
+                                                LabourEcHolder.setVisibility(View.VISIBLE);
+                                                TotalLabourLabel.setText(String.format(Locale.getDefault(), "%.2f", value));
+                                                LabourEcHolder.setText(String.format(Locale.getDefault(), "%.2f", total));
+                                            }else{
+                                                TotalLabourLabel.setText("");
+                                                LabourEcHolder.setText("");
+                                                TotalLabourLabel.setVisibility(View.GONE);
+                                                LabourEcHolder.setVisibility(View.GONE);
+                                            }
                                         }
                                     });
                                     MetalPrice.addTextChangedListener(new TextWatcher() {
@@ -879,25 +907,11 @@ public class Invoice extends AppCompatActivity {
                                             try{
                                                 baseprice= Double.parseDouble(MetalPrice.getText().toString());
                                                 item.setRate(baseprice);
-                                            }catch (Exception e){e.printStackTrace();}
+                                            }catch (Exception e){
+                                                e.printStackTrace();}
                                         }
                                     });
-                                    LabourSubType.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
-                                        @Override
-                                        public void onCheckedChanged(RadioGroup radioGroup, int i) {
-                                            Labour.setText(null);
-                                            MetalPrice.setEnabled(true);
-                                            Labour.setEnabled(true);
-                                            ExtraCharges.setEnabled(true);
-                                            if(i==R.id.WithGW){
-                                                WeightToCalculateLabour = item.getGW();
-                                            }
-                                            if(i==R.id.WithNW){
-                                                WeightToCalculateLabour = item.getNW();
-                                            }
-                                            Log.d("Weight:",String.valueOf(WeightToCalculateLabour));
-                                        }
-                                    });
+
                                     Labour.addTextChangedListener(new TextWatcher() {
                                         @Override
                                         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -985,6 +999,43 @@ public class Invoice extends AppCompatActivity {
                                             }
                                         }
                                     });
+                                    ExtraCharges.addTextChangedListener(new TextWatcher() {
+                                        @Override
+                                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                        }
+
+                                        @Override
+                                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                                        }
+
+                                        @Override
+                                        public void afterTextChanged(Editable editable) {
+                                            if(ExtraCharges.getText().toString().isEmpty() && !ExtraCharges.isFocused()){
+                                                ExtraCharges.setText(R.string.zero);
+                                            }
+                                            try{
+                                                item.setEC(Double.parseDouble(ExtraCharges.getText().toString()));
+                                            }catch (Exception e){e.printStackTrace();}
+                                            Log.d("pergm labour","true");
+                                            if(!Labour.getText().toString().isEmpty()) {
+                                                Log.d("pergm labour not empty","true");
+                                                double value = Double.parseDouble(Labour.getText().toString()) * WeightToCalculateLabour;
+                                                double total = value + item.getEC();
+                                                Log.d("Values:",value+"--"+total);
+                                                TotalLabourLabel.setVisibility(View.VISIBLE);
+                                                LabourEcHolder.setVisibility(View.VISIBLE);
+                                                TotalLabourLabel.setText(String.format(Locale.getDefault(), "%.2f", value));
+                                                LabourEcHolder.setText(String.format(Locale.getDefault(), "%.2f", total));
+                                            }else{
+                                                TotalLabourLabel.setText("");
+                                                LabourEcHolder.setText("");
+                                                TotalLabourLabel.setVisibility(View.GONE);
+                                                LabourEcHolder.setVisibility(View.GONE);
+                                            }
+                                        }
+                                    });
                                 }
                                 else if(i == R.id.lumpsum){
                                     MetalPrice.setEnabled(true);
@@ -1026,8 +1077,27 @@ public class Invoice extends AppCompatActivity {
 
                                         @Override
                                         public void afterTextChanged(Editable editable) {
-                                            if(!ExtraCharges.getText().toString().isEmpty()){
+                                            if(ExtraCharges.getText().toString().isEmpty() && !ExtraCharges.isFocused()){
+                                                ExtraCharges.setText("0.00");
+                                            }
+                                            try{
                                                 item.setEC(Double.parseDouble(ExtraCharges.getText().toString()));
+                                            }catch (Exception e){e.printStackTrace();}
+                                            Log.d("pergm labour","true");
+                                            if(!Labour.getText().toString().isEmpty()) {
+                                                Log.d("pergm labour not empty","true");
+                                                double value = Double.parseDouble(Labour.getText().toString()) * WeightToCalculateLabour;
+                                                double total = value + item.getEC();
+                                                Log.d("Values:",value+"--"+total);
+                                                TotalLabourLabel.setVisibility(View.VISIBLE);
+                                                LabourEcHolder.setVisibility(View.VISIBLE);
+                                                TotalLabourLabel.setText(String.format(Locale.getDefault(), "%.2f", value));
+                                                LabourEcHolder.setText(String.format(Locale.getDefault(), "%.2f", total));
+                                            }else{
+                                                TotalLabourLabel.setText("");
+                                                LabourEcHolder.setText("");
+                                                TotalLabourLabel.setVisibility(View.GONE);
+                                                LabourEcHolder.setVisibility(View.GONE);
                                             }
 
                                         }
@@ -1076,6 +1146,9 @@ public class Invoice extends AppCompatActivity {
                         Clear.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                MetalPrice.setEnabled(true);
+                                Labour.setEnabled(true);
+                                ExtraCharges.setEnabled(true);
                                 LabourType.clearCheck();
                                 LabourSubType1.removeAllViews();
                                 Labour.setText(null);
@@ -1108,13 +1181,10 @@ public class Invoice extends AppCompatActivity {
                 SilverWeight = SilverWeight+newitem.get(j).getNW();
             }
         }
-        Double getcurrentweight = Double.valueOf(GoldWeightHolder.getText().toString().replace("gm",""));
-        GoldWeight = GoldWeight + getcurrentweight;
         String weight = String.format(String.valueOf(GoldWeight),"%.2f", Locale.getDefault());
         weight = weight + " gm";
         GoldWeightHolder.setText(weight);
-        getcurrentweight = Double.valueOf(SilverWeightHolder.getText().toString().replace("gm",""));
-        SilverWeight = SilverWeight + getcurrentweight;
+        SilverWeight = SilverWeight;
         weight = String.format(String.valueOf(SilverWeight),"%.2f",Locale.getDefault());
         weight = weight + " gm";
         SilverWeightHolder.setText(weight);

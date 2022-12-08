@@ -37,10 +37,6 @@ public class DBManager {
         dbHelper.close();
     }
 
-
-
-
-
     public long insertCategorySilver(String Category, boolean b){
         long result = -1;
         String table_name;
@@ -315,7 +311,7 @@ public class DBManager {
         }
 
         //BASIC SILVER CATEGORIES ADDED
-        public long insertAllCategoriesSilver(List<String> Categories){
+            public long insertAllCategoriesSilver(List<String> Categories){
             long result = -1;
             ContentValues contentValues = new ContentValues();
             String sql = "SELECT Category FROM Categories";
@@ -491,6 +487,16 @@ public class DBManager {
                     Log.d("Fetch", fetch.getString(0));
                 }
                 return returnvalue;
+            }
+
+            public boolean deleteBarCode(Label label, String Category){
+
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                Category = Category.replaceAll(" ", "_");
+                Category = Category.replaceAll("-","_");
+                String sql = "SELECT Category_Code FROM Categories WHERE Category ='" + Category + "'";
+                Cursor fetch = db.rawQuery(sql, null);
+                return db.delete(Category,"Barcode=?",new String[]{label.getBarcode()}) > 0;
             }
 
         //ADDING A COUNTER FOR NUMBER OF BILLS IN SPECIFIC MONTH-YEAR

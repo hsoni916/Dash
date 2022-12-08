@@ -23,6 +23,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.ArrayAdapter;
+import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.EditText;
@@ -414,12 +415,15 @@ public class MainActivity extends AppCompatActivity {
                 PhoneError = CashDepositView.findViewById(R.id.PhoneError);
                 CashError = CashDepositView.findViewById(R.id.cash_error);
 
-                EditText NameEtv = CashDepositView.findViewById(R.id.name_etv);
+                AutoCompleteTextView NameEtv = CashDepositView.findViewById(R.id.name_etv);
                 ArrayAdapter<String> NameAdapter = new ArrayAdapter<>
                         (view.getContext(), android.R.layout.select_dialog_item, dbManager.ListAllCustomer());
                 ArrayAdapter<String> PhoneAdapter = new ArrayAdapter<>
                         (view.getContext(), android.R.layout.select_dialog_item, dbManager.ListAllPhone());
 
+
+                NameEtv.setThreshold(2);
+                NameEtv.setAdapter(NameAdapter);
                 ModeOfPayments.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
                     @Override
                     public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {

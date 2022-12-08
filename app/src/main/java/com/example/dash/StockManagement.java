@@ -27,7 +27,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 
@@ -38,6 +37,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class StockManagement extends AppCompatActivity {
     List<String> GenericItemsGold = new ArrayList<>();
@@ -68,6 +69,8 @@ public class StockManagement extends AppCompatActivity {
     ArrayList<Label> PrimaryLabelList = new ArrayList<>();
     Label label = new Label();
     String FilterString = null;
+    private StockSearchAdapter.OnItemClickListener mListener;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -139,8 +142,7 @@ public class StockManagement extends AppCompatActivity {
                     addAll(GenericItemsSilver);
                 }});
 
-        dbManager.insertAllCategoriesGold(GenericItemsGold);
-        dbManager.insertAllCategoriesSilver(GenericItemsSilver);
+
 
         Categories.setAdapter(ItemAdapter);
         FilterCategories.setAdapter(ItemAdapter);
@@ -174,6 +176,31 @@ public class StockManagement extends AppCompatActivity {
                 inventorySearchList.setItemAnimator(new DefaultItemAnimator());
                 inventorySearchList.setVisibility(View.VISIBLE);
                 stockSearchAdapter.notifyDataSetChanged();
+                stockSearchAdapter.setOnItemClickListener(new StockSearchAdapter.OnItemClickListener() {
+                    @Override
+                    public void RequestInventoryLabel(Label label) {
+                        //Update the label entry.
+                        inventory.collection("Inventory").document(label.getBarcode())
+                                .set(label)
+                                .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<Void> task) {
+                                        if(task.isSuccessful()){
+                                            Toast.makeText(getBaseContext(),"Print requested.",Toast.LENGTH_LONG).show();
+                                        }
+                                    }
+                                });
+                    }
+
+                    @Override
+                    public void RequestDeleteLabel(Label label, int adapterPosition) {
+                        //Delete the label entry.
+                        if(dbManager.deleteBarCode(label, FilterString)){
+                            stockSearchAdapter.notifyItemRemoved(adapterPosition);
+                            stockSearchAdapter.notifyDataSetChanged();
+                        }
+                    }
+                });
                 Log.d("Size of inventory", String.valueOf(PrimaryLabelList.size()));
             }
 
@@ -209,6 +236,7 @@ public class StockManagement extends AppCompatActivity {
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 typeof =Purity.getItemAtPosition(i).toString();
                 label.setHMStandard(typeof);
+                Log.d("HMS:",label.getHMStandard());
                 switch (i){
                     case 0:
                         BasePurity.setText("99");
@@ -411,6 +439,7 @@ public class StockManagement extends AppCompatActivity {
             }else{
                 contentValues.put("SupplierCode", "None");
             }
+            label.setHMStandard(typeof);
             label.setName(Categories.getSelectedItem().toString());
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
             label.setDate(dateFormat.format(Calendar.getInstance().getTime()));
@@ -469,7 +498,7 @@ public class StockManagement extends AppCompatActivity {
                     String RV = dbManager.getBarCode(id,CategoriesString.replaceAll(" ","_"));
                     if(!RV.isEmpty()){
                         label.setBarcode(RV);
-                        inventory.collection("Inventory").document(RV)
+                        inventory.collection("Inventory").document(label.Barcode)
                                 .set(label)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
@@ -515,6 +544,22 @@ public class StockManagement extends AppCompatActivity {
             }
             //label = null;
         });
+
+
+    }
+
+    @Override
+    protected void onPostResume() {
+        super.onPostResume();
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                dbManager.insertAllCategoriesGold(GenericItemsGold);
+                dbManager.insertAllCategoriesSilver(GenericItemsSilver);
+            }
+        },3000);
+
     }
 
     private void FilterByText(String toString) {

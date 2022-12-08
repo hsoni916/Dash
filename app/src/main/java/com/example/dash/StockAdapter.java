@@ -1,5 +1,6 @@
 package com.example.dash;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -33,6 +34,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder>{
         holder.gw.setText(stocklist.get(position).getGW());
         holder.nw.setText(stocklist.get(position).getNW());
         holder.ec.setText(stocklist.get(position).getEC());
+        Log.d("HM Standard",stocklist.get(position).getHMStandard());
         holder.purity.setText(stocklist.get(position).getHMStandard());
         holder.huid.setText(stocklist.get(position).getHUID());
     }
