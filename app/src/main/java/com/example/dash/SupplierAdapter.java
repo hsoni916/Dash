@@ -69,11 +69,7 @@ public class SupplierAdapter extends RecyclerView.Adapter<SupplierAdapter.ViewHo
             @Override
             public void onClick(View view) {
                 holder.progressBar.setVisibility(View.VISIBLE);
-                if(mListener.Delete(supplierList.get(holder.getAdapterPosition()),documentReferenceList.get(holder.getAdapterPosition()))){
-                    Toast.makeText(view.getContext(), "Delete Successful.",Toast.LENGTH_LONG).show();
-                }else{
-                    Toast.makeText(view.getContext(), "Delete failed.",Toast.LENGTH_LONG).show();
-                }
+                mListener.Delete(supplierList.get(holder.getAdapterPosition()),documentReferenceList.get(holder.getAdapterPosition()));
             }
         });
 

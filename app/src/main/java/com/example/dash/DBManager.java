@@ -148,6 +148,7 @@ public class DBManager {
         while(fetch.moveToNext()){
             BarcodeList.add(fetch.getString(0));
         }
+        Log.d("Barcodes", BarcodeList.toString());
         return BarcodeList;
     }
 
@@ -258,17 +259,7 @@ public class DBManager {
                         contentValues.put("BaseMetal","Gold");
                         result = result+db.insert("Categories", null,contentValues);
                     }
-                }else{
-                    fetch.moveToFirst();
-                    while (fetch.moveToNext()){
-                        if(!Categories.contains(fetch.getString(0))){
-                            contentValues.put("Category",Categories.indexOf(fetch.getString(0)));
-                            contentValues.put("BaseMetal","Gold");
-                            result = result+db.insert("Categories", null,contentValues);
-                        }
-                    }
                 }
-
                 for(int j=0;j<Categories.size();j++){
                     String label = Categories.get(j).replace(" ","_");
                     String table_name = label.replace("-","_");
@@ -307,6 +298,7 @@ public class DBManager {
                     dbHelper.getWritableDatabase().execSQL(triggers);
                     dbHelper.getWritableDatabase().execSQL(trigger2);
                 }
+                fetch.close();
                 return result;
         }
 
@@ -324,17 +316,7 @@ public class DBManager {
                     contentValues.put("BaseMetal","Silver");
                     result = result+db.insert("Categories", null,contentValues);
                 }
-            }else{
-                fetch.moveToFirst();
-                while (fetch.moveToNext()){
-                    if(!Categories.contains(fetch.getString(0))){
-                        contentValues.put("Category",Categories.indexOf(fetch.getString(0)));
-                        contentValues.put("BaseMetal","Silver");
-                        result = result+db.insert("Categories", null,contentValues);
-                    }
-                }
             }
-
             for(int j=0;j<Categories.size();j++){
                 String label = Categories.get(j).replace(" ","_");
                 String table_name = label.replace("-","_");
@@ -373,6 +355,7 @@ public class DBManager {
                 dbHelper.getWritableDatabase().execSQL(triggers);
                 dbHelper.getWritableDatabase().execSQL(trigger2);
             }
+            fetch.close();
             return result;
     }
 

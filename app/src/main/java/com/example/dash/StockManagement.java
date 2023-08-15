@@ -163,6 +163,16 @@ public class StockManagement extends AppCompatActivity {
                 label.setName(null);
             }
         });
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                dbManager.insertAllCategoriesGold(GenericItemsGold);
+                dbManager.insertAllCategoriesSilver(GenericItemsSilver);
+            }
+        },3000);
+
         FilterCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
@@ -551,15 +561,6 @@ public class StockManagement extends AppCompatActivity {
     @Override
     protected void onPostResume() {
         super.onPostResume();
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                dbManager.insertAllCategoriesGold(GenericItemsGold);
-                dbManager.insertAllCategoriesSilver(GenericItemsSilver);
-            }
-        },3000);
-
     }
 
     private void FilterByText(String toString) {

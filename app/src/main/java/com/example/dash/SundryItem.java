@@ -3,6 +3,15 @@ package com.example.dash;
 public class SundryItem {
     String name, typeOf, LabourType;
     double GW, LW, NW, Wastage, EC, labour, rate;
+    Long id;
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public double getRate() {
         return rate;

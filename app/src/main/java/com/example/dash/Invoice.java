@@ -81,6 +81,7 @@ public class Invoice extends AppCompatActivity {
     TextView error_invoice;
     int invoicecounter = 0;
     boolean ExistingCustomer = false;
+    SundryItem sundryItem;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -464,51 +465,74 @@ public class Invoice extends AppCompatActivity {
                                 //    + "ExtraCharges" + " INTEGER,"
                                 //    + "ADD_INFO" + " STRING,"
                                  //   + "Status" + " INTEGER NOT NULL DEFAULT 0 CHECK ( Status IN (-1,0,1))"
+                        //SUNDRY ITEM PROPERTIES
+                            //String typeOf, LabourType;
+                            //    double LW, NW, Wastage, EC, labour, rate;
+                            //    Long id;
+                            sundryItem = new SundryItem();
                             contentValues = new ContentValues();
                             contentValues.put("Name",Category.getText().toString());
+                            Log.d("Name:",Category.getText().toString());
+                            sundryItem.setName(Category.getText().toString());
                             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
                             contentValues.put("Date_Of",dateFormat.format(Calendar.getInstance().getTime()));
                             String example = dateFormat.format(Calendar.getInstance().getTime());
                             if(!GrossWeight.getText().toString().isEmpty()){
                                 contentValues.put("GrossWeight",Double.parseDouble(GrossWeight.getText().toString()));
+                                sundryItem.setGW(Double.parseDouble(GrossWeight.getText().toString()));
                                 if(!LessWeight.getText().toString().isEmpty()){
                                     try{
                                         contentValues.put("LessWeight",Double.parseDouble(LessWeight.getText().toString()));
                                         contentValues.put("NetWeight",Double.parseDouble(GrossWeight.getText().toString())-Double.parseDouble(LessWeight.getText().toString()));
+                                        sundryItem.setLW(Double.parseDouble(LessWeight.getText().toString()));
+                                        sundryItem.setNW(Double.parseDouble(GrossWeight.getText().toString())-Double.parseDouble(LessWeight.getText().toString()));
                                     }catch (Exception e){
                                         e.printStackTrace();
                                         contentValues.put("LessWeight",0.00);
                                         contentValues.put("NetWeight",Double.parseDouble(GrossWeight.getText().toString()));
+                                        sundryItem.setLW(0.00);
+                                        sundryItem.setNW(Double.parseDouble(GrossWeight.getText().toString()));
                                     }
                                 }else{
                                     contentValues.put("LessWeight",0.00);
                                     contentValues.put("NetWeight",Double.parseDouble(GrossWeight.getText().toString()));
+                                    sundryItem.setLW(0.00);
+                                    sundryItem.setNW(Double.parseDouble(GrossWeight.getText().toString()));
                                 }
                                 contentValues.put("TypeOfArticle",typeof);
+                                sundryItem.setTypeOf(typeof);
                                 if(!Wastage.getText().toString().isEmpty()){
                                     try{
                                         contentValues.put("Wastage",Double.parseDouble(Wastage.getText().toString())
+                                                +Double.parseDouble(BasePurity.getText().toString()));
+                                        sundryItem.setWastage(Double.parseDouble(Wastage.getText().toString())
                                                 +Double.parseDouble(BasePurity.getText().toString()));
                                     }catch (Exception e){
                                         e.printStackTrace();
                                     }
                                 }else{
-
                                     contentValues.put("Wastage",6.5+Double.parseDouble(BasePurity.getText().toString()));
+                                    sundryItem.setWastage(6.5+Double.parseDouble(BasePurity.getText().toString()));
                                 }
                                 if(!ExtraCharges.getText().toString().isEmpty()){
                                     try{
                                         contentValues.put("ExtraCharges",Double.parseDouble(ExtraCharges.getText().toString()));
+                                        sundryItem.setEC(Double.parseDouble(ExtraCharges.getText().toString()));
                                     }catch (Exception e){
                                         e.printStackTrace();
                                     }
+                                }else{
+                                    contentValues.put("ExtraCharges",0.00);
+                                    sundryItem.setEC(0.00);
                                 }
                                 dbHelper = new DBHelper(marginView.getContext());
                                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                                 long id = db.insert("Sundry_Supplies", null,contentValues);
                                 if(id!=-1){
                                     Toast.makeText(marginView.getContext(),"Item Saved",Toast.LENGTH_LONG).show();
-                                    AddItem(id);
+                                    sundryItem.setId(id);
+                                    itemids.add(id);
+                                    AddItem(sundryItem);
                                     popupWindow.dismiss();
                                 }else{
                                     Toast.makeText(marginView.getContext(),"Item Save Unsuccessful",Toast.LENGTH_LONG).show();
@@ -645,6 +669,8 @@ public class Invoice extends AppCompatActivity {
                                         dbManager.open();
                                         dbManager.addCounter(calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.YEAR));
                                         invoicecounter = invoicecounter + dbManager.getCounter(calendar.get(Calendar.MONTH),calendar.get(Calendar.YEAR));
+                                        invoicecounter = invoicecounter + 1;
+                                        dbManager.updateCounter(calendar.get(Calendar.MONTH),calendar.get(Calendar.YEAR),invoicecounter);
                                         printData.setBillNo(s.replaceAll("/","") + invoicecounter);
                                         db.collection("Invoices"+"/"+month_date.format(cal.getTime())+"/"+"Sales").add(printData).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                             @Override
@@ -707,42 +733,42 @@ public class Invoice extends AppCompatActivity {
         });
     }
 
-    private void AddItem(long id) {
-        itemids.add(id);
+    private void AddItem(SundryItem sundryItem) {
         dbHelper = new DBHelper(getBaseContext());
         SQLiteDatabase db = dbHelper.getWritableDatabase();
-        sundryItemList = new ArrayList<>();
-            for(int i=0;i<itemids.size();i++){
-                String sql = "SELECT * FROM Sundry_Supplies WHERE rowid = " + itemids.get(i);
-                Cursor fetch = db.rawQuery(sql,null);
-                while (fetch.moveToNext() && !fetch.isAfterLast()){
-                    int CI;
-                    SundryItem newitem = new SundryItem();
-                    CI = fetch.getColumnIndex("Name");
-                    newitem.setName(fetch.getString(CI));
-                    CI = fetch.getColumnIndex("GrossWeight");
-                    newitem.setGW(fetch.getDouble(CI));
-                    CI = fetch.getColumnIndex("LessWeight");
-                    newitem.setLW(fetch.getDouble(CI));
-                    CI = fetch.getColumnIndex("NetWeight");
-                    newitem.setNW(fetch.getDouble(CI));
-                    CI = fetch.getColumnIndex("ExtraCharges");
-                    newitem.setEC(fetch.getDouble(CI));
-                    CI = fetch.getColumnIndex("TypeOfArticle");
-                    newitem.setTypeOf(fetch.getString(CI));
-                    CI = fetch.getColumnIndex("Wastage");
-                    newitem.setWastage(fetch.getDouble(CI));
-                    sundryItemList.add(newitem);
-                    updateWeightCounters(sundryItemList);
-                    //Update Details about invoice.
-                    //GoldWeightHolder = findViewById(R.id.TotalGoldHolder);
-                    //        SilverWeightHolder = findViewById(R.id.TotalSilverHolder);
-                    //        AmountHolder = findViewById(R.id.AmountHolder);
-                    //        TaxHolder = findViewById(R.id.TaxAmountHolder);
-                    //        TotalAmountHolder = findViewById(R.id.TotalAmountHolder);
-
-                }
-            }
+        if(sundryItemList.isEmpty())
+            sundryItemList = new ArrayList<>();
+        sundryItemList.add(sundryItem);
+        updateWeightCounters(sundryItemList);
+        /*for(int i=0;i<itemids.size();i++){
+            String sql = "SELECT * FROM Sundry_Supplies WHERE rowid = " + itemids.get(i);
+            Cursor fetch = db.rawQuery(sql,null);
+            while (fetch.moveToNext() && !fetch.isAfterLast()){
+                int CI;
+                CI = fetch.getColumnIndex("Name");
+                sundryItem.setName(fetch.getString(CI));
+                CI = fetch.getColumnIndex("GrossWeight");
+                sundryItem.setGW(fetch.getDouble(CI));
+                CI = fetch.getColumnIndex("LessWeight");
+                sundryItem.setLW(fetch.getDouble(CI));
+                CI = fetch.getColumnIndex("NetWeight");
+                sundryItem.setNW(fetch.getDouble(CI));
+                CI = fetch.getColumnIndex("ExtraCharges");
+                sundryItem.setEC(fetch.getDouble(CI));
+                CI = fetch.getColumnIndex("TypeOfArticle");
+                sundryItem.setTypeOf(fetch.getString(CI));
+                CI = fetch.getColumnIndex("Wastage");
+                sundryItem.setWastage(fetch.getDouble(CI));
+                sundryItemList.add(sundryItem);
+                updateWeightCounters(sundryItemList);
+                //Update Details about invoice.
+                //GoldWeightHolder = findViewById(R.sundryItem.TotalGoldHolder);
+                //        SilverWeightHolder = findViewById(R.sundryItem.TotalSilverHolder);
+                //        AmountHolder = findViewById(R.sundryItem.AmountHolder);
+                //        TaxHolder = findViewById(R.sundryItem.TaxAmountHolder);
+                //        TotalAmountHolder = findViewById(R.sundryItem.TotalAmountHolder);
+             }
+            }*/
             adapter = new ItemListAdapter(sundryItemList, new ItemListAdapter.OnItemClicked() {
                 @Override
                 public void DeleteThisItem(int position) {
@@ -756,14 +782,13 @@ public class Invoice extends AppCompatActivity {
                     }else{
                         Print.setVisibility(View.VISIBLE);
                     }
-
-
                 }
 
                 @Override
                 public void AddDetails(int position) {
                     //PopUp.
                     SundryItem item  = sundryItemList.get(position);
+                    Log.d("Clicked",item.getName());
                     LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     if(inflater!=null){
                         final View DetailsView = inflater.inflate(R.layout.details_popup,null);
@@ -891,6 +916,7 @@ public class Invoice extends AppCompatActivity {
                                             }
                                         }
                                     });
+
                                     MetalPrice.addTextChangedListener(new TextWatcher() {
                                         @Override
                                         public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
@@ -944,7 +970,7 @@ public class Invoice extends AppCompatActivity {
                                         }
                                     });
                                 }
-                                else if(i == R.id.Percent){
+                                if(i == R.id.Percent){
                                     MetalPrice.setEnabled(true);
                                     Labour.setEnabled(true);
                                     ExtraCharges.setEnabled(true);
@@ -1037,7 +1063,7 @@ public class Invoice extends AppCompatActivity {
                                         }
                                     });
                                 }
-                                else if(i == R.id.lumpsum){
+                                if(i == R.id.lumpsum){
                                     MetalPrice.setEnabled(true);
                                     Labour.setEnabled(true);
                                     ExtraCharges.setEnabled(true);
@@ -1132,10 +1158,11 @@ public class Invoice extends AppCompatActivity {
                         Save.setOnClickListener(new View.OnClickListener() {
                             @Override
                             public void onClick(View view) {
+                                //How about just get the details, check them, and use them in the list?
                                 if(!TotalLabourLabel.getText().toString().isEmpty()){
                                    item.setLabour(Double.parseDouble(TotalLabourLabel.getText().toString()));
                                    popupWindow.dismiss();
-                                   adapter.notifyItemChanged(position);
+                                   adapter.notifyItemChanged(position,item);
                                    Print.setVisibility(View.VISIBLE);
                                     updateAmountCounters(sundryItemList);
                                 }else{
@@ -1192,13 +1219,26 @@ public class Invoice extends AppCompatActivity {
 
     private void updateAmountCounters(List<SundryItem> newitem){
         Log.d("Amount>Size", String.valueOf(newitem.size()));
+
+        //private void startCountAnimation() {
+        //    ValueAnimator animator = ValueAnimator.ofInt(0, 600);
+        //    animator.setDuration(5000);
+        //    animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
+        //        public void onAnimationUpdate(ValueAnimator animation) {
+        //            textView.setText(animation.getAnimatedValue().toString());
+        //        }
+        //    });
+        //    animator.start();
+        //}
+
         if(newitem.isEmpty()){
-            AmountHolder.setText("0.0 /-");
-            TaxHolder.setText("0.0 /-");
-            TotalAmountHolder.setText("0.0 /-");
+            AmountHolder.setText("00");
+            TaxHolder.setText("00");
+            TotalAmountHolder.setText("00");
         }else{
             double amount =  0;
             double tax = 0;
+            double currentamount  = Double.parseDouble(AmountHolder.getText().toString().replaceAll(" /-",""));
             for (SundryItem sundryItem:newitem){
                 if(sundryItem.getRate()!=0 && sundryItem.getLabour()!=0) {
                     amount = amount + ((sundryItem.getRate() / 10)*sundryItem.getNW());
@@ -1218,7 +1258,5 @@ public class Invoice extends AppCompatActivity {
             amountString = String.format(String.valueOf(total),"%.1f",Locale.getDefault()) + " /-";
             TotalAmountHolder.setText(amountString);
         }
-
-
     }
 }

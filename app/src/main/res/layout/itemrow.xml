@@ -11,6 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="01"
+        android:textAlignment="textStart"
         android:textSize="14sp"
         android:padding="2dp"
         android:layout_margin="2dp"
@@ -22,7 +23,7 @@
         android:layout_width="100dp"
         android:overScrollMode="never"
         android:layout_height="24dp"
-        android:textAlignment="textStart"
+        android:textAlignment="center"
         android:text="Mens Ring"
         android:textSize="14sp"
         android:padding="2dp"
@@ -32,9 +33,9 @@
 
     <TextView
         android:id="@+id/GWholder"
-        android:layout_width="60dp"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:textAlignment="textStart"
+        android:textAlignment="center"
         android:text="999.99"
         android:textSize="14sp"
         android:padding="2dp"
@@ -46,9 +47,9 @@
 
     <TextView
         android:id="@+id/LWholder"
-        android:layout_width="60dp"
+        android:layout_width="56dp"
         android:layout_height="wrap_content"
-        android:textAlignment="textStart"
+        android:textAlignment="center"
         android:text="-999.99"
         android:textSize="14sp"
         android:padding="2dp"
@@ -60,9 +61,9 @@
 
     <TextView
         android:id="@+id/NWholder"
-        android:layout_width="60dp"
+        android:layout_width="80dp"
         android:layout_height="wrap_content"
-        android:textAlignment="textStart"
+        android:textAlignment="center"
         android:text="999.99"
         android:textSize="14sp"
         android:padding="2dp"
@@ -74,9 +75,9 @@
 
     <TextView
         android:id="@+id/ECholder"
-        android:layout_width="60dp"
+        android:layout_width="56dp"
         android:layout_height="wrap_content"
-        android:textAlignment="textStart"
+        android:textAlignment="center"
         android:text="999.99"
         android:textSize="14sp"
         android:padding="2dp"
@@ -90,7 +91,7 @@
         android:id="@+id/LabourHolder"
         android:layout_width="60dp"
         android:layout_height="wrap_content"
-        android:textAlignment="textStart"
+        android:textAlignment="center"
         android:text="999.99"
         android:textSize="14sp"
         android:padding="2dp"

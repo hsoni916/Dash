@@ -137,8 +137,10 @@ public class NewSupplier extends AppCompatActivity {
                             public void onComplete(@NonNull Task<Void> task) {
                                 if(task.isSuccessful()){
                                     result = true;
+                                    Toast.makeText(getBaseContext(),"Supplier deleted.",Toast.LENGTH_LONG).show();
                                 }else{
                                     result = false;
+                                    Toast.makeText(getBaseContext(),"Supplier delete failed.",Toast.LENGTH_LONG).show();
                                 }
                             }
                         });

@@ -46,6 +46,7 @@
         android:labelFor="@id/name_etv"
         android:layout_height="wrap_content"
         android:text="@string/name"
+        android:textSize="16sp"
         android:layout_margin="8dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/header_title"/>
@@ -64,9 +65,6 @@
         app:layout_constraintBottom_toBottomOf="@id/label1"
         app:layout_constraintStart_toEndOf="@id/label1"/>
 
-    <!-- android:drawableLeft="@drawable/profile"
-    android:drawableTint="@color/black"
-    android:drawablePadding="8dp" -!-->
     <TextView
         android:id="@+id/label2"
         android:layout_width="wrap_content"
@@ -74,6 +72,7 @@
         android:text="@string/phone"
         android:labelFor="@id/phone_etv"
         android:layout_margin="8dp"
+        android:textSize="16sp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/name_etv"/>
 
@@ -96,6 +95,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/Item"
+        android:textSize="16sp"
         android:layout_marginStart="8dp"
         android:layout_marginTop="12dp"
         android:labelFor="@id/particular"
@@ -142,16 +142,120 @@
         app:layout_constraintStart_toStartOf="@id/label3"
         app:drawableLeftCompat="@drawable/error" />
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/table_headers"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@id/error_invoice"
+        app:layout_constraintStart_toStartOf="@id/label3">
+
+        <TextView
+            android:id="@+id/rowidc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sr."
+            android:textStyle=""
+            android:textSize="14sp"
+            android:padding="2dp"
+            android:layout_margin="2dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"/>
+
+        <TextView
+            android:id="@+id/ItemName"
+            android:layout_width="100dp"
+            android:overScrollMode="never"
+            android:layout_height="24dp"
+            android:textAlignment="center"
+            android:text="Particulars"
+            android:textSize="14sp"
+            android:padding="2dp"
+            android:layout_margin="2dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/rowidc"/>
+
+        <TextView
+            android:id="@+id/GWholder"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="G. weight"
+            android:textSize="14sp"
+            android:padding="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ItemName"/>
+
+        <TextView
+            android:id="@+id/LWholder"
+            android:layout_width="56dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Less "
+            android:textSize="14sp"
+            android:padding="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/GWholder"/>
+
+        <TextView
+            android:id="@+id/NWholder"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="N. weight"
+            android:textSize="14sp"
+            android:padding="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/LWholder"/>
+
+        <TextView
+            android:id="@+id/ECholder"
+            android:layout_width="56dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="6dp"
+            android:padding="2dp"
+            android:layout_marginTop="2dp"
+            android:text="E.C"
+            android:textAlignment="center"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/NWholder"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/LabourHolder"
+            android:layout_width="80dp"
+            android:layout_height="wrap_content"
+            android:textAlignment="center"
+            android:text="Labour"
+            android:textSize="14sp"
+            android:padding="2dp"
+            android:layout_marginTop="2dp"
+            android:layout_marginStart="6dp"
+            android:layout_marginEnd="4dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toEndOf="@id/ECholder"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/item_list"
         android:layout_width="wrap_content"
         android:layout_height="240dp"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="12dp"
         android:layout_marginBottom="8dp"
         android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/error_invoice"/>
+        app:layout_constraintStart_toStartOf="@id/table_headers"
+        app:layout_constraintTop_toBottomOf="@id/table_headers"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/sales_history"
@@ -168,8 +272,8 @@
 
     <ImageButton
         android:id="@+id/Print"
-        android:layout_width="48dp"
-        android:layout_height="48dp"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
         android:padding="10dp"
         android:scaleType="fitStart"
         android:src="@drawable/print"
@@ -177,7 +281,7 @@
         android:layout_margin="8dp"
         android:elevation="4dp"
         android:background="@drawable/fab_background"
-        android:backgroundTint="@color/space_cadet"
+        android:backgroundTint="@color/space_cadet_dark"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
@@ -263,7 +367,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginStart="4dp"
-        android:text="0.00/-"
+        android:text="0.00"
         android:paddingStart="8dp"
         android:paddingEnd="4dp"
         android:textSize="16sp"
@@ -289,7 +393,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginStart="4dp"
-        android:text="0.00/-"
+        android:text="0.00"
         android:paddingStart="8dp"
         android:paddingEnd="4dp"
         android:textSize="16sp"
@@ -316,7 +420,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginStart="4dp"
-        android:text="0.00/-"
+        android:text="0.00"
         android:paddingStart="8dp"
         android:paddingEnd="4dp"
         android:textSize="16sp"
