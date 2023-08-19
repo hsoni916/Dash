@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Customer {
     String name;
-    Date dateOfBirth;
+    String dateOfBirth;
     String phoneNumber;
     String address;
     String Reference;
@@ -22,11 +22,11 @@ public class Customer {
         this.name = name;
     }
 
-    public Date getDateOfBirth() {
+    public String getDateOfBirth() {
         return dateOfBirth;
     }
 
-    public void setDateOfBirth(Date dateOfBirth) {
+    public void setDateOfBirth(String dateOfBirth) {
         this.dateOfBirth = dateOfBirth;
     }
 

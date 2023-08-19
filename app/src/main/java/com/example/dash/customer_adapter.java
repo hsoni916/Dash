@@ -1,5 +1,6 @@
 package com.example.dash;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,6 +39,7 @@ public class customer_adapter extends RecyclerView.Adapter<customer_adapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.Name.setText(recordList.get(position).getName());
         holder.Phone.setText(recordList.get(position).getPhoneNumber());
+        holder.DOB.setText(String.valueOf(recordList.get(position).getDateOfBirth()));
     }
 
     @Override
@@ -53,6 +55,7 @@ public class customer_adapter extends RecyclerView.Adapter<customer_adapter.View
             mView = itemView;
             Name = mView.findViewById(R.id.Name);
             Phone = mView.findViewById(R.id.Phone);
+            DOB = mView.findViewById(R.id.DOB);
         }
     }
 }

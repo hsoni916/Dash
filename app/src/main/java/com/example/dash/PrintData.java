@@ -1,16 +1,25 @@
 package com.example.dash;
 
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class PrintData {
 
     List<SundryItem> sundryItemList = new ArrayList<>();
     String CustomerName, Phone;
     List<String> MOP;
+    Map<String,Double> PaymentDetails;
     String date, BillNo;
     double Discount;
+
+    public Map<String, Double> getPaymentDetails() {
+        return PaymentDetails;
+    }
+
+    public void setPaymentDetails(Map<String, Double> paymentDetails) {
+        PaymentDetails = paymentDetails;
+    }
 
     public String getBillNo() {
         return BillNo;

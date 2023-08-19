@@ -1,0 +1,396 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="640dp"
+    android:layout_height="480dp"
+    android:layout_gravity="center"
+    android:background="@drawable/popup_background"
+    android:elevation="8dp"
+    android:focusable="true"
+    android:focusableInTouchMode="true">
+
+    <ProgressBar
+        android:id="@+id/progress_circular"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:elevation="4dp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/header_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:background="@drawable/textview_background"
+        android:paddingTop="4dp"
+        android:paddingBottom="8dp"
+        android:text="New Cash Deposit"
+        android:textAlignment="center"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/label1"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/name"
+        app:layout_constraintBottom_toBottomOf="@id/name_etv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/name_etv" />
+
+    <AutoCompleteTextView
+        android:id="@+id/name_etv"
+        android:layout_width="320dp"
+        android:layout_height="30dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/etv_background"
+        android:imeOptions="actionNext"
+        android:inputType="textPersonName"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        app:layout_constraintStart_toEndOf="@id/label1"
+        app:layout_constraintTop_toBottomOf="@id/header_title" />
+
+    <TextView
+        android:id="@+id/NameError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:textSize="11sp"
+        android:visibility="gone"
+        app:drawableStartCompat="@drawable/warning"
+        app:layout_constraintStart_toStartOf="@id/name_etv"
+        app:layout_constraintTop_toBottomOf="@id/name_etv" />
+
+    <TextView
+        android:id="@+id/label2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/phone"
+        app:layout_constraintBottom_toBottomOf="@id/phone_etv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/phone_etv" />
+
+    <AutoCompleteTextView
+        android:id="@+id/phone_etv"
+        android:layout_width="320dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/etv_background"
+        android:imeOptions="actionNext"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:singleLine="true"
+        app:layout_constraintStart_toStartOf="@id/name_etv"
+        app:layout_constraintTop_toBottomOf="@id/NameError" />
+
+    <TextView
+        android:id="@+id/PhoneError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:textSize="11sp"
+        android:visibility="gone"
+        app:drawableStartCompat="@drawable/warning"
+        app:layout_constraintStart_toStartOf="@id/phone_etv"
+        app:layout_constraintTop_toBottomOf="@id/phone_etv" />
+
+    <TextView
+        android:id="@+id/label3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/Amount"
+        app:layout_constraintBottom_toBottomOf="@id/cash_etv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/cash_etv" />
+
+
+    <EditText
+        android:id="@+id/cash_etv"
+        android:layout_width="320dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/etv_background"
+        android:imeOptions="actionNext"
+        android:inputType="numberDecimal"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:singleLine="true"
+        app:layout_constraintStart_toStartOf="@id/name_etv"
+        app:layout_constraintTop_toBottomOf="@id/PhoneError" />
+
+    <TextView
+        android:id="@+id/cash_error"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:textSize="11sp"
+        android:visibility="gone"
+        app:drawableStartCompat="@drawable/warning"
+        app:layout_constraintStart_toStartOf="@id/name_etv"
+        app:layout_constraintTop_toBottomOf="@id/cash_etv" />
+
+
+    <TextView
+        android:id="@+id/label4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="Date:"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@id/date_etv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/date_etv" />
+
+    <EditText
+        android:id="@+id/date_etv"
+        android:layout_width="280dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/etv_background"
+        android:imeOptions="actionNext"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:singleLine="true"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="@id/name_etv"
+        app:layout_constraintTop_toBottomOf="@id/cash_error" />
+
+
+    <ImageButton
+        android:id="@+id/datePicker"
+        android:layout_width="36dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/button_background"
+        android:padding="2dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/date"
+        app:layout_constraintBottom_toBottomOf="@id/date_etv"
+        app:layout_constraintStart_toEndOf="@id/date_etv"
+        app:layout_constraintTop_toTopOf="@id/date_etv" />
+
+    <TextView
+        android:id="@+id/label5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="Deposit for:"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/narration_etv"
+        app:layout_constraintBottom_toBottomOf="@id/narration_etv"/>
+
+    <EditText
+        android:id="@+id/narration_etv"
+        android:layout_width="320dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/etv_background"
+        android:imeOptions="actionNext"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:singleLine="true"
+        app:layout_constraintTop_toBottomOf="@id/date_etv"
+        app:layout_constraintStart_toStartOf="@id/name_etv"/>
+
+    <TextView
+        android:id="@+id/label6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="Remarks:"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/remarks_etv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/remarks_etv" />
+
+    <EditText
+        android:id="@+id/remarks_etv"
+        android:layout_width="320dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/etv_background"
+        android:imeOptions="actionNext"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:singleLine="true"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/name_etv"
+        app:layout_constraintTop_toBottomOf="@id/narration_etv" />
+
+
+    <TextView
+        android:id="@+id/label7"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/Weight"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/weightdetails"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/weightdetails" />
+
+    <EditText
+        android:id="@+id/weightdetails"
+        android:layout_width="320dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/etv_background"
+        android:imeOptions="actionNext"
+        android:inputType="numberDecimal"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:singleLine="true"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@id/name_etv"
+        app:layout_constraintTop_toBottomOf="@id/remarks_etv" />
+
+    <TextView
+        android:id="@+id/weightError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:gravity="center_vertical"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:textSize="11sp"
+        android:visibility="gone"
+        app:drawableStartCompat="@drawable/warning"
+        app:layout_constraintStart_toStartOf="@id/name_etv"
+        app:layout_constraintTop_toBottomOf="@id/weightdetails" />
+
+    <TextView
+        android:id="@+id/label8"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/Mode"
+        app:layout_constraintBottom_toBottomOf="@id/ModeOfPaymentChips"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/ModeOfPaymentChips" />
+
+    <com.google.android.material.chip.ChipGroup
+        android:id="@+id/ModeOfPaymentChips"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintStart_toStartOf="@id/name_etv"
+        app:layout_constraintTop_toBottomOf="@id/weightError"
+        app:singleSelection="true">
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/Chip1"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="@string/ModeCash"
+            android:textSize="11sp"
+            app:checkedIcon="@drawable/check" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/Chip2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="@string/ModeUPI"
+            android:textSize="11sp"
+            app:checkedIcon="@drawable/check" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/Chip3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="@string/ModeCard"
+            android:textSize="11sp"
+            app:checkedIcon="@drawable/check" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/Chip4"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="@string/ModeBank"
+            android:textSize="11sp"
+            app:checkedIcon="@drawable/check" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/Chip5"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="@string/ModeCheque"
+            android:textSize="11sp"
+            app:checkedIcon="@drawable/check" />
+
+        <com.google.android.material.chip.Chip
+            android:id="@+id/Chip6"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:checkable="true"
+            android:text="@string/ModeMetal"
+            android:textSize="11sp"
+            app:checkedIcon="@drawable/check" />
+    </com.google.android.material.chip.ChipGroup>
+
+
+    <Button
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="8dp"
+        android:backgroundTint="@color/teal_700"
+        android:padding="0dp"
+        android:text="@string/save"
+        android:textColor="@color/white"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/cancel" />
+
+    <Button
+        android:id="@+id/cancel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="48dp"
+        android:layout_marginEnd="4dp"
+        android:backgroundTint="@color/white"
+        android:padding="0dp"
+        android:text="@string/cancel"
+        android:textColor="@color/black"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

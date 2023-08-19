@@ -2,7 +2,6 @@ package com.example.dash;
 
 import android.content.ContentValues;
 import android.content.Context;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -51,8 +50,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 
 public class Invoice extends AppCompatActivity {
@@ -82,6 +83,7 @@ public class Invoice extends AppCompatActivity {
     int invoicecounter = 0;
     boolean ExistingCustomer = false;
     SundryItem sundryItem;
+    Map<String, Double> PaymentDetails;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -559,6 +561,7 @@ public class Invoice extends AppCompatActivity {
                 if(inflater!=null){
                     final View paymentview = inflater.inflate(R.layout.payment,null);
                     PopupWindow paymentWindow;
+                    PaymentDetails = new HashMap<>();
                     paymentWindow = new PopupWindow(paymentview, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, true);
                     paymentWindow.setAnimationStyle(R.style.popup_animation);
                     paymentWindow.showAtLocation(Particular.getRootView(), Gravity.CENTER,0,0);
@@ -569,13 +572,18 @@ public class Invoice extends AppCompatActivity {
                     UPIHolder = paymentview.findViewById(R.id.upilayout);
                     PaytmHolder = paymentview.findViewById(R.id.paytmlayout);
                     CardHolder = paymentview.findViewById(R.id.cardlayout);
-
+                    EditText cashAmount,UPIAmount,PaytmAmount,CardAmount;
+                    cashAmount = paymentview.findViewById(R.id.cash_amount);
+                    UPIAmount = paymentview.findViewById(R.id.gpay_amount);
+                    PaytmAmount = paymentview.findViewById(R.id.paytm_amount);
+                    CardAmount = paymentview.findViewById(R.id.card_amount);
                     TextView ErrorPayment;
                     ErrorPayment = paymentview.findViewById(R.id.error_payment);
                     String[] Mode = new String[]{};
                     List<String> MOP = new ArrayList<>();
 
                     EditText Discount = paymentview.findViewById(R.id.Discount_etv);
+
                     CashHolder.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View view) {
@@ -583,9 +591,14 @@ public class Invoice extends AppCompatActivity {
                             if(CashHolder.isSelected()){
                                 MOP.add(getString(R.string.ModeCash));
                                 Log.d("Selected","true");
+                                cashAmount.setVisibility(View.VISIBLE);
+                                cashAmount.requestFocus();
                             }else{
                                 if(MOP.size()>0){
                                     MOP.remove(getString(R.string.ModeCash));
+                                    cashAmount.setText("");
+                                    cashAmount.setVisibility(View.GONE);
+                                    PaymentDetails.remove("Cash");
                                 }
                                 Log.d("Selected","false");
                             }
@@ -597,9 +610,14 @@ public class Invoice extends AppCompatActivity {
                             UPIHolder.setSelected(!UPIHolder.isSelected());
                             if(UPIHolder.isSelected()){
                                 MOP.add(getString(R.string.ModeUPI));
+                                UPIAmount.setVisibility(View.VISIBLE);
+                                UPIAmount.requestFocus();
                             }else{
                                 if(MOP.size()>0){
+                                    UPIAmount.setText("");
+                                    UPIAmount.setVisibility(View.GONE);
                                     MOP.remove(getString(R.string.ModeUPI));
+                                    PaymentDetails.remove("UPI");
                                 }
                             }
                         }
@@ -610,9 +628,14 @@ public class Invoice extends AppCompatActivity {
                             PaytmHolder.setSelected(!PaytmHolder.isSelected());
                             if(PaytmHolder.isSelected()){
                                 MOP.add(getString(R.string.ModePaytm));
+                                PaytmAmount.setVisibility(View.VISIBLE);
+                                PaytmAmount.requestFocus();
                             }else{
                                 if(MOP.size()>0){
                                     MOP.remove(getString(R.string.ModePaytm));
+                                    PaytmAmount.setVisibility(View.GONE);
+                                    PaytmAmount.setText("");
+                                    PaymentDetails.remove("Paytm");
                                 }
                             }
                         }
@@ -623,9 +646,14 @@ public class Invoice extends AppCompatActivity {
                             CardHolder.setSelected(!CardHolder.isSelected());
                             if(CardHolder.isSelected()){
                                 MOP.add(getString(R.string.ModeCard));
+                                CardAmount.setVisibility(View.VISIBLE);
+                                CardAmount.requestFocus();
                             }else{
                                 if(MOP.size()>0){
                                     MOP.remove(getString(R.string.ModeCard));
+                                    CardAmount.setText("");
+                                    CardAmount.setVisibility(View.GONE);
+                                    PaymentDetails.remove("Swipe");
                                 }
                             }
                         }
@@ -640,13 +668,43 @@ public class Invoice extends AppCompatActivity {
                         public void onClick(View view) {
                             if(!ExistingCustomer){
                                 dbManager.open();
-                                long result = dbManager.insertNewCustomer(Names.getText().toString(),PhoneNumber.getText().toString(),"");
+                                long result = dbManager.quickInsertNewCustomer(Names.getText().toString(),PhoneNumber.getText().toString());
                                 if(result!=-1){
                                     printData.setCustomerName(Names.getText().toString());
                                     printData.setPhone(PhoneNumber.getText().toString());
                                 }
+                                dbManager.close();
                             }
 
+                            if(cashAmount.getVisibility()==View.VISIBLE){
+                                cashAmount.clearFocus();
+                                cashAmount.setEnabled(false);
+                                if(!cashAmount.getText().toString().isEmpty()){
+                                    PaymentDetails.put("Cash",Double.parseDouble(cashAmount.getText().toString()));
+                                }
+                            }
+                            if(UPIAmount.getVisibility()==View.VISIBLE) {
+                                UPIAmount.clearFocus();
+                                UPIAmount.setEnabled(false);
+                                if(!UPIAmount.getText().toString().isEmpty()){
+                                    PaymentDetails.put("UPI", Double.parseDouble(UPIAmount.getText().toString()));
+                                }
+                            }
+                            if(PaytmAmount.getVisibility()==View.VISIBLE) {
+                                PaytmAmount.clearFocus();
+                                PaytmAmount.setEnabled(false);
+                                if(!PaytmAmount.getText().toString().isEmpty()){
+                                    PaymentDetails.put("Paytm", Double.parseDouble(PaytmAmount.getText().toString()));
+                                }
+                            }
+                            if(CardAmount.getVisibility()==View.VISIBLE) {
+                                CardAmount.clearFocus();
+                                CardAmount.setEnabled(false);
+                                if(!CardAmount.getText().toString().isEmpty()) {
+                                    PaymentDetails.put("Swipe", Double.parseDouble(CardAmount.getText().toString()));
+                                }
+                            }
+                            printData.setPaymentDetails(PaymentDetails);
                             if(!Discount.getText().toString().isEmpty()){
                                 printData.setDiscount(Double.parseDouble(Discount.getText().toString()));
                             }else{
@@ -668,9 +726,12 @@ public class Invoice extends AppCompatActivity {
                                         Calendar calendar = Calendar.getInstance();
                                         dbManager.open();
                                         dbManager.addCounter(calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.YEAR));
+                                        dbManager.close();
                                         invoicecounter = invoicecounter + dbManager.getCounter(calendar.get(Calendar.MONTH),calendar.get(Calendar.YEAR));
                                         invoicecounter = invoicecounter + 1;
+                                        dbManager.open();
                                         dbManager.updateCounter(calendar.get(Calendar.MONTH),calendar.get(Calendar.YEAR),invoicecounter);
+                                        dbManager.close();
                                         printData.setBillNo(s.replaceAll("/","") + invoicecounter);
                                         db.collection("Invoices"+"/"+month_date.format(cal.getTime())+"/"+"Sales").add(printData).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                             @Override
@@ -701,6 +762,7 @@ public class Invoice extends AppCompatActivity {
                                                 itemids.clear();
                                                 progressBar.setVisibility(View.GONE);
                                                 Toast.makeText(getBaseContext(),"Invoice sent for Print.",Toast.LENGTH_LONG).show();
+                                                paymentWindow.dismiss();
                                             }
                                         }).addOnFailureListener(new OnFailureListener() {
                                             @Override
@@ -1211,7 +1273,6 @@ public class Invoice extends AppCompatActivity {
         String weight = String.format(String.valueOf(GoldWeight),"%.2f", Locale.getDefault());
         weight = weight + " gm";
         GoldWeightHolder.setText(weight);
-        SilverWeight = SilverWeight;
         weight = String.format(String.valueOf(SilverWeight),"%.2f",Locale.getDefault());
         weight = weight + " gm";
         SilverWeightHolder.setText(weight);
@@ -1238,7 +1299,6 @@ public class Invoice extends AppCompatActivity {
         }else{
             double amount =  0;
             double tax = 0;
-            double currentamount  = Double.parseDouble(AmountHolder.getText().toString().replaceAll(" /-",""));
             for (SundryItem sundryItem:newitem){
                 if(sundryItem.getRate()!=0 && sundryItem.getLabour()!=0) {
                     amount = amount + ((sundryItem.getRate() / 10)*sundryItem.getNW());

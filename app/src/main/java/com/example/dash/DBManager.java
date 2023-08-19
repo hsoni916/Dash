@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.util.Log;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -372,9 +373,10 @@ public class DBManager {
             }
 
         //ADD NEW CUSTOMER
-            public long insertNewCustomer(String Name, String PhoneNumber, String DOB) {
+            public long insertNewCustomer(String Name, String PhoneNumber, String DOB, String city) {
             long result = -1;
             Log.d("SQL","insert");
+                Log.d("DOB",DOB);
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
             Date c = Calendar.getInstance().getTime();
             Date today = new Date();
@@ -392,11 +394,54 @@ public class DBManager {
             statement.bindString(5, String.valueOf(today));
             try{
                 result = statement.executeInsert();
+                String tableName = Name+"_"+PhoneNumber;
+                String CustomerAccount = "create table if not exists " + tableName +
+                        "(" + "Date" +" TEXT NOT NULL,"
+                        + "Narration" + " TEXT NOT NULL,"
+                        + "Remarks" + " TEXT,"
+                        + "Amount" + " INTEGER,"
+                        + "Metal" + " INTEGER"
+                        + ");";
+                dbHelper.getWritableDatabase().execSQL(CustomerAccount);
             }catch (Exception e){
                 e.fillInStackTrace();
             }
             close();
 
+            return result;
+        }
+
+        public long quickInsertNewCustomer(String Name, String PhoneNumber){
+            long result = -1;
+            Log.d("SQL","insert");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            Date c = Calendar.getInstance().getTime();
+            Date today = new Date();
+            try{
+                today= dateFormat.parse(dateFormat.format(c));
+            }catch (Exception e){
+                e.printStackTrace();
+            }
+            String AddNewCustomer = "INSERT INTO CustomersList (Name, PhoneNumber, AccountCreatedOn, LastActiveOn) VALUES (?, ?, ?, ?, ?)";
+            SQLiteStatement statement = database.compileStatement(AddNewCustomer);
+            statement.bindString(1, Name);
+            statement.bindString(2, PhoneNumber);
+            statement.bindString(3, String.valueOf(today));
+            statement.bindString(4, String.valueOf(today));
+            try{
+                result = statement.executeInsert();String tableName = Name+"_"+PhoneNumber;
+                String CustomerAccount = "create table if not exists " + tableName +
+                        "(" + "Date" +" TEXT NOT NULL,"
+                        + "Narration" + " TEXT NOT NULL,"
+                        + "Remarks" + " TEXT,"
+                        + "Amount" + " INTEGER,"
+                        + "Metal" + " INTEGER"
+                        + ");";
+                dbHelper.getWritableDatabase().execSQL(CustomerAccount);
+            }catch (Exception e){
+                e.fillInStackTrace();
+            }
+            close();
             return result;
         }
 
@@ -458,6 +503,31 @@ public class DBManager {
             return PhoneOfCustomer;
         }
 
+        public List<Customer> GetCustomerProfile() throws ParseException {
+        //Name Phone DOB Address
+            SQLiteDatabase db = dbHelper.getWritableDatabase();
+            String sql = "SELECT * FROM CustomersList";
+            Cursor fetch = db.rawQuery(sql,null);
+            List<Customer> Customers = new ArrayList<>();
+            while(fetch.moveToNext()){
+                Customer customer = new Customer();
+                customer.setName(fetch.getString(0));
+                customer.setPhoneNumber(fetch.getString(1));
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                Log.d("DOB0",fetch.getString(2));
+                if(fetch.getString(2).isEmpty()){
+                    customer.setDateOfBirth(Calendar.getInstance().getTime().toString());
+                    Log.d("DOB1","Empty Date");
+                }else{
+                    customer.setDateOfBirth(fetch.getString(2));
+                    Log.d("DOB2","Date found");
+                }
+                customer.setAddress(fetch.getString(3));
+                Customers.add(customer);
+            }
+            return Customers;
+        }
+
         //GET BARCODE OF AN ITEM
             public String getBarCode(long rowid, String s){
                 String returnvalue = "";
@@ -473,13 +543,14 @@ public class DBManager {
             }
 
             public boolean deleteBarCode(Label label, String Category){
-
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 Category = Category.replaceAll(" ", "_");
                 Category = Category.replaceAll("-","_");
                 String sql = "SELECT Category_Code FROM Categories WHERE Category ='" + Category + "'";
                 Cursor fetch = db.rawQuery(sql, null);
-                return db.delete(Category,"Barcode=?",new String[]{label.getBarcode()}) > 0;
+                int result =db.delete(Category,"Barcode=?",new String[]{label.getBarcode()});
+                Log.d("Delete Result", String.valueOf(result));
+                return result>0;
             }
 
         //ADDING A COUNTER FOR NUMBER OF BILLS IN SPECIFIC MONTH-YEAR
@@ -519,14 +590,19 @@ public class DBManager {
         //STORE NUMBER OF BILLS IN SPECIFIC MONTH-YEAR
             public long updateCounter(int month, int year, int D){
             long result = -1;
-            String updateCounter = "INSERT INTO Invoice_Counter (Counter) VALUES (?) WHERE Month ='" + month + "' AND Year='" + year +"'";
+
+            ContentValues cv = new ContentValues();
+            cv.put("Counter",D);
+            result = database.update("Invoice_Counter",cv,"Month =" + month +" AND "+ "Year=" + year,null);
+
+                /*String updateCounter = "INSERT INTO Invoice_Counter (Counter) VALUES (?) WHERE Month ='" + month + "' AND Year='" + year +"'";
             SQLiteStatement statement = database.compileStatement(updateCounter);
-            statement.bindDouble(1, D + getCounter(month,year));
+            statement.bindDouble(1, D);
             try{
                 result = statement.executeInsert();
             }catch (Exception e){
                 e.fillInStackTrace();
-            }
+            }*/
             close();
             return result;
         }
@@ -553,5 +629,35 @@ public class DBManager {
             InventoryList.add(newLabel);
         }
         return InventoryList;
+    }
+
+    public void addRecord(String name, String phone, double weight, double amount, String remarks, String transactionDate, String narration) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+        Date c = Calendar.getInstance().getTime();
+        Date today = new Date();
+        long result = -1;
+        try{
+            today= dateFormat.parse(dateFormat.format(c));
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+        if(transactionDate.isEmpty()){
+            transactionDate = String.valueOf(today);
+        }
+        String statement1 = "INSERT INTO " + name + "_" + phone + "(Date, Narration, Remarks, Amount, Metal) VALUES (?, ?, ?, ?, ?)";
+        SQLiteStatement statement = database.compileStatement(statement1);
+        statement.bindString(1, transactionDate);
+        statement.bindString(2, narration);
+        statement.bindString(3, remarks);
+        statement.bindDouble(4, amount);
+        statement.bindDouble(5, weight);
+        try{
+            result = statement.executeInsert();
+        }catch (Exception e){
+            e.fillInStackTrace();
+        }
+        close();
+
+
     }
 }

@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:paddingTop="4dp"
-    android:paddingBottom="4dp"
+    android:padding="4dp"
+    android:weightSum="6"
+    android:orientation="horizontal"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -12,35 +12,46 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/name"
-        android:textSize="11sp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:layout_weight="1"
+        android:textSize="11sp"/>
 
     <TextView
         android:id="@+id/Name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="11sp"
-        app:layout_constraintTop_toTopOf="@id/Name_Label"
-        app:layout_constraintStart_toStartOf="@id/Phone"/>
+        android:layout_weight="1"/>
 
     <TextView
         android:id="@+id/Phone_Label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/phone"
-        android:textSize="11sp"
-        android:layout_marginTop="4dp"
-        app:layout_constraintTop_toBottomOf="@id/Name_Label"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:layout_weight="1"
+        android:textSize="11sp"/>
 
     <TextView
         android:id="@+id/Phone"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textSize="11sp"
-        android:layout_marginStart="4dp"
-        app:layout_constraintTop_toTopOf="@id/Phone_Label"
-        app:layout_constraintStart_toEndOf="@id/Phone_Label"/>
+        android:layout_weight="1"
+        android:layout_marginStart="4dp"/>
+    <TextView
+        android:id="@+id/DOB_Label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/dob"
+        android:layout_weight="1"
+        android:textSize="11sp"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    <TextView
+        android:id="@+id/DOB"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="11sp"
+        android:layout_weight="1"
+        android:layout_marginStart="4dp"/>
+
+
+</LinearLayout>

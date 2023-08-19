@@ -141,6 +141,20 @@
         app:layout_constraintBottom_toBottomOf="@id/label3"
         app:layout_constraintStart_toStartOf="@id/name_etv"/>
 
+    <ImageButton
+        android:id="@+id/datePicker"
+        android:layout_width="36dp"
+        android:layout_height="0dp"
+        android:src="@drawable/date"
+        android:layout_marginStart="4dp"
+        android:padding="2dp"
+        android:background="@drawable/button_background"
+        android:scaleType="centerInside"
+        app:layout_constraintStart_toEndOf="@id/dob_etv"
+        app:layout_constraintTop_toTopOf="@id/dob_etv"
+        app:layout_constraintBottom_toBottomOf="@id/dob_etv"/>
+
+
     <TextView
         android:id="@+id/DOBError"
         android:layout_width="wrap_content"
@@ -156,7 +170,7 @@
         app:drawableStartCompat="@drawable/warning"/>
 
     <TextView
-        android:id="@+id/label4"
+        android:id="@+id/label6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/Address"
@@ -167,6 +181,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/label3"/>
 
+
     <EditText
         android:id="@+id/city_etv"
         android:layout_width="240dp"
@@ -175,23 +190,11 @@
         android:paddingEnd="4dp"
         android:inputType="textAutoComplete"
         android:background="@drawable/etv_background"
-        app:layout_constraintTop_toTopOf="@id/label4"
-        app:layout_constraintBottom_toBottomOf="@id/label4"
+        app:layout_constraintTop_toTopOf="@id/label6"
+        app:layout_constraintBottom_toBottomOf="@id/label6"
         app:layout_constraintStart_toStartOf="@id/name_etv"
         android:importantForAutofill="no" />
 
-    <ImageButton
-        android:id="@+id/datePicker"
-        android:layout_width="36dp"
-        android:layout_height="0dp"
-        android:src="@drawable/date"
-        android:layout_marginStart="4dp"
-        android:padding="2dp"
-        android:background="@drawable/button_background"
-        android:scaleType="centerInside"
-        app:layout_constraintStart_toEndOf="@id/dob_etv"
-        app:layout_constraintTop_toTopOf="@id/dob_etv"
-        app:layout_constraintBottom_toBottomOf="@id/dob_etv"/>
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/Fetch_Customer_Details"
@@ -200,10 +203,10 @@
         android:layout_marginTop="8dp"
         android:elevation="8dp"
         android:visibility="visible"
-        app:layout_constraintStart_toStartOf="@id/label4"
+        app:layout_constraintStart_toStartOf="@id/label6"
         app:layout_constraintTop_toBottomOf="@id/city_etv"
         app:layout_constraintBottom_toTopOf="@id/save"
-        app:layout_constraintEnd_toEndOf="@id/city_etv">
+        app:layout_constraintEnd_toEndOf="parent">
 
     </androidx.recyclerview.widget.RecyclerView>
 

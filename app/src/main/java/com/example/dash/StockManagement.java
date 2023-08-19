@@ -56,7 +56,7 @@ public class StockManagement extends AppCompatActivity {
     EditText GrossWeight, LessWeight, NetWeight, ExtraCharges, Wastage, HUID, BasePurity, SearchInventory;
     Button save,clear;
     String typeof = "", huidString ="";
-    private String SelectedSupplier;
+    private String SelectedSupplier = "";
     View disableView;
     ProgressBar progressBar;
     FirebaseFirestore inventory = FirebaseFirestore.getInstance();
@@ -206,7 +206,7 @@ public class StockManagement extends AppCompatActivity {
                     public void RequestDeleteLabel(Label label, int adapterPosition) {
                         //Delete the label entry.
                         if(dbManager.deleteBarCode(label, FilterString)){
-                            stockSearchAdapter.notifyItemRemoved(adapterPosition);
+                            PrimaryLabelList.remove(adapterPosition);
                             stockSearchAdapter.notifyDataSetChanged();
                         }
                     }
