@@ -25,6 +25,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -58,6 +59,7 @@ public class MainActivity extends AppCompatActivity {
     String name="", phone="";
     List<String> NewCategory = new ArrayList<>();
     String transactionDate = "";
+    public Context CAContext;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,6 +68,7 @@ public class MainActivity extends AppCompatActivity {
         Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(getBaseContext(),R.color.mattegrey1)));
         dbManager = new DBManager(this);
         dbManager.open();
+        CAContext = this;
         NewCustomer = findViewById(R.id.NewCustomer);
         newInvoiceButton = findViewById(R.id.NewInvoice);
         newInventory = findViewById(R.id.AddInventory);
@@ -147,7 +150,7 @@ public class MainActivity extends AppCompatActivity {
                 }
                 recordContainer = marginView.findViewById(R.id.Fetch_Customer_Details);
                 recordContainer.setVisibility(View.VISIBLE);
-                Custom_Adapter = new customer_adapter(recordList);
+                Custom_Adapter = new customer_adapter(recordList, CAContext);
                 recordContainer.setLayoutManager(new LinearLayoutManager(getBaseContext()));
                 recordContainer.setItemAnimator(new DefaultItemAnimator());
                 recordContainer.setAdapter(Custom_Adapter);
@@ -222,7 +225,7 @@ public class MainActivity extends AppCompatActivity {
                     private void resetlist() {
                         recordList = new ArrayList<>();
                         recordList.addAll(recordList2);
-                        Custom_Adapter = new customer_adapter(recordList);
+                        Custom_Adapter = new customer_adapter(recordList, CAContext);
                         recordContainer.setLayoutManager(new LinearLayoutManager(getBaseContext()));
                         recordContainer.setItemAnimator(new DefaultItemAnimator());
                         recordContainer.setAdapter(Custom_Adapter);
@@ -237,7 +240,7 @@ public class MainActivity extends AppCompatActivity {
 
                     private void Filter_By_Name(String name) {
                         recordList = new ArrayList<>();
-                        Custom_Adapter = new customer_adapter(recordList);
+                        Custom_Adapter = new customer_adapter(recordList, CAContext);
                         recordContainer.setAdapter(Custom_Adapter);
                             for(int i =0;i<recordList2.size();i++){
                                 if(recordList2.get(i).getName().contains(name)){
@@ -485,6 +488,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         name = NameAdapter.getItem(i);
+                        int indextouse = NameAdapter.getPosition(name);
+                        PhoneEtv.setText(PhoneAdapter.getItem(indextouse));
+                        phone = PhoneAdapter.getItem(indextouse);
+                        PhoneEtv.setEnabled(false);
                     }
                 });
 
@@ -520,20 +527,32 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
-                popupWindow = new PopupWindow(CashDepositView, 1200,800);
+                popupWindow = new PopupWindow(CashDepositView, 1200,LinearLayout.LayoutParams.WRAP_CONTENT);
                 popupWindow.setAnimationStyle(R.style.popup_animation);
                 popupWindow.showAtLocation(view, Gravity.CENTER,0,0);
                 popupWindow.setFocusable(true);
                 popupWindow.update();
-
+                TextView depositerror = CashDepositView.findViewById(R.id.Deposit_Error);
                 save.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
                         dbManager.open();
                         if(NameList.contains(name)){
                             //Customer exists.
-                            savedeposit();
-
+                            if(savedeposit()>0){
+                             NameEtv.setText("");
+                             name = "";
+                             PhoneEtv.setText("");
+                             phone = "";
+                             Amount.setText("");
+                             ModeOfPayments.clearCheck();
+                             NewCategory.clear();
+                             narrationEtv.setText("");
+                             popupWindow.dismiss();
+                             depositerror.setVisibility(View.GONE);
+                            }else{
+                                depositerror.setVisibility(View.VISIBLE);
+                            }
                         }else{
                             //Customer is new.
                             if(PhoneEtv.getText().toString().isEmpty()){
@@ -547,7 +566,20 @@ public class MainActivity extends AppCompatActivity {
                                     //Customer basic record complete.
                                     dbManager.quickInsertNewCustomer(NameEtv.getText().toString(),phone);
                                     //check for payment details.
-                                    savedeposit();
+                                    if(savedeposit()>0) {
+                                        NameEtv.setText("");
+                                        name = "";
+                                        PhoneEtv.setText("");
+                                        phone = "";
+                                        Amount.setText("");
+                                        ModeOfPayments.clearCheck();
+                                        NewCategory.clear();
+                                        narrationEtv.setText("");
+                                        popupWindow.dismiss();
+                                        depositerror.setVisibility(View.GONE);
+                                    }else{
+                                        depositerror.setVisibility(View.VISIBLE);
+                                    }
                                 }else{
                                     PhoneError.setText("Only Indian numbers accepted.");
                                     PhoneError.setVisibility(View.VISIBLE);
@@ -556,7 +588,8 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
 
-                    private void savedeposit() {
+                    private long savedeposit() {
+                        long result = 0;
                         if(!Amount.getText().toString().isEmpty()){
                             if(!NewCategory.isEmpty()){
                                 double weight = 0;
@@ -574,13 +607,15 @@ public class MainActivity extends AppCompatActivity {
                                     if(!narrationEtv.getText().toString().isEmpty()){
                                         narration = narrationEtv.getText().toString();
                                     }
-                                    dbManager.addRecord(name,phone,amount,weight,remarks,transactionDate,narration);
+
+                                    result =  dbManager.addRecord(name,phone,amount,weight,remarks,transactionDate,narration);
                                 }else{
                                     remarks = NewCategory.toString();
-                                    dbManager.addRecord(name, phone, amount, weight, remarks, transactionDate, narration);
+                                    result = dbManager.addRecord(name, phone, amount, weight, remarks, transactionDate, narration);
                                 }
                             }
                         }
+                        return result;
                     }
                 });
                 cancel.setOnClickListener(new View.OnClickListener() {

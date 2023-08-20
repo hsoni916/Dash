@@ -180,16 +180,16 @@ public class StockManagement extends AppCompatActivity {
                 FilterString = ItemAdapter.getItem(i);
                 SearchInventory.setEnabled(true);
                 stockSearchAdapter = new StockSearchAdapter(PrimaryLabelList);
-                PrimaryLabelList.addAll(dbManager.ListAllItems(FilterString));
-                inventorySearchList.setAdapter(stockSearchAdapter);
-                inventorySearchList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
-                inventorySearchList.setItemAnimator(new DefaultItemAnimator());
-                inventorySearchList.setVisibility(View.VISIBLE);
-                stockSearchAdapter.notifyDataSetChanged();
                 stockSearchAdapter.setOnItemClickListener(new StockSearchAdapter.OnItemClickListener() {
                     @Override
                     public void RequestInventoryLabel(Label label) {
                         //Update the label entry.
+                        PrimaryLabelList.addAll(dbManager.ListAllItems(FilterString));
+                        inventorySearchList.setAdapter(stockSearchAdapter);
+                        inventorySearchList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+                        inventorySearchList.setItemAnimator(new DefaultItemAnimator());
+                        inventorySearchList.setVisibility(View.VISIBLE);
+                        stockSearchAdapter.notifyDataSetChanged();
                         inventory.collection("Inventory").document(label.getBarcode())
                                 .set(label)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {

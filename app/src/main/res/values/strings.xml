@@ -85,4 +85,5 @@
     <string name="Total">Gross Total</string>
     <string name="reports">Analytics</string>
     <string name="ModeMetal">Metal</string>
+    <string name="Balance">Balance:</string>
 </resources>

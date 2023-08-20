@@ -395,6 +395,7 @@ public class DBManager {
             try{
                 result = statement.executeInsert();
                 String tableName = Name+"_"+PhoneNumber;
+                tableName = tableName.replaceAll(" ","");
                 String CustomerAccount = "create table if not exists " + tableName +
                         "(" + "Date" +" TEXT NOT NULL,"
                         + "Narration" + " TEXT NOT NULL,"
@@ -429,7 +430,9 @@ public class DBManager {
             statement.bindString(3, String.valueOf(today));
             statement.bindString(4, String.valueOf(today));
             try{
-                result = statement.executeInsert();String tableName = Name+"_"+PhoneNumber;
+                result = statement.executeInsert();
+                String tableName = Name+"_"+PhoneNumber;
+                tableName = tableName.replaceAll(" ","");
                 String CustomerAccount = "create table if not exists " + tableName +
                         "(" + "Date" +" TEXT NOT NULL,"
                         + "Narration" + " TEXT NOT NULL,"
@@ -480,7 +483,7 @@ public class DBManager {
         }
 
         //LIST ALL CUSTOMER
-            public List<String> ListAllCustomer(){
+        public List<String> ListAllCustomer(){
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             String sql = "SELECT Name FROM CustomersList";
             Cursor fetch = db.rawQuery(sql,null);
@@ -631,7 +634,7 @@ public class DBManager {
         return InventoryList;
     }
 
-    public void addRecord(String name, String phone, double weight, double amount, String remarks, String transactionDate, String narration) {
+    public long addRecord(String name, String phone, double weight, double amount, String remarks, String transactionDate, String narration) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
         Date c = Calendar.getInstance().getTime();
         Date today = new Date();
@@ -644,7 +647,9 @@ public class DBManager {
         if(transactionDate.isEmpty()){
             transactionDate = String.valueOf(today);
         }
-        String statement1 = "INSERT INTO " + name + "_" + phone + "(Date, Narration, Remarks, Amount, Metal) VALUES (?, ?, ?, ?, ?)";
+        String tablename = name +"_"+phone;
+        tablename = tablename.replaceAll(" ","");
+        String statement1 = "INSERT INTO " + tablename + "(Date, Narration, Remarks, Amount, Metal) VALUES (?, ?, ?, ?, ?)";
         SQLiteStatement statement = database.compileStatement(statement1);
         statement.bindString(1, transactionDate);
         statement.bindString(2, narration);
@@ -658,6 +663,23 @@ public class DBManager {
         }
         close();
 
+        return result;
 
+    }
+
+    public double getBalance(String name, String phoneNumber) {
+
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String tablename = name+"_"+phoneNumber;
+        tablename =tablename.replaceAll(" ","");
+        String sql = "SELECT * FROM "+ tablename;
+        Cursor fetch = db.rawQuery(sql,null);
+        double balance = 0;
+        while(fetch.moveToNext()){
+            int colIndex = fetch.getColumnIndex("Metal");
+            balance = balance + fetch.getDouble(colIndex);
+        }
+        close();
+        return balance;
     }
 }

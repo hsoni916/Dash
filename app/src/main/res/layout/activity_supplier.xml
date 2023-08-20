@@ -69,7 +69,7 @@
 
     <EditText
         android:id="@+id/Business_etv"
-        android:layout_width="180dp"
+        android:layout_width="320dp"
         android:layout_height="32dp"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
@@ -97,7 +97,7 @@
 
     <EditText
         android:id="@+id/Owner_etv"
-        android:layout_width="180dp"
+        android:layout_width="320dp"
         android:layout_height="32dp"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
@@ -124,7 +124,7 @@
 
     <EditText
         android:id="@+id/City_etv"
-        android:layout_width="180dp"
+        android:layout_width="320dp"
         android:layout_height="32dp"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
@@ -151,7 +151,7 @@
 
     <EditText
         android:id="@+id/gstin_etv"
-        android:layout_width="180dp"
+        android:layout_width="320dp"
         android:layout_height="32dp"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
@@ -179,7 +179,7 @@
 
     <EditText
         android:id="@+id/phone_etv"
-        android:layout_width="180dp"
+        android:layout_width="320dp"
         android:layout_height="32dp"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
@@ -204,14 +204,15 @@
         android:layout_marginBottom="4dp"
         android:text="Offerings:"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/LabelFive"/>
+        app:layout_constraintTop_toTopOf="@id/Offerings"
+        app:layout_constraintBottom_toBottomOf="@id/Offerings"/>
 
     <com.google.android.material.chip.ChipGroup
         android:id="@+id/Offerings"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        app:layout_constraintTop_toTopOf="@id/LabelSix"
+        app:layout_constraintTop_toBottomOf="@id/phone_etv"
         app:layout_constraintStart_toStartOf="@id/phone_etv">
         <com.google.android.material.chip.Chip
             android:id="@+id/ChipOne"

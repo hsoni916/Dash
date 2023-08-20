@@ -1,5 +1,6 @@
 package com.example.dash;
 
+import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
@@ -57,6 +58,7 @@ public class NewSupplier extends AppCompatActivity {
         SupplierForm = findViewById(R.id.SupplierForm);
         NewSupplier = findViewById(R.id.NewSupplierButton);
         SupplierRecyclerView = findViewById(R.id.SupplierList);
+
         dbManager = new DBManager(this);
         NewSupplier.setOnClickListener(new View.OnClickListener() {
             @Override

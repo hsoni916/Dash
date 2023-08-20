@@ -62,8 +62,7 @@
         android:background="@drawable/etv_background"
         app:layout_constraintTop_toTopOf="@id/label1"
         app:layout_constraintBottom_toBottomOf="@id/label1"
-        app:layout_constraintStart_toEndOf="@id/label1"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintStart_toEndOf="@id/label1"/>
 
     <TextView
         android:id="@+id/NameError"
