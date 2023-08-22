@@ -38,11 +38,16 @@ import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.AbstractCollection;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends AppCompatActivity {
     final Calendar calendar = Calendar.getInstance();
@@ -60,6 +65,11 @@ public class MainActivity extends AppCompatActivity {
     List<String> NewCategory = new ArrayList<>();
     String transactionDate = "";
     public Context CAContext;
+    private List<String> GenericItemsGold = new ArrayList<>();
+    private List<String> GenericItemsSilver = new ArrayList<>();
+    private List<String> Purity_Levels_Silver = new ArrayList<>();
+    private List<String> Purity_Levels_Gold = new ArrayList<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +79,37 @@ public class MainActivity extends AppCompatActivity {
         dbManager = new DBManager(this);
         dbManager.open();
         CAContext = this;
+
+        GenericItemsGold.addAll(Arrays.asList("Mens Ring", "Women Ring", "Chain",
+                "Plastic Paatla", "Gold Set", "Gold Haar",
+                "Earring", "Tops", "Gents Bracelets",
+                "Ladies Bracelets", "Gold Paatla", "Gold Kada",
+                "Pendant", "Pendant-Set","Bor", "Nath",
+                "Damdi", "Tikka", "Gold Saakra", "Gold Coin",
+                "Mangalsutra", "MS-Pendant", "MS-Pendant Set",
+                "Dano", "Nathdi", "Pokarva", "Baby-Earring"));
+        GenericItemsSilver.addAll(Arrays.asList("Silver Saakra", "Silver Chain", "Silver Murti",
+                "Silver Coin", "Silver Mangalsutra", "Silver Bracelets", "Silver Mangalsutra","Silver Men Ring", "Silver Women Rings"));
+        Purity_Levels_Silver.addAll(Arrays.asList("925", "Kachhi Silver", "Zevar Silver", "D-Silver", "Rupa"));
+        Purity_Levels_Gold.addAll(Arrays.asList("999 Fine Gold", "23KT958", "22KT916", "21KT875",
+                "20KT833", "18KT750", "14KT585","Others"));
+        ArrayAdapter<String> ItemAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,
+                new ArrayList<String>() {{
+                    addAll(GenericItemsGold);
+                    addAll(GenericItemsSilver);
+                }});
+
+        Timer timer = new Timer();
+        timer.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                dbManager.insertAllCategoriesGold(GenericItemsGold);
+                dbManager.insertAllCategoriesSilver(GenericItemsSilver);
+            }
+        },3000);
+
+
+
         NewCustomer = findViewById(R.id.NewCustomer);
         newInvoiceButton = findViewById(R.id.NewInvoice);
         newInventory = findViewById(R.id.AddInventory);

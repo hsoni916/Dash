@@ -620,6 +620,7 @@ public class DBManager {
         while(fetch.moveToNext()){
             Label newLabel = new Label();
             fetch.getColumnIndex("Wastage");
+            newLabel.setName(filterString);
             newLabel.setBarcode(fetch.getString(0));
             newLabel.setHMStandard(fetch.getString(1));
             newLabel.setPurity(fetch.getDouble(2));
@@ -681,5 +682,19 @@ public class DBManager {
         }
         close();
         return balance;
+    }
+
+    public double getTouch(String name, String barcode) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String tablename = name.replaceAll(" ","_");
+        String sql = "SELECT Wastage FROM "+ tablename +" WHERE Barcode='" + barcode + "'";
+        //SELECT Wastage FROM Mens_Ring WHERE Barcode=MJME7.1;
+        Cursor fetch = db.rawQuery(sql,null);
+        double balance = 0;
+        while (fetch.moveToNext()){
+            balance = fetch.getDouble(0);
+        }
+        return balance;
+
     }
 }

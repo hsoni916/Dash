@@ -1,6 +1,7 @@
 package com.example.dash;
 
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -70,6 +71,7 @@ public class StockManagement extends AppCompatActivity {
     Label label = new Label();
     String FilterString = null;
     private StockSearchAdapter.OnItemClickListener mListener;
+    private Context CAContext;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,7 +79,7 @@ public class StockManagement extends AppCompatActivity {
         setContentView(R.layout.inventoryform);
         Objects.requireNonNull(getSupportActionBar()).setTitle("Stock Entry");
         Objects.requireNonNull(getSupportActionBar()).setBackgroundDrawable(new ColorDrawable(ContextCompat.getColor(getBaseContext(),R.color.mattegrey1)));
-
+        CAContext = this;
         Purity = findViewById(R.id.purity_etv);
         Categories = findViewById(R.id.category_etv);
         FilterCategories = findViewById(R.id.category_spinner);
@@ -91,8 +93,8 @@ public class StockManagement extends AppCompatActivity {
         inventorylist = findViewById(R.id.inventory_list_1);
         inventorySearchList = findViewById(R.id.inventory_list);
         SearchInventory = findViewById(R.id.search_inventory);
-        stockAdapter = new StockAdapter(labels);
-        stockSearchAdapter = new StockSearchAdapter(PrimaryLabelList);
+        stockAdapter = new StockAdapter(labels, this);
+        stockSearchAdapter = new StockSearchAdapter(PrimaryLabelList, CAContext);
         GrossWeight = findViewById(R.id.weight_etv);
         LessWeight = findViewById(R.id.less_weight_etv);
         NetWeight = findViewById(R.id.net_weight_etv);
@@ -164,14 +166,6 @@ public class StockManagement extends AppCompatActivity {
             }
         });
 
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                dbManager.insertAllCategoriesGold(GenericItemsGold);
-                dbManager.insertAllCategoriesSilver(GenericItemsSilver);
-            }
-        },3000);
 
         FilterCategories.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -179,17 +173,18 @@ public class StockManagement extends AppCompatActivity {
                 PrimaryLabelList.clear();
                 FilterString = ItemAdapter.getItem(i);
                 SearchInventory.setEnabled(true);
-                stockSearchAdapter = new StockSearchAdapter(PrimaryLabelList);
+                stockSearchAdapter = new StockSearchAdapter(PrimaryLabelList, CAContext);
+                PrimaryLabelList.addAll(dbManager.ListAllItems(FilterString));
+                inventorySearchList.setAdapter(stockSearchAdapter);
+                inventorySearchList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+                inventorySearchList.setItemAnimator(new DefaultItemAnimator());
+                inventorySearchList.setVisibility(View.VISIBLE);
+                stockSearchAdapter.notifyDataSetChanged();
+
                 stockSearchAdapter.setOnItemClickListener(new StockSearchAdapter.OnItemClickListener() {
                     @Override
                     public void RequestInventoryLabel(Label label) {
                         //Update the label entry.
-                        PrimaryLabelList.addAll(dbManager.ListAllItems(FilterString));
-                        inventorySearchList.setAdapter(stockSearchAdapter);
-                        inventorySearchList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
-                        inventorySearchList.setItemAnimator(new DefaultItemAnimator());
-                        inventorySearchList.setVisibility(View.VISIBLE);
-                        stockSearchAdapter.notifyDataSetChanged();
                         inventory.collection("Inventory").document(label.getBarcode())
                                 .set(label)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {
@@ -515,7 +510,8 @@ public class StockManagement extends AppCompatActivity {
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if(task.isSuccessful()){
                                             Log.d("Label Saved",RV);
-                                            //Clear all controls
+                                            //Clear all
+
                                             GrossWeight.setText(null);
                                             LessWeight.setText(null);
                                             NetWeight.setText(null);
@@ -523,6 +519,7 @@ public class StockManagement extends AppCompatActivity {
                                             HUID.setText(null);
                                             Wastage.setText(null);
                                             labels.add(label);
+                                            label = new Label();
                                             Supplier_tv.setText(null);
                                             Purity.setSelected(false);
                                             Categories.setSelected(false);
@@ -567,7 +564,7 @@ public class StockManagement extends AppCompatActivity {
         //Filter Inventory Data Based on selection in categories.
         if(FilterString!=null){
             labelList = new ArrayList<>();
-            stockSearchAdapter = new StockSearchAdapter(labelList);
+            stockSearchAdapter = new StockSearchAdapter(labelList, CAContext);
             inventorySearchList.setAdapter(stockSearchAdapter);
             inventorySearchList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
             inventorySearchList.setItemAnimator(new DefaultItemAnimator());

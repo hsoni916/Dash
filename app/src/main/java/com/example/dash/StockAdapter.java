@@ -1,5 +1,6 @@
 package com.example.dash;
 
+import android.content.Context;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,16 +15,20 @@ import java.util.List;
 public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder>{
 
     private final List<Label> stocklist;
+    private Context parentContext;
 
-    public StockAdapter(List<Label> sundrystocklist ) {
+    public StockAdapter(List<Label> sundrystocklist, Context context ) {
         this.stocklist = sundrystocklist;
+        this.parentContext = context;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.stock_entry_list,parent,false);
-        return new ViewHolder(view);
+
+        final LayoutInflater layoutInflater = LayoutInflater.from(parent.getContext());
+        final View view1 = layoutInflater.inflate(R.layout.stock_entry_list, parent, false);
+        return new ViewHolder(view1);
     }
 
     @Override
@@ -35,6 +40,10 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder>{
         holder.nw.setText(stocklist.get(position).getNW());
         holder.ec.setText(stocklist.get(position).getEC());
         Log.d("HM Standard",stocklist.get(position).getHMStandard());
+        DBManager dbManager = new DBManager(parentContext);
+        dbManager.open();
+        String wastage = String.valueOf(dbManager.getTouch(stocklist.get(position).getName(),stocklist.get(position).getBarcode()));
+        holder.touch.setText(wastage);
         holder.purity.setText(stocklist.get(position).getHMStandard());
         holder.huid.setText(stocklist.get(position).getHUID());
     }
@@ -46,7 +55,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder>{
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         View mView;
-        TextView SrNo,barcode,itemname,purity,gw,nw,ec,huid;
+        TextView SrNo,barcode,itemname,purity,gw,nw,ec,touch,huid;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             mView = itemView;
@@ -57,6 +66,7 @@ public class StockAdapter extends RecyclerView.Adapter<StockAdapter.ViewHolder>{
             gw = mView.findViewById(R.id.GW);
             nw = mView.findViewById(R.id.NW);
             ec = mView.findViewById(R.id.EC);
+            touch = mView.findViewById(R.id.Costing);
             huid = mView.findViewById(R.id.HUIDLabel);
         }
     }

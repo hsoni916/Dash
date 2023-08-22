@@ -1,5 +1,6 @@
 package com.example.dash;
 
+import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,6 +10,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.BreakIterator;
 import java.util.List;
 
 public class StockSearchAdapter extends RecyclerView.Adapter<StockSearchAdapter.ViewHolder> {
@@ -16,9 +18,11 @@ public class StockSearchAdapter extends RecyclerView.Adapter<StockSearchAdapter.
     public static int previousExpandedPosition = -1;
     private final List<Label> stocklist;
     private OnItemClickListener mListener;
+    private Context parentContext;
 
-    public StockSearchAdapter(List<Label> stocklist) {
+    public StockSearchAdapter(List<Label> stocklist, Context context) {
         this.stocklist = stocklist;
+        this.parentContext = context;
     }
 
     void setOnItemClickListener(OnItemClickListener listener){
@@ -69,6 +73,7 @@ public class StockSearchAdapter extends RecyclerView.Adapter<StockSearchAdapter.
                 @Override
                 public void onClick(View view) {
                     mListener.RequestDeleteLabel(stocklist.get(holder.getAdapterPosition()),holder.getAdapterPosition());
+
                 }
             });
         }
@@ -80,6 +85,16 @@ public class StockSearchAdapter extends RecyclerView.Adapter<StockSearchAdapter.
         holder.nw.setText(stocklist.get(position).getNW());
         holder.ec.setText(stocklist.get(position).getEC());
         holder.purity.setText(stocklist.get(position).getHMStandard());
+        DBManager dbManager = new DBManager(parentContext);
+        dbManager.open();
+        if(stocklist.get(position)!=null){
+            if(!stocklist.get(position).getName().isEmpty()){
+                String wastage = String.valueOf(dbManager.getTouch(stocklist.get(position).getName(),stocklist.get(position).getBarcode()));
+                holder.touch.setText(wastage);
+            }else{
+                holder.touch.setText("N/A");
+            }
+        }
         holder.huid.setText(stocklist.get(position).getHUID());
     }
 
@@ -90,7 +105,7 @@ public class StockSearchAdapter extends RecyclerView.Adapter<StockSearchAdapter.
 
     public class ViewHolder extends RecyclerView.ViewHolder {
         View mView;
-        TextView SrNo,barcode,itemname,purity,gw,nw,ec,huid;
+        TextView SrNo,barcode,itemname,purity,gw,nw,ec,touch, huid;
         Button PrintLabel, DeleteLabel;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
@@ -102,6 +117,7 @@ public class StockSearchAdapter extends RecyclerView.Adapter<StockSearchAdapter.
             gw = mView.findViewById(R.id.GW);
             nw = mView.findViewById(R.id.NW);
             ec = mView.findViewById(R.id.EC);
+            touch = mView.findViewById(R.id.Costing);
             huid = mView.findViewById(R.id.HUID);
             PrintLabel = mView.findViewById(R.id.PrintLabel);
             DeleteLabel = mView.findViewById(R.id.DeleteLabel);
