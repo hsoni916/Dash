@@ -86,4 +86,6 @@
     <string name="reports">Analytics</string>
     <string name="ModeMetal">Metal</string>
     <string name="Balance">Balance:</string>
+    <string name="new_order">New Order</string>
+    <string name="MetalBalance">Metal:</string>
 </resources>

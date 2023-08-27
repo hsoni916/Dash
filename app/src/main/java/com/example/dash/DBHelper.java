@@ -36,6 +36,14 @@ public class DBHelper extends SQLiteOpenHelper {
             + "LastActiveOn" + " TEXT NOT NULL"
             + ");";
 
+    private static final String CREATE_ORDERS_TABLE = "create table if not exists " + "OrderList" +
+            "(" + "OrderID" + " INT NOT NULL,"
+            + "DateOfOrder" + " STRING NOT NULL,"
+            + "DateOfDelivery" + " STRING,"
+            + "OrderFile" + " STRING NOT NULL,"
+            + "PhoneNumber" + " STRING NOT NULL,"
+            + " FOREIGN KEY ("+"PhoneNumber"+") REFERENCES "+"CustomerList"+" ("+"PhoneNumber"+"));";
+
     private static final String CREATE_TABLE_2 = "create table if not exists " + "Inventory" +
             "(" + "Barcode" + " STRING,"
             + "Name" + " STRING NOT NULL,"
@@ -101,6 +109,7 @@ public class DBHelper extends SQLiteOpenHelper {
         db.execSQL(CREATE_TABLE_3_1);
         db.execSQL(CREATE_TABLE_4);
         db.execSQL(CREATE_TABLE_4_2);
+        db.execSQL(CREATE_ORDERS_TABLE);
 
     }
 

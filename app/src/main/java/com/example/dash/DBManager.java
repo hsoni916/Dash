@@ -669,7 +669,6 @@ public class DBManager {
     }
 
     public double getBalance(String name, String phoneNumber) {
-
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String tablename = name+"_"+phoneNumber;
         tablename =tablename.replaceAll(" ","");
@@ -677,7 +676,7 @@ public class DBManager {
         Cursor fetch = db.rawQuery(sql,null);
         double balance = 0;
         while(fetch.moveToNext()){
-            int colIndex = fetch.getColumnIndex("Metal");
+            int colIndex = fetch.getColumnIndex("Amount");
             balance = balance + fetch.getDouble(colIndex);
         }
         close();
@@ -696,5 +695,20 @@ public class DBManager {
         }
         return balance;
 
+    }
+
+    public double getMetalBalance(String name, String phoneNumber) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String tablename = name+"_"+phoneNumber;
+        tablename =tablename.replaceAll(" ","");
+        String sql = "SELECT * FROM "+ tablename;
+        Cursor fetch = db.rawQuery(sql,null);
+        double balance = 0;
+        while(fetch.moveToNext()){
+            int colIndex = fetch.getColumnIndex("Metal");
+            balance = balance + fetch.getDouble(colIndex);
+        }
+        close();
+        return balance;
     }
 }

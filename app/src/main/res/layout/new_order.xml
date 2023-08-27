@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="720dp"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_gravity="center"
     android:background="@drawable/popup_background"
     android:elevation="8dp"
@@ -20,18 +21,49 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <ImageView
+        android:id="@+id/JewelleryPicture"
+        android:layout_width="180dp"
+        android:layout_height="180dp"
+        android:layout_marginTop="12dp"
+        android:layout_marginBottom="12dp"
+        android:layout_marginStart="48dp"
+        android:layout_marginEnd="48dp"
+        android:padding="2dp"
+        android:src="@drawable/camera_btn"
+        android:background="@drawable/textview_background_3"
+        android:elevation="4dp"
+        android:scaleType="fitXY"
+        app:layout_constraintBottom_toBottomOf="@id/remarks_etv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/name_etv"
+        app:layout_constraintTop_toTopOf="@id/name_etv"
+        tools:ignore="ImageContrastCheck" />
+
+    <ImageButton
+        android:id="@+id/rotateImage"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
+        android:scaleType="center"
+        android:src="@drawable/rotate_img"
+        android:layout_margin="4dp"
+        android:background="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/JewelleryPicture"
+        app:layout_constraintStart_toStartOf="@id/JewelleryPicture"
+        app:layout_constraintEnd_toEndOf="@id/JewelleryPicture"/>
+
     <TextView
         android:id="@+id/header_title"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="12dp"
+        android:layout_marginBottom="8dp"
         android:background="@drawable/textview_background"
-        android:backgroundTint="@color/space_cadet"
+        android:backgroundTint="@color/teal_600"
         android:paddingStart="12dp"
         android:paddingEnd="12dp"
         android:paddingTop="4dp"
         android:paddingBottom="8dp"
-        android:text="New Cash Deposit"
+        android:text="New Order"
         android:textAlignment="center"
         android:textColor="@color/white"
         android:textSize="16sp"
@@ -53,7 +85,7 @@
     <AutoCompleteTextView
         android:id="@+id/name_etv"
         android:layout_width="320dp"
-        android:layout_height="30dp"
+        android:layout_height="32dp"
         android:layout_marginStart="48dp"
         android:layout_marginTop="12dp"
         android:layout_marginEnd="48dp"
@@ -92,7 +124,7 @@
     <AutoCompleteTextView
         android:id="@+id/phone_etv"
         android:layout_width="320dp"
-        android:layout_height="30dp"
+        android:layout_height="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="48dp"
         android:background="@drawable/etv_background"
@@ -122,21 +154,19 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="@string/Amount"
-        app:layout_constraintBottom_toBottomOf="@id/cash_etv"
+        android:text="@string/Item"
+        app:layout_constraintBottom_toBottomOf="@id/item_list"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/cash_etv" />
+        app:layout_constraintTop_toTopOf="@id/item_list" />
 
-
-    <EditText
-        android:id="@+id/cash_etv"
+    <AutoCompleteTextView
+        android:id="@+id/item_list"
         android:layout_width="320dp"
-        android:layout_height="30dp"
+        android:layout_height="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="48dp"
         android:background="@drawable/etv_background"
         android:imeOptions="actionNext"
-        android:inputType="numberSigned"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
         android:singleLine="true"
@@ -144,7 +174,7 @@
         app:layout_constraintTop_toBottomOf="@id/PhoneError" />
 
     <TextView
-        android:id="@+id/cash_error"
+        android:id="@+id/itemError"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
@@ -155,7 +185,7 @@
         android:visibility="gone"
         app:drawableStartCompat="@drawable/warning"
         app:layout_constraintStart_toStartOf="@id/name_etv"
-        app:layout_constraintTop_toBottomOf="@id/cash_etv" />
+        app:layout_constraintTop_toBottomOf="@id/item_list" />
 
 
     <TextView
@@ -163,100 +193,34 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="Date:"
-        android:visibility="visible"
-        app:layout_constraintBottom_toBottomOf="@id/date_etv"
+        android:text="@string/Amount"
+        app:layout_constraintBottom_toBottomOf="@id/cash_etv"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/date_etv" />
+        app:layout_constraintTop_toTopOf="@id/cash_etv" />
+
 
     <EditText
-        android:id="@+id/date_etv"
-        android:layout_width="280dp"
-        android:layout_height="30dp"
+        android:id="@+id/cash_etv"
+        android:layout_width="320dp"
+        android:layout_height="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="48dp"
         android:background="@drawable/etv_background"
         android:imeOptions="actionNext"
+        android:inputType="numberSigned"
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
         android:singleLine="true"
-        android:visibility="visible"
         app:layout_constraintStart_toStartOf="@id/name_etv"
-        app:layout_constraintTop_toBottomOf="@id/cash_error" />
-
-
-    <ImageButton
-        android:id="@+id/datePicker"
-        android:layout_width="36dp"
-        android:layout_height="0dp"
-        android:layout_marginStart="4dp"
-        android:background="@drawable/button_background"
-        android:padding="2dp"
-        android:scaleType="centerInside"
-        android:src="@drawable/date"
-        app:layout_constraintBottom_toBottomOf="@id/date_etv"
-        app:layout_constraintStart_toEndOf="@id/date_etv"
-        app:layout_constraintTop_toTopOf="@id/date_etv" />
+        app:layout_constraintTop_toBottomOf="@id/itemError" />
 
     <TextView
         android:id="@+id/label5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="Deposit for:"
-        android:visibility="visible"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/narration_etv"
-        app:layout_constraintBottom_toBottomOf="@id/narration_etv"/>
-
-    <EditText
-        android:id="@+id/narration_etv"
-        android:layout_width="320dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="48dp"
-        android:background="@drawable/etv_background"
-        android:imeOptions="actionNext"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"
-        android:singleLine="true"
-        app:layout_constraintTop_toBottomOf="@id/date_etv"
-        app:layout_constraintStart_toStartOf="@id/name_etv"/>
-
-    <TextView
-        android:id="@+id/label6"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        android:text="Remarks:"
-        android:visibility="gone"
-        app:layout_constraintBottom_toBottomOf="@id/remarks_etv"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/remarks_etv" />
-
-    <EditText
-        android:id="@+id/remarks_etv"
-        android:layout_width="320dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="48dp"
-        android:background="@drawable/etv_background"
-        android:imeOptions="actionNext"
-        android:paddingStart="4dp"
-        android:paddingEnd="4dp"
-        android:singleLine="true"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@id/name_etv"
-        app:layout_constraintTop_toBottomOf="@id/narration_etv" />
-
-
-    <TextView
-        android:id="@+id/label7"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
         android:text="@string/Weight"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@id/weightdetails"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@id/weightdetails" />
@@ -264,7 +228,7 @@
     <EditText
         android:id="@+id/weightdetails"
         android:layout_width="320dp"
-        android:layout_height="30dp"
+        android:layout_height="32dp"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="48dp"
         android:background="@drawable/etv_background"
@@ -273,9 +237,9 @@
         android:paddingStart="4dp"
         android:paddingEnd="4dp"
         android:singleLine="true"
-        android:visibility="gone"
+        android:visibility="visible"
         app:layout_constraintStart_toStartOf="@id/name_etv"
-        app:layout_constraintTop_toBottomOf="@id/remarks_etv" />
+        app:layout_constraintTop_toBottomOf="@id/cash_etv" />
 
     <TextView
         android:id="@+id/weightError"
@@ -292,7 +256,35 @@
         app:layout_constraintTop_toBottomOf="@id/weightdetails" />
 
     <TextView
-        android:id="@+id/label8"
+        android:id="@+id/label6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="Remarks:"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@id/remarks_etv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/remarks_etv" />
+
+    <EditText
+        android:id="@+id/remarks_etv"
+        android:layout_width="320dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/etv_background"
+        android:imeOptions="actionNext"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:singleLine="true"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="@id/name_etv"
+        app:layout_constraintTop_toBottomOf="@id/weightError" />
+
+
+
+    <TextView
+        android:id="@+id/label7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -305,11 +297,12 @@
         android:id="@+id/ModeOfPaymentChips"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:orientation="horizontal"
+        android:layout_marginTop="24dp"
+        app:singleLine="false"
         app:layout_constraintStart_toStartOf="@id/name_etv"
-        app:layout_constraintTop_toBottomOf="@id/weightError"
-        app:singleSelection="true">
+        app:layout_constraintTop_toBottomOf="@id/remarks_etv"
+        app:layout_constraintEnd_toStartOf="@id/JewelleryPicture"
+        app:singleSelection="false">
 
         <com.google.android.material.chip.Chip
             android:id="@+id/Chip1"
@@ -381,14 +374,34 @@
         app:layout_constraintTop_toBottomOf="@id/ModeOfPaymentChips"
         app:layout_constraintStart_toStartOf="@id/name_etv"/>
 
+
+    <Button
+        android:id="@+id/additem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="72dp"
+        android:layout_marginEnd="8dp"
+        android:paddingStart="4dp"
+        android:paddingEnd="8dp"
+        android:backgroundTint="@color/teal_700"
+        android:padding="0dp"
+        android:drawableLeft="@drawable/add"
+        android:text="@string/add_item"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/Deposit_Error"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/save" />
+
+
     <Button
         android:id="@+id/save"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="64dp"
+        android:layout_marginTop="72dp"
         android:layout_marginEnd="8dp"
-        android:backgroundTint="@color/teal_700"
+        android:backgroundTint="@color/cool_grey"
         android:padding="0dp"
         android:text="@string/save"
         android:textColor="@color/white"
@@ -396,18 +409,18 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/cancel" />
 
+
     <Button
         android:id="@+id/cancel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="64dp"
         android:layout_marginEnd="4dp"
         android:backgroundTint="@color/white"
         android:padding="0dp"
         android:text="@string/cancel"
         android:textColor="@color/black"
-        app:layout_constraintTop_toBottomOf="@id/Deposit_Error"
+        app:layout_constraintTop_toTopOf="@id/save"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 

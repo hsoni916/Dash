@@ -9,9 +9,18 @@ public class Customer {
     String phoneNumber;
     String address;
     String Reference;
+    List<Integer> OpenOrders;
 
     public Customer() {
 
+    }
+
+    public List<Integer> getOpenOrders() {
+        return OpenOrders;
+    }
+
+    public void setOpenOrders(List<Integer> openOrders) {
+        OpenOrders = openOrders;
     }
 
     public String getName() {

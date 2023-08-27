@@ -46,7 +46,7 @@ public class customer_adapter extends RecyclerView.Adapter<customer_adapter.View
         DBManager dbManager = new DBManager(parentContext);
         dbManager.open();
         holder.Balance.setText(String.valueOf(dbManager.getBalance(recordList.get(position).getName(),recordList.get(position).getPhoneNumber())));
-
+        holder.MetalBalance.setText(String.valueOf(dbManager.getMetalBalance(recordList.get(position).getName(),recordList.get(position).getPhoneNumber())));
     }
 
     @Override
@@ -57,7 +57,7 @@ public class customer_adapter extends RecyclerView.Adapter<customer_adapter.View
     public class ViewHolder extends RecyclerView.ViewHolder{
         View mView;
         Context context;
-        TextView Name, Phone, DOB, Balance;
+        TextView Name, Phone, DOB, Balance, MetalBalance;
         public ViewHolder(@NonNull View itemView, Context context) {
             super(itemView);
             mView = itemView;
@@ -66,6 +66,7 @@ public class customer_adapter extends RecyclerView.Adapter<customer_adapter.View
             Phone = mView.findViewById(R.id.Phone);
             DOB = mView.findViewById(R.id.DOB);
             Balance = mView.findViewById(R.id.Balance);
+            MetalBalance = mView.findViewById(R.id.MetalBalance);
         }
     }
 }

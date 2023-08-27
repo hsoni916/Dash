@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
+<LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="wrap_content"
+    android:layout_width="720dp"
     android:layout_height="32dp"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:paddingEnd="4dp"
     android:paddingStart="4dp"
+    android:weightSum="6.25"
     android:background="@drawable/table_background"
     android:layout_marginTop="4dp"
     android:layout_marginStart="4dp"
@@ -14,29 +15,28 @@
 
 <TextView
         android:id="@+id/Sr"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
         android:textSize="14sp"
         android:padding="4dp"
         android:text="1"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        android:layout_weight="0.25"
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/Name"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="0.75"
         android:textSize="14sp"
         android:padding="4dp"
         android:layout_marginStart="8dp"
         android:text="Mens Ring"
         android:textAlignment="center"
-        android:layout_height="wrap_content"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toEndOf="@id/Sr"/>
+        android:layout_height="wrap_content"/>
 
     <TextView
         android:id="@+id/Barcode"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="0.75"
         android:textSize="14sp"
         android:layout_marginStart="4dp"
         android:padding="4dp"
@@ -49,7 +49,8 @@
 
     <TextView
         android:id="@+id/Purity"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="0.75"
         android:textSize="14sp"
         android:layout_marginStart="4dp"
         android:padding="4dp"
@@ -62,7 +63,8 @@
 
     <TextView
         android:id="@+id/GW"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="0.75"
         android:textSize="14sp"
         android:layout_marginStart="4dp"
         android:padding="4dp"
@@ -74,7 +76,8 @@
 
     <TextView
         android:id="@+id/NW"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="0.75"
         android:textSize="14sp"
         android:layout_marginStart="4dp"
         android:padding="4dp"
@@ -86,7 +89,8 @@
 
     <TextView
         android:id="@+id/EC"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="0.75"
         android:textSize="14sp"
         android:layout_marginStart="4dp"
         android:padding="4dp"
@@ -98,7 +102,8 @@
 
     <TextView
         android:id="@+id/Costing"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="0.75"
         android:textSize="14sp"
         android:layout_marginStart="4dp"
         android:padding="4dp"
@@ -110,7 +115,8 @@
 
     <TextView
         android:id="@+id/HUIDLabel"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="0.75"
         android:textSize="14sp"
         android:layout_marginStart="4dp"
         android:padding="4dp"
@@ -120,4 +126,4 @@
         app:layout_constraintTop_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/Costing"/>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</LinearLayout>
