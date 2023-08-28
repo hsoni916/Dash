@@ -14,12 +14,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class DBManager {
     int GlobalPointTH = 0;
     private DBHelper dbHelper;
 
-    private Context context;
+    private final Context context;
 
     private SQLiteDatabase database;
     public static int Column_Count;
@@ -70,6 +71,7 @@ public class DBManager {
                 dbHelper.getWritableDatabase().execSQL(create_table);
             }
         }
+        fetch.close();
         return result;
     }
 
@@ -84,6 +86,7 @@ public class DBManager {
            // Log.d("Birthdays",fetch.getString(0));
             DOBofCustomer.add(fetch.getString(0));
         }
+        fetch.close();
         return DOBofCustomer;
     }
 
@@ -119,6 +122,8 @@ public class DBManager {
                     return result;
                 }
             }
+            pthCursor.close();
+            pointCursor.close();
         }catch (Exception e){
             e.fillInStackTrace();
         }
@@ -138,6 +143,7 @@ public class DBManager {
             contentValues.put("Points",initialPoints);
             result = db.insert("Customers",null,contentValues);
         }
+        pointCursor.close();
         return result;
     }
 
@@ -149,6 +155,7 @@ public class DBManager {
         while(fetch.moveToNext()){
             BarcodeList.add(fetch.getString(0));
         }
+        fetch.close();
         Log.d("Barcodes", BarcodeList.toString());
         return BarcodeList;
     }
@@ -162,10 +169,12 @@ public class DBManager {
             GenericItemList.add(fetch.getString(0));
         }
         sql = "SELECT Category FROM Categories_Silver";
+        fetch.close();
         fetch = db.rawQuery(sql,null);
         while(fetch.moveToNext()){
             GenericItemList.add(fetch.getString(0));
         }
+        fetch.close();
         return GenericItemList;
     }
 
@@ -177,13 +186,14 @@ public class DBManager {
         while(fetch.moveToFirst() && fetch.moveToNext() && !fetch.isAfterLast()){
             GenericItemCodeList.add(fetch.getInt(1));
         }
+        fetch.close();
         return GenericItemCodeList;
     }
 
 
 
     public long AddNewSupplier(String Supplier_Name) {
-        long result = -1;
+        long result;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
         contentValues.put("Business_Name",Supplier_Name);
@@ -261,6 +271,7 @@ public class DBManager {
                         result = result+db.insert("Categories", null,contentValues);
                     }
                 }
+                fetch.close();
                 for(int j=0;j<Categories.size();j++){
                     String label = Categories.get(j).replace(" ","_");
                     String table_name = label.replace("-","_");
@@ -290,6 +301,7 @@ public class DBManager {
                         prefix.append(".");
                         Log.d("Prefix:","MJ"+PFB.getInt(0));
                     }
+                    PFB.close();
                     String triggers = "CREATE TRIGGER IF NOT EXISTS " + triggerName + " AFTER INSERT ON "
                             + table_name + " WHEN new.Barcode IS null " + " BEGIN UPDATE " + table_name + " SET Barcode = '"+prefix+"'||rowid; END;";
                     Log.d("Triggers:",triggers);
@@ -299,7 +311,6 @@ public class DBManager {
                     dbHelper.getWritableDatabase().execSQL(triggers);
                     dbHelper.getWritableDatabase().execSQL(trigger2);
                 }
-                fetch.close();
                 return result;
         }
 
@@ -318,6 +329,7 @@ public class DBManager {
                     result = result+db.insert("Categories", null,contentValues);
                 }
             }
+            fetch.close();
             for(int j=0;j<Categories.size();j++){
                 String label = Categories.get(j).replace(" ","_");
                 String table_name = label.replace("-","_");
@@ -347,6 +359,7 @@ public class DBManager {
                     prefix.append(".");
                     Log.d("Prefix:","MJ"+PFB.getInt(0));
                 }
+                PFB.close();
                 String triggers = "CREATE TRIGGER IF NOT EXISTS " + triggerName + " AFTER INSERT ON "
                         + table_name + " WHEN new.Barcode IS null " + " BEGIN UPDATE " + table_name + " SET Barcode = '"+prefix+"'||rowid; END;";
                 Log.d("Triggers:",triggers);
@@ -356,14 +369,14 @@ public class DBManager {
                 dbHelper.getWritableDatabase().execSQL(triggers);
                 dbHelper.getWritableDatabase().execSQL(trigger2);
             }
-            fetch.close();
+
             return result;
     }
 
     //Additional methods for adding data on the go in part Two.
         //ADD NEW STANDARD
             public long AddStandard(String Label, int Purity){
-                long result = -1;
+                long result;
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 ContentValues contentValues = new ContentValues();
                 contentValues.put("Standard_Name",Label);
@@ -377,7 +390,7 @@ public class DBManager {
             long result = -1;
             Log.d("SQL","insert");
                 Log.d("DOB",DOB);
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
             Date c = Calendar.getInstance().getTime();
             Date today = new Date();
             try{
@@ -415,7 +428,7 @@ public class DBManager {
         public long quickInsertNewCustomer(String Name, String PhoneNumber){
             long result = -1;
             Log.d("SQL","insert");
-            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+            SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
             Date c = Calendar.getInstance().getTime();
             Date today = new Date();
             try{
@@ -479,6 +492,7 @@ public class DBManager {
             while(fetch.moveToFirst() && fetch.moveToNext() && !fetch.isAfterLast()){
                 SupplierList.add("(" + fetch.getInt(3)+ ")" + " " +fetch.getString(0));
             }
+            fetch.close();
             return SupplierList;
         }
 
@@ -491,6 +505,7 @@ public class DBManager {
             while(fetch.moveToNext()){
                 NamesOfCustomer.add(fetch.getString(0));
             }
+            fetch.close();
             return NamesOfCustomer;
         }
 
@@ -503,6 +518,7 @@ public class DBManager {
             while(fetch.moveToNext()){
                 PhoneOfCustomer.add(fetch.getString(0));
             }
+            fetch.close();
             return PhoneOfCustomer;
         }
 
@@ -516,7 +532,7 @@ public class DBManager {
                 Customer customer = new Customer();
                 customer.setName(fetch.getString(0));
                 customer.setPhoneNumber(fetch.getString(1));
-                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+                SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
                 Log.d("DOB0",fetch.getString(2));
                 if(fetch.getString(2).isEmpty()){
                     customer.setDateOfBirth(Calendar.getInstance().getTime().toString());
@@ -528,6 +544,7 @@ public class DBManager {
                 customer.setAddress(fetch.getString(3));
                 Customers.add(customer);
             }
+            fetch.close();
             return Customers;
         }
 
@@ -542,6 +559,7 @@ public class DBManager {
                     returnvalue = fetch.getString(0);
                     Log.d("Fetch", fetch.getString(0));
                 }
+                fetch.close();
                 return returnvalue;
             }
 
@@ -549,8 +567,8 @@ public class DBManager {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 Category = Category.replaceAll(" ", "_");
                 Category = Category.replaceAll("-","_");
-                String sql = "SELECT Category_Code FROM Categories WHERE Category ='" + Category + "'";
-                Cursor fetch = db.rawQuery(sql, null);
+                //String sql = "SELECT Category_Code FROM Categories WHERE Category ='" + Category + "'";
+                //Cursor fetch = db.rawQuery(sql, null);
                 int result =db.delete(Category,"Barcode=?",new String[]{label.getBarcode()});
                 Log.d("Delete Result", String.valueOf(result));
                 return result>0;
@@ -574,7 +592,7 @@ public class DBManager {
                         e.fillInStackTrace();
                     }
                 }
-                close();
+                fetch.close();
                 return result;
             }
 
@@ -587,12 +605,13 @@ public class DBManager {
             if(fetch.moveToFirst()){
                 c = fetch.getInt(0);
             }
+            fetch.close();
             return c;
         }
 
         //STORE NUMBER OF BILLS IN SPECIFIC MONTH-YEAR
             public long updateCounter(int month, int year, int D){
-            long result = -1;
+            long result;
 
             ContentValues cv = new ContentValues();
             cv.put("Counter",D);
@@ -632,11 +651,13 @@ public class DBManager {
             newLabel.setDate(fetch.getString(8));
             InventoryList.add(newLabel);
         }
+        fetch.close();
         return InventoryList;
     }
 
-    public long addRecord(String name, String phone, double weight, double amount, String remarks, String transactionDate, String narration) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+    public long
+    addRecord(String name, String phone, double weight, double amount, String remarks, String transactionDate, String narration) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
         Date c = Calendar.getInstance().getTime();
         Date today = new Date();
         long result = -1;
@@ -679,7 +700,7 @@ public class DBManager {
             int colIndex = fetch.getColumnIndex("Amount");
             balance = balance + fetch.getDouble(colIndex);
         }
-        close();
+        fetch.close();
         return balance;
     }
 
@@ -693,6 +714,7 @@ public class DBManager {
         while (fetch.moveToNext()){
             balance = fetch.getDouble(0);
         }
+        fetch.close();
         return balance;
 
     }
@@ -708,7 +730,7 @@ public class DBManager {
             int colIndex = fetch.getColumnIndex("Metal");
             balance = balance + fetch.getDouble(colIndex);
         }
-        close();
+        fetch.close();
         return balance;
     }
 }

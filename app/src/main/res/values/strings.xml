@@ -88,4 +88,11 @@
     <string name="Balance">Balance:</string>
     <string name="new_order">New Order</string>
     <string name="MetalBalance">Metal:</string>
+    <string name="order_list">Manage Orders</string>
+    <string name="Rhodium">Rhodium</string>
+    <string name="Solitaire">Solitaire</string>
+    <string name="SwarovskiD">Swarovski</string>
+    <string name="HM">H.M.</string>
+    <string name="Moti">Moti</string>
+    <string name="new_order_header">New Order</string>
 </resources>

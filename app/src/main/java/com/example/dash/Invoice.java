@@ -20,6 +20,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
 import android.widget.RadioGroup;
@@ -854,7 +855,7 @@ public class Invoice extends AppCompatActivity {
                     LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                     if(inflater!=null){
                         final View DetailsView = inflater.inflate(R.layout.details_popup,null);
-                        popupWindow = new PopupWindow(DetailsView, 1200,800);
+                        popupWindow = new PopupWindow(DetailsView, 1200, LinearLayout.LayoutParams.WRAP_CONTENT);
                         popupWindow.setAnimationStyle(R.style.popup_animation);
                         popupWindow.showAtLocation(Particular.getRootView(), Gravity.CENTER,0,0);
                         popupWindow.setFocusable(true);

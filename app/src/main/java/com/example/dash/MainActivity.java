@@ -49,6 +49,8 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.chip.Chip;
 import com.google.android.material.chip.ChipGroup;
 import com.google.firebase.firestore.DocumentSnapshot;
@@ -68,6 +70,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -86,6 +89,7 @@ public class MainActivity extends AppCompatActivity {
     FirebaseFirestore firebaseFirestore;
     FrameLayout CornerHub;
     String name="", phone="";
+    Double amount = 0.00;
     List<String> NewCategory = new ArrayList<>();
     String transactionDate = "";
     public Context CAContext;
@@ -120,6 +124,8 @@ public class MainActivity extends AppCompatActivity {
     private int pictureID;
     private String Remark;
     private String OrderName;
+    private String OrderDeliveryDate;
+    private Button ManageOrders;
 
     private Bitmap uriToBitmap(Uri image_uri){
         try {
@@ -185,6 +191,7 @@ public class MainActivity extends AppCompatActivity {
         PersonalInfo = findViewById(R.id.PersonalInfo);
         Analytics = findViewById(R.id.reports);
         NewOrder = findViewById(R.id.NewOrder);
+        ManageOrders = findViewById(R.id.OrderManagement);
         //Metrics
         ItemsSold = findViewById(R.id.ItemsSold);
         InvoicesMade = findViewById(R.id.InvoicesMade);
@@ -289,7 +296,7 @@ public class MainActivity extends AppCompatActivity {
                         }
                     }
                 });
-                popupWindow = new PopupWindow(marginView, 1200,800);
+                popupWindow = new PopupWindow(marginView, 1350,850);
                 popupWindow.setAnimationStyle(R.style.popup_animation);
                 popupWindow.showAtLocation(view, Gravity.CENTER,0,0);
                 popupWindow.setFocusable(true);
@@ -536,6 +543,7 @@ public class MainActivity extends AppCompatActivity {
             if(inflater!=null){
                 final View CashDepositView = inflater.inflate(R.layout.new_deposit,null);
                 TextView NameError,PhoneError,CashError;
+                DepositClass depositClass = new DepositClass();
 
                 Button cancel = CashDepositView.findViewById(R.id.cancel);
                 Button save = CashDepositView.findViewById(R.id.save);
@@ -613,6 +621,25 @@ public class MainActivity extends AppCompatActivity {
                     }
                 });
 
+                Amount.addTextChangedListener(new TextWatcher() {
+                    @Override
+                    public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                    }
+
+                    @Override
+                    public void afterTextChanged(Editable editable) {
+                        if(!Amount.getText().toString().isEmpty()){
+                            amount = Double.valueOf(Amount.getText().toString());
+                        }
+                    }
+                });
+
                 ModeOfPayments.setOnCheckedStateChangeListener(new ChipGroup.OnCheckedStateChangeListener() {
                     @Override
                     public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
@@ -643,6 +670,8 @@ public class MainActivity extends AppCompatActivity {
                 popupWindow.showAtLocation(view, Gravity.CENTER,0,0);
                 popupWindow.setFocusable(true);
                 popupWindow.update();
+
+
                 TextView depositerror = CashDepositView.findViewById(R.id.Deposit_Error);
                 save.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -688,6 +717,8 @@ public class MainActivity extends AppCompatActivity {
                                         narrationEtv.setText("");
                                         popupWindow.dismiss();
                                         depositerror.setVisibility(View.GONE);
+                                        //Add the record to backend.
+                                        //name,phone,amount,weight,remarks,transactionDate,narration
                                     }else{
                                         depositerror.setVisibility(View.VISIBLE);
                                     }
@@ -702,32 +733,63 @@ public class MainActivity extends AppCompatActivity {
                     private long savedeposit() {
                         long result = 0;
                         if(!Amount.getText().toString().isEmpty()){
+
+                            depositClass.setAmount(Double.parseDouble(Amount.getText().toString()));
+                            depositClass.setName(name);
+                            depositClass.setPhone(phone);
+
                             if(!NewCategory.isEmpty()){
                                 double weight = 0;
                                 String remarks = "";
                                 String narration = "";
                                 double amount = Double.parseDouble(Amount.getText().toString());
+                                depositClass.setNarration(NewCategory.toString());
+                                depositClass.setRemarks(remarkEtv.getText().toString());
+
                                 if(NewCategory.contains("Metal")){
-                                    //Look for weight & remarks [ optional ]
                                     if(!weightEtv.getText().toString().isEmpty()){
                                         weight = Double.parseDouble(weightEtv.getText().toString());
+                                        depositClass.setWeight(weight);
                                     }
                                     if(!remarkEtv.getText().toString().isEmpty()){
                                         remarks = remarkEtv.getText().toString();
+                                        depositClass.setRemarks(remarks);
+                                    }else{
+                                        remarks = NewCategory.toString();
+                                        depositClass.setRemarks(remarks);
                                     }
                                     if(!narrationEtv.getText().toString().isEmpty()){
                                         narration = narrationEtv.getText().toString();
+                                        depositClass.setNarration(narration);
+                                    }else{
+                                        narration = NewCategory.toString();
+                                        depositClass.setNarration(narration);
                                     }
-
                                 }else{
                                     remarks = NewCategory.toString();
+                                    depositClass.setRemarks(remarks);
                                 }
                                 if(transactionDate==null){
                                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
                                     result =  dbManager.addRecord(name,phone,amount,weight,remarks,dateFormat.format(Calendar.getInstance().getTime()),narration);
+                                    depositClass.setTransactionDate(dateFormat.format(Calendar.getInstance().getTime()));
                                 }else{
                                     result =  dbManager.addRecord(name,phone,amount,weight,remarks,transactionDate,narration);
+                                    depositClass.setTransactionDate(transactionDate);
                                 }
+
+                                SimpleDateFormat dateFormat = new SimpleDateFormat("ddMMyyyyhhmmss", Locale.getDefault());
+                                String docName = name+"_"+phone+"_"+dateFormat.format(Calendar.getInstance().getTime());
+                                firebaseFirestore.collection("Deposits").document(docName)
+                                        .set(depositClass)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if(task.isSuccessful()){
+                                                    Toast.makeText(view.getContext(),"Deposit Saved.",Toast.LENGTH_LONG).show();
+                                                }
+                                            }
+                                        });
                             }
                         }
                         return result;
@@ -745,27 +807,17 @@ public class MainActivity extends AppCompatActivity {
         NewOrder.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                int picture_id = 123;
-                OrderName = "";
-                Item = "";
-                Remark = "";
-                pictureID=0;
-                ItemWeight=0.00;
-
-                ItemList = new ArrayList<>();
-
-
                 OrderDetails NewOrderDetails = new OrderDetails();
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 if (inflater != null) {
                     final View NewOrderView = inflater.inflate(R.layout.new_order, null);
-
                     AutoCompleteTextView NameEtv = NewOrderView.findViewById(R.id.name_etv);
                     AutoCompleteTextView PhoneEtv = NewOrderView.findViewById(R.id.phone_etv);
                     AutoCompleteTextView Particular = NewOrderView.findViewById(R.id.item_list);
                     EditText Amount = NewOrderView.findViewById(R.id.cash_etv);
                     EditText Weight = NewOrderView.findViewById(R.id.weightdetails);
                     EditText ItemRemarks = NewOrderView.findViewById(R.id.remarks_etv);
+                    EditText dateEtv = NewOrderView.findViewById(R.id.date_etv);
                     JewelleryThumbnail = NewOrderView.findViewById(R.id.JewelleryPicture);
                     ImageButton RotateBitmap = NewOrderView.findViewById(R.id.rotateImage);
                     ChipGroup ModeOfPayments = NewOrderView.findViewById(R.id.ModeOfPaymentChips);
@@ -789,6 +841,7 @@ public class MainActivity extends AppCompatActivity {
                     save = NewOrderView.findViewById(R.id.save);
                     cancel = NewOrderView.findViewById(R.id.cancel);
 
+                    ImageButton CalendarButton = NewOrderView.findViewById(R.id.datePicker);
 
                     NameEtv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
@@ -862,8 +915,39 @@ public class MainActivity extends AppCompatActivity {
                     popupWindow = new PopupWindow(NewOrderView, LinearLayout.LayoutParams.WRAP_CONTENT,LinearLayout.LayoutParams.WRAP_CONTENT);
                     popupWindow.setAnimationStyle(R.style.popup_animation);
                     popupWindow.showAtLocation(view, Gravity.CENTER,0,0);
+                    int picture_id = 123;
+                    OrderName = "";
+                    Item = "";
+                    Remark = "";
+                    pictureID=0;
+                    ItemWeight=0.00;
+                    ItemList = new ArrayList<>();
                     popupWindow.setFocusable(true);
                     popupWindow.update();
+                    OrderDeliveryDate="";
+                    DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, date) -> {
+                        month = month+1;
+                        if(month<10){
+                            OrderDeliveryDate = date+"/"+"0"+month+"/"+year;
+                        }else{
+                            OrderDeliveryDate = date+"/"+month+"/"+year;
+                        }
+                        dateEtv.setText(OrderDeliveryDate);
+                        try {
+                            Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(OrderDeliveryDate);
+                            Log.d("Date", String.valueOf(date1));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    };
+
+                    CalendarButton.setOnClickListener(view13 -> {
+                        DatePickerDialog dialog = new DatePickerDialog(view13.getContext(), dateSetListener,
+                                calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                                calendar.get(Calendar.DAY_OF_MONTH));
+                        dialog.show();
+                    });
+
 
                     RotateBitmap.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -919,7 +1003,6 @@ public class MainActivity extends AppCompatActivity {
                             GetJewelleryPicture.launch(cameraIntent);
                         }
                     });
-
 
                     Particular.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
@@ -978,7 +1061,7 @@ public class MainActivity extends AppCompatActivity {
 
                             ItemList.add(Item);
                             Weights.add(ItemWeight);
-                            if(image_uri!=null){
+                            if(image_uri==null){
                                 PhotosList.add("");
                             }else{
                                 PhotosList.add(String.valueOf(image_uri));
@@ -993,13 +1076,15 @@ public class MainActivity extends AppCompatActivity {
                             ItemRemarks.setText(null);
                             JewelleryThumbnail.setImageDrawable(AppCompatResources.getDrawable(getApplicationContext(),R.drawable.camera_btn));
 
+                            Particular.setText("");
+                            Weight.setText("");
+                            ItemRemarks.setText("");
+
                             JewelleryThumbnail.setEnabled(true);
                             Particular.setEnabled(true);
                             Weight.setEnabled(true);
                             Amount.setEnabled(true);
                             ItemRemarks.setEnabled(true);
-
-
 
                         }
                     });
@@ -1013,23 +1098,25 @@ public class MainActivity extends AppCompatActivity {
 
                             OrderName = OrderName+"_"+timeStamp+".json";
                             NewOrderDetails.setOrderDate(dateFormat.format(Calendar.getInstance().getTime()));
-                            //File Name = OrderName;
+
                             NewOrderDetails.setItems(ItemList);
                             NewOrderDetails.setRemarks(RemarksList);
                             NewOrderDetails.setWeights(Weights);
                             NewOrderDetails.setSamplePhotos(PhotosList);
-
+                            NewOrderDetails.setOrderDate(OrderDeliveryDate);
                             JewelleryThumbnail.setEnabled(false);
                             Particular.setEnabled(false);
                             Weight.setEnabled(false);
                             Amount.setEnabled(false);
                             ItemRemarks.setEnabled(false);
 
-
                             Gson gson = new Gson();
                             String FileText = gson.toJson(NewOrderDetails);
-                            if(dbManager.addRecord(name,phone,0.00,Double.parseDouble(Amount.getText().toString()),Remark,
-                                    dateFormat.format(Calendar.getInstance().getTime()),Remark)>0){
+                            if(dbManager.addRecord(name,phone,0.00,
+                                    Double.parseDouble(Amount.getText().toString()),
+                                    "Order deposit.",
+                                    dateFormat.format(Calendar.getInstance().getTime()),
+                                    NewCategory.toString())>0){
                                 File SaveTheOrder = new File(getExternalFilesDir(null),OrderName);
                                 FileOutputStream fileOutputStream = null;
                                 try{
@@ -1038,14 +1125,25 @@ public class MainActivity extends AppCompatActivity {
                                     fileOutputStream.write(FileText.getBytes());
                                     fileOutputStream.flush();
                                     fileOutputStream.close();
+                                    Toast.makeText(view.getContext(),"Order saved.",Toast.LENGTH_LONG).show();
                                     Log.d("File:",fileOutputStream.toString());
                                 }catch (IOException e) {
                                     e.printStackTrace();
+                                    Toast.makeText(view.getContext(),"Order not saved.",Toast.LENGTH_LONG).show();
                                 }
                             }
+                            popupWindow.dismiss();
                         }
                     });
                 }
+            }
+        });
+
+        ManageOrders.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent stockManagement = new Intent(MainActivity.this,OrderManagement.class);
+                startActivity(stockManagement);
             }
         });
     }

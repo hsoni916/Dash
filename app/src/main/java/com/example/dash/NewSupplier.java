@@ -58,15 +58,11 @@ public class NewSupplier extends AppCompatActivity {
         SupplierForm = findViewById(R.id.SupplierForm);
         NewSupplier = findViewById(R.id.NewSupplierButton);
         SupplierRecyclerView = findViewById(R.id.SupplierList);
+        SupplierForm.setVisibility(View.INVISIBLE);
+        NewSupplier.setVisibility(View.VISIBLE);
 
         dbManager = new DBManager(this);
-        NewSupplier.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                SupplierForm.setVisibility(View.VISIBLE);
-                NewSupplier.setVisibility(View.INVISIBLE);
-            }
-        });
+
         Business = findViewById(R.id.Business_etv);
         Owner = findViewById(R.id.Owner_etv);
         City = findViewById(R.id.City_etv);
@@ -99,9 +95,24 @@ public class NewSupplier extends AppCompatActivity {
                 List<DocumentReference> DocRef = new ArrayList<>();
                 assert value != null;
                 Suppliers = new ArrayList<>();
+
                 for (QueryDocumentSnapshot doc : value) {
                     Suppliers.add(doc.toObject(Supplier.class));
                     DocRef.add(doc.getReference());
+                }
+                if(DocRef.isEmpty()){
+                    SupplierForm.setVisibility(View.INVISIBLE);
+                    NewSupplier.setVisibility(View.VISIBLE);
+                    NewSupplier.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            SupplierForm.setVisibility(View.VISIBLE);
+                            NewSupplier.setVisibility(View.INVISIBLE);
+                        }
+                    });
+                }else{
+                    NewSupplier.setVisibility(View.INVISIBLE);
+                    SupplierForm.setVisibility(View.VISIBLE);
                 }
                 Log.d("Success", String.valueOf(value.size()));
                 supplierAdapter = new SupplierAdapter(Suppliers);

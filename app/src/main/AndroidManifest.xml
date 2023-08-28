@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.dash">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+        tools:ignore="ScopedStorage" />
     <uses-permission android:name="android.permission.CAMERA"/>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
 
@@ -46,6 +47,12 @@
         </activity>
         <activity
             android:name=".StockManagement"
+            android:configChanges="orientation|keyboardHidden"
+            android:screenOrientation="landscape">
+
+        </activity>
+        <activity
+            android:name=".OrderManagement"
             android:configChanges="orientation|keyboardHidden"
             android:screenOrientation="landscape">
 

@@ -21,7 +21,7 @@
         android:visibility="invisible"
         android:translationZ="12dp"
         android:drawableTop="@drawable/add"
-        android:backgroundTint="#49a078"
+        android:backgroundTint="@color/matteYellow"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
