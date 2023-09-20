@@ -3,7 +3,7 @@ package com.example.dash;
 import java.util.List;
 
 public class OrderDetails {
-    String CustomerName, PhoneNumber, OrderDate, DeliveryDate;
+    String CustomerName, PhoneNumber, OrderDate, DeliveryDate, FileName;
     List<String> Remarks;
     List<String> Items;
     List<String> SamplePhotos;
@@ -71,5 +71,13 @@ public class OrderDetails {
 
     public void setWeights(List<Double> weights) {
         Weights = weights;
+    }
+
+    public String getFileName() {
+        return FileName;
+    }
+
+    public void setFileName(String fileName) {
+        FileName = fileName;
     }
 }

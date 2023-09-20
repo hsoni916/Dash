@@ -655,8 +655,7 @@ public class DBManager {
         return InventoryList;
     }
 
-    public long
-    addRecord(String name, String phone, double weight, double amount, String remarks, String transactionDate, String narration) {
+    public long addRecord(String name, String phone, double weight, double amount, String remarks, String transactionDate, String narration) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
         Date c = Calendar.getInstance().getTime();
         Date today = new Date();

@@ -248,16 +248,6 @@ public class MainActivity extends AppCompatActivity {
                 Log.d("Size of customers",String.valueOf(dbManager.ListAllCustomer().size()));
                 recordList.clear();
                 recordList2.clear();
-                /*for(int i = 0;i<dbManager.ListAllCustomer().size();i++){
-                    Customer customer = new Customer();
-                    customer.setName(NameAdapter.getItem(i));
-                    customer.setPhoneNumber(PhoneAdapter.getItem(i));
-                    customer.setDateOfBirth();
-                    Log.d("Customer:",NameAdapter.getItem(i));
-                    Log.d("Size of record:", String.valueOf(recordList.size()));
-                    recordList.add(customer);
-                    recordList2.add(customer);
-                }*/
                 try {
                     List<Customer> Customers = dbManager.GetCustomerProfile();
                     recordList.addAll(Customers);
@@ -771,10 +761,10 @@ public class MainActivity extends AppCompatActivity {
                                 }
                                 if(transactionDate==null){
                                     SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
-                                    result =  dbManager.addRecord(name,phone,amount,weight,remarks,dateFormat.format(Calendar.getInstance().getTime()),narration);
+                                    result =  dbManager.addRecord(name,phone,weight,amount,remarks,dateFormat.format(Calendar.getInstance().getTime()),narration);
                                     depositClass.setTransactionDate(dateFormat.format(Calendar.getInstance().getTime()));
                                 }else{
-                                    result =  dbManager.addRecord(name,phone,amount,weight,remarks,transactionDate,narration);
+                                    result =  dbManager.addRecord(name,phone,weight,amount,remarks,transactionDate,narration);
                                     depositClass.setTransactionDate(transactionDate);
                                 }
 
@@ -847,9 +837,9 @@ public class MainActivity extends AppCompatActivity {
                         @Override
                         public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                             name = NameAdapter.getItem(i);
-                            int indextouse = NameAdapter.getPosition(name);
-                            PhoneEtv.setText(PhoneAdapter.getItem(indextouse));
-                            phone = PhoneAdapter.getItem(indextouse);
+                            int indextouse = NameList.indexOf(name);
+                            PhoneEtv.setText(PhoneList.get(indextouse));
+                            phone = PhoneList.get(indextouse);
                             NameEtv.setEnabled(false);
                             PhoneEtv.setEnabled(false);
                             OrderName = name+"_"+phone;
@@ -898,7 +888,6 @@ public class MainActivity extends AppCompatActivity {
                         public void onCheckedChanged(@NonNull ChipGroup group, @NonNull List<Integer> checkedIds) {
                             for(int i =0;i<group.getChildCount();i++){
                                 Chip chip = (Chip) group.getChildAt(i);
-                                Chip metalchip = group.findViewById(R.id.Chip6);
                                 if(chip.isChecked()){
                                     NewCategory.add(chip.getText().toString());
                                 }
@@ -1098,12 +1087,11 @@ public class MainActivity extends AppCompatActivity {
 
                             OrderName = OrderName+"_"+timeStamp+".json";
                             NewOrderDetails.setOrderDate(dateFormat.format(Calendar.getInstance().getTime()));
-
                             NewOrderDetails.setItems(ItemList);
                             NewOrderDetails.setRemarks(RemarksList);
                             NewOrderDetails.setWeights(Weights);
                             NewOrderDetails.setSamplePhotos(PhotosList);
-                            NewOrderDetails.setOrderDate(OrderDeliveryDate);
+                            NewOrderDetails.setDeliveryDate(OrderDeliveryDate);
                             JewelleryThumbnail.setEnabled(false);
                             Particular.setEnabled(false);
                             Weight.setEnabled(false);
@@ -1127,6 +1115,21 @@ public class MainActivity extends AppCompatActivity {
                                     fileOutputStream.close();
                                     Toast.makeText(view.getContext(),"Order saved.",Toast.LENGTH_LONG).show();
                                     Log.d("File:",fileOutputStream.toString());
+                                    OrderName = OrderName.replace(".json","");
+                                    NewOrderDetails.setFileName(OrderName);
+                                    firebaseFirestore.collection("Orders")
+                                            .document(OrderName)
+                                            .set(NewOrderDetails).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                        @Override
+                                        public void onComplete(@NonNull Task<Void> task) {
+                                            if(task.isSuccessful()){
+                                                Toast.makeText(view.getContext(),"Order saved to server.",Toast.LENGTH_LONG).show();
+                                            }else{
+                                                //Send the document to a background worker thread.
+                                            }
+                                        }
+                                    });
+
                                 }catch (IOException e) {
                                     e.printStackTrace();
                                     Toast.makeText(view.getContext(),"Order not saved.",Toast.LENGTH_LONG).show();

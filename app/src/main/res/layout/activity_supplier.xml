@@ -42,16 +42,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toStartOf="@id/SupplierListHeader"/>
-<androidx.constraintlayout.widget.ConstraintLayout
-    android:id="@+id/SupplierForm"
-    android:layout_width="0dp"
-    android:layout_height="0dp"
-    android:visibility="visible"
-    android:translationZ="8dp"
-    app:layout_constraintTop_toBottomOf="@id/NewSupplier"
-    app:layout_constraintStart_toStartOf="parent"
-    app:layout_constraintBottom_toBottomOf="parent"
-    app:layout_constraintEnd_toEndOf="@id/NewSupplier">
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/SupplierForm"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:visibility="visible"
+        android:translationZ="8dp"
+        app:layout_constraintTop_toBottomOf="@id/NewSupplier"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/NewSupplier">
+
     <TextView
         android:id="@+id/LabelOne"
         android:layout_width="wrap_content"
@@ -189,7 +190,6 @@
         app:layout_constraintStart_toStartOf="@id/gstin_etv"
         app:layout_constraintTop_toTopOf="@id/LabelFive"
         app:layout_constraintBottom_toBottomOf="@id/LabelFive"/>
-
 
     <TextView
         android:id="@+id/LabelSix"
