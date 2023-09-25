@@ -29,9 +29,9 @@
         android:layout_marginBottom="12dp"
         android:layout_marginStart="48dp"
         android:layout_marginEnd="48dp"
+        android:background="@drawable/cardview_bg"
         android:padding="2dp"
         android:src="@drawable/camera_btn"
-        android:background="@drawable/textview_background_3"
         android:elevation="4dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="@id/remarks_etv"
@@ -149,8 +149,43 @@
         app:layout_constraintStart_toStartOf="@id/phone_etv"
         app:layout_constraintTop_toBottomOf="@id/phone_etv" />
 
+
     <TextView
         android:id="@+id/label3"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        android:text="@string/rate"
+        app:layout_constraintBottom_toBottomOf="@id/RateChoices"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/RateChoices" />
+
+    <RadioGroup
+        android:id="@+id/RateChoices"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="8dp"
+        android:weightSum="2"
+        app:layout_constraintTop_toBottomOf="@id/PhoneError"
+        app:layout_constraintStart_toStartOf="@id/name_etv"
+        app:layout_constraintEnd_toEndOf="@id/name_etv">
+        <RadioButton
+            android:id="@+id/RateFixed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="Fix"/>
+        <RadioButton
+            android:id="@+id/RateUnFixed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="Unfix"/>
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/label4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -171,7 +206,7 @@
         android:paddingEnd="4dp"
         android:singleLine="true"
         app:layout_constraintStart_toStartOf="@id/name_etv"
-        app:layout_constraintTop_toBottomOf="@id/PhoneError" />
+        app:layout_constraintTop_toBottomOf="@id/RateChoices" />
 
     <TextView
         android:id="@+id/itemError"
@@ -189,7 +224,7 @@
 
 
     <TextView
-        android:id="@+id/label4"
+        android:id="@+id/label5"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -215,7 +250,7 @@
         app:layout_constraintTop_toBottomOf="@id/itemError" />
 
     <TextView
-        android:id="@+id/label5"
+        android:id="@+id/label6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -256,7 +291,7 @@
         app:layout_constraintTop_toBottomOf="@id/weightdetails" />
 
     <TextView
-        android:id="@+id/label6"
+        android:id="@+id/label7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -281,7 +316,6 @@
         app:layout_constraintStart_toStartOf="@id/name_etv"
         app:layout_constraintTop_toBottomOf="@id/weightError" />
 
-
     <ImageButton
         android:id="@+id/datePicker"
         android:layout_width="36dp"
@@ -295,10 +329,8 @@
         app:layout_constraintStart_toEndOf="@id/date_etv"
         app:layout_constraintTop_toTopOf="@id/date_etv" />
 
-
-
     <TextView
-        android:id="@+id/label7"
+        android:id="@+id/label8"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -323,10 +355,8 @@
         app:layout_constraintStart_toStartOf="@id/name_etv"
         app:layout_constraintTop_toBottomOf="@id/date_etv" />
 
-
-
     <TextView
-        android:id="@+id/label8"
+        android:id="@+id/label9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
@@ -343,7 +373,6 @@
         app:singleLine="false"
         app:layout_constraintStart_toStartOf="@id/name_etv"
         app:layout_constraintTop_toBottomOf="@id/remarks_etv"
-        app:layout_constraintEnd_toStartOf="@id/JewelleryPicture"
         app:singleSelection="false">
 
         <com.google.android.material.chip.Chip

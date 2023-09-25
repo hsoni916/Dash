@@ -309,7 +309,7 @@
         android:orientation="horizontal"
         app:layout_constraintStart_toStartOf="@id/name_etv"
         app:layout_constraintTop_toBottomOf="@id/weightError"
-        app:singleSelection="true">
+        app:singleSelection="false">
 
         <com.google.android.material.chip.Chip
             android:id="@+id/Chip1"

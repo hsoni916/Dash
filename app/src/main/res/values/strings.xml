@@ -97,4 +97,5 @@
     <string name="new_order_header">New Order</string>
     <string name="select_order_tv">Select an Order to Continue.</string>
     <string name="search_generic">Search...</string>
+    <string name="rate">Rate Fix:</string>
 </resources>

@@ -597,9 +597,10 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         name = NameAdapter.getItem(i);
-                        int indextouse = NameAdapter.getPosition(name);
-                        PhoneEtv.setText(PhoneAdapter.getItem(indextouse));
-                        phone = PhoneAdapter.getItem(indextouse);
+                        int indextouse = NameList.indexOf(name);
+                        PhoneEtv.setText(PhoneList.get(indextouse));
+                        phone = PhoneList.get(indextouse);
+                        NameEtv.setEnabled(false);
                         PhoneEtv.setEnabled(false);
                     }
                 });
@@ -608,6 +609,11 @@ public class MainActivity extends AppCompatActivity {
                     @Override
                     public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                         phone = PhoneAdapter.getItem(i);
+                        int indextouse = PhoneAdapter.getPosition(phone);
+                        NameEtv.setText(NameAdapter.getItem(indextouse));
+                        name = NameAdapter.getItem(indextouse);
+                        NameEtv.setEnabled(false);
+                        PhoneEtv.setEnabled(false);
                     }
                 });
 
