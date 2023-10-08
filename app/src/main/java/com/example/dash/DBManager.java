@@ -263,7 +263,7 @@ public class DBManager {
                 String sql = "SELECT Category FROM Categories";
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 Cursor fetch = db.rawQuery(sql,null);
-                Log.d("Cursor Count",String.valueOf(fetch.getCount()));
+                //Log.d("Cursor Count",String.valueOf(fetch.getCount()));
                 if(fetch.getCount()==0){
                     for(int j=0;j<Categories.size();j++){
                         contentValues.put("Category",Categories.get(j));
@@ -304,7 +304,7 @@ public class DBManager {
                     PFB.close();
                     String triggers = "CREATE TRIGGER IF NOT EXISTS " + triggerName + " AFTER INSERT ON "
                             + table_name + " WHEN new.Barcode IS null " + " BEGIN UPDATE " + table_name + " SET Barcode = '"+prefix+"'||rowid; END;";
-                    Log.d("Triggers:",triggers);
+                    //Log.d("Triggers:",triggers);
                     String trigger2 = "CREATE TRIGGER IF NOT EXISTS " + triggerName2 + " AFTER DELETE ON "
                             + table_name +" BEGIN INSERT INTO " + table_name2 + " (Barcode) " + " VALUES ( old.Barcode ); END;";
                     dbHelper.getWritableDatabase().execSQL(create_table);

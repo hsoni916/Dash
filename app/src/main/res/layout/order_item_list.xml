@@ -25,24 +25,26 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:textSize="12sp"
+        android:textSize="16sp"
         android:text="2 gms"
         android:textStyle="normal"
-        app:layout_constraintTop_toTopOf="@id/ItemPicture"
-        app:layout_constraintStart_toEndOf="@id/ItemPicture"/>
+        app:layout_constraintStart_toEndOf="@id/ItemName"
+        app:layout_constraintEnd_toStartOf="@id/ItemCategory"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
         android:id="@+id/ItemCategory"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:textSize="12sp"
+        android:layout_marginStart="48dp"
+        android:textSize="16sp"
         android:text="22K916"
         android:textStyle="normal"
-        app:layout_constraintTop_toTopOf="@id/ItemPicture"
-        app:layout_constraintStart_toEndOf="@id/ItemWeight"/>
-
-
+        app:layout_constraintStart_toEndOf="@id/ItemName"
+        app:layout_constraintEnd_toStartOf="@id/EditDetails"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
     <TextView
         android:id="@+id/ItemName"
@@ -55,6 +57,8 @@
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@id/ItemPicture"/>
+
+
 
 
     <ImageView

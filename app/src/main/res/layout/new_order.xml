@@ -184,6 +184,23 @@
             android:text="Unfix"/>
     </RadioGroup>
 
+    <EditText
+        android:id="@+id/Rate"
+        android:layout_width="320dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/etv_background"
+        android:imeOptions="actionNext"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:singleLine="true"
+        android:visibility="gone"
+        android:inputType="numberDecimal"
+        android:hint="Rate Per 10gm."
+        app:layout_constraintTop_toBottomOf="@id/RateChoices"
+        app:layout_constraintStart_toStartOf="@id/name_etv"/>
+
     <TextView
         android:id="@+id/label4"
         android:layout_width="wrap_content"
@@ -206,7 +223,7 @@
         android:paddingEnd="4dp"
         android:singleLine="true"
         app:layout_constraintStart_toStartOf="@id/name_etv"
-        app:layout_constraintTop_toBottomOf="@id/RateChoices" />
+        app:layout_constraintTop_toBottomOf="@id/Rate" />
 
     <TextView
         android:id="@+id/itemError"
@@ -295,7 +312,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
-        android:text="Date:"
+        android:text="Order on:"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@id/date_etv"
         app:layout_constraintStart_toStartOf="parent"
@@ -334,6 +351,45 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"
+        android:text="Delivery on:"
+        android:visibility="visible"
+        app:layout_constraintBottom_toBottomOf="@id/delivery_date_etv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/delivery_date_etv" />
+
+    <EditText
+        android:id="@+id/delivery_date_etv"
+        android:layout_width="280dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/etv_background"
+        android:imeOptions="actionNext"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:singleLine="true"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="@id/name_etv"
+        app:layout_constraintTop_toBottomOf="@id/date_etv" />
+
+    <ImageButton
+        android:id="@+id/delivery_datePicker"
+        android:layout_width="36dp"
+        android:layout_height="0dp"
+        android:layout_marginStart="4dp"
+        android:background="@drawable/button_background"
+        android:padding="2dp"
+        android:scaleType="centerInside"
+        android:src="@drawable/date"
+        app:layout_constraintBottom_toBottomOf="@id/delivery_date_etv"
+        app:layout_constraintStart_toEndOf="@id/delivery_date_etv"
+        app:layout_constraintTop_toTopOf="@id/delivery_date_etv" />
+
+    <TextView
+        android:id="@+id/label9"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
         android:text="Remarks:"
         android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="@id/remarks_etv"
@@ -353,10 +409,10 @@
         android:singleLine="true"
         android:visibility="visible"
         app:layout_constraintStart_toStartOf="@id/name_etv"
-        app:layout_constraintTop_toBottomOf="@id/date_etv" />
+        app:layout_constraintTop_toBottomOf="@id/delivery_date_etv" />
 
     <TextView
-        android:id="@+id/label9"
+        android:id="@+id/label10"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="8dp"

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.motion.widget.MotionLayout
+    android:id="@+id/SidePanel"
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -19,16 +20,18 @@
     <EditText
         android:id="@+id/search_bar"
         android:layout_width="320dp"
-        android:layout_height="36dp"
+        android:layout_height="48dp"
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
         android:background="@drawable/cardview_bg"
         android:drawableRight="@drawable/search"
         android:elevation="4dp"
         android:hint="@string/search_generic"
+        android:inputType="text"
         android:maxLines="1"
         android:paddingStart="4dp"
         android:paddingEnd="8dp"
+        android:textColorHint="#78909C"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -82,7 +85,6 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="18dp"
             android:layout_marginTop="36dp"
-            android:text="Harsh Patalia"
             android:textSize="24sp"
             android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
@@ -92,7 +94,6 @@
             android:id="@+id/PhoneNumber"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="+91-8123404328"
             android:textSize="11sp"
             android:textStyle="italic"
             app:layout_constraintStart_toStartOf="@id/CustomerName"
@@ -108,7 +109,8 @@
             android:src="@drawable/clock"
             app:layout_constraintBottom_toBottomOf="@id/CustomerName"
             app:layout_constraintEnd_toStartOf="@id/DeliveryDate"
-            app:layout_constraintTop_toTopOf="@id/CustomerName" />
+            app:layout_constraintTop_toTopOf="@id/CustomerName"
+            tools:ignore="ImageContrastCheck" />
 
         <TextView
             android:id="@+id/DeliveryDate"
@@ -143,17 +145,42 @@
             android:layout_marginTop="32dp"
             android:text="56000/10gm"
             android:textSize="20sp"
+            android:visibility="gone"
             android:textStyle="bold|italic"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/divider" />
 
         <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/OrderItems"
             android:layout_width="480dp"
             android:layout_height="360dp"
             android:layout_marginTop="32dp"
             app:layout_constraintStart_toStartOf="@id/divider"
             app:layout_constraintTop_toBottomOf="@id/RateFixed"
+            app:layout_constraintEnd_toEndOf="@id/divider"
             tools:listitem="@layout/order_item_list" />
+
+        <Button
+            android:id="@+id/save"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/teal_700"
+            android:text="Share"
+            android:layout_margin="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
+        <Button
+            android:id="@+id/close"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="@color/white"
+            android:textColor="@color/black"
+            android:text="Close"
+            android:layout_margin="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>

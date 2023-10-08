@@ -46,6 +46,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 import android.widget.ProgressBar;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -126,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
     private String OrderName;
     private String OrderDeliveryDate;
     private Button ManageOrders;
+    private String OrderOnDateString;
 
     private Bitmap uriToBitmap(Uri image_uri){
         try {
@@ -814,12 +816,48 @@ public class MainActivity extends AppCompatActivity {
                     EditText Weight = NewOrderView.findViewById(R.id.weightdetails);
                     EditText ItemRemarks = NewOrderView.findViewById(R.id.remarks_etv);
                     EditText dateEtv = NewOrderView.findViewById(R.id.date_etv);
+                    EditText deliveryDateEtv = NewOrderView.findViewById(R.id.delivery_date_etv);
                     JewelleryThumbnail = NewOrderView.findViewById(R.id.JewelleryPicture);
                     ImageButton RotateBitmap = NewOrderView.findViewById(R.id.rotateImage);
                     ChipGroup ModeOfPayments = NewOrderView.findViewById(R.id.ModeOfPaymentChips);
 
                     List<String> NameList = dbManager.ListAllCustomer();
                     List<String> PhoneList = dbManager.ListAllPhone();
+
+                    RadioGroup ratefix = NewOrderView.findViewById(R.id.RateChoices);
+                    EditText RateFixETV = NewOrderView.findViewById(R.id.Rate);
+                    ratefix.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+                        @Override
+                        public void onCheckedChanged(RadioGroup radioGroup, int i) {
+                            if(i == R.id.RateFixed){
+                                RateFixETV.setVisibility(View.VISIBLE);
+                                NewOrderDetails.setRateFix(true);
+                            }
+                            if(i == R.id.RateUnFixed){
+                                RateFixETV.setVisibility(View.GONE);
+                                NewOrderDetails.setRateFix(false);
+                            }
+                        }
+                    });
+
+                    RateFixETV.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable editable) {
+                            if(!RateFixETV.getText().toString().isEmpty()){
+                                NewOrderDetails.setRate(Double.parseDouble(RateFixETV.getText().toString()));
+                            }
+                        }
+                    });
 
                     ArrayAdapter<String> NameAdapter = new ArrayAdapter<>
                             (view.getContext(), android.R.layout.select_dialog_item, NameList);
@@ -837,7 +875,8 @@ public class MainActivity extends AppCompatActivity {
                     save = NewOrderView.findViewById(R.id.save);
                     cancel = NewOrderView.findViewById(R.id.cancel);
 
-                    ImageButton CalendarButton = NewOrderView.findViewById(R.id.datePicker);
+                    ImageButton OrderOnDate = NewOrderView.findViewById(R.id.datePicker);
+                    ImageButton OrderDeliveryDateBtn = NewOrderView.findViewById(R.id.delivery_datePicker);
 
                     NameEtv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
@@ -920,14 +959,31 @@ public class MainActivity extends AppCompatActivity {
                     popupWindow.setFocusable(true);
                     popupWindow.update();
                     OrderDeliveryDate="";
-                    DatePickerDialog.OnDateSetListener dateSetListener = (datePicker, year, month, date) -> {
+                    OrderOnDateString="";
+                    DatePickerDialog.OnDateSetListener OrderOnDateListener = (datePicker, year, month, date) -> {
+                        month = month+1;
+                        if(month<10){
+                            OrderOnDateString = date+"/"+"0"+month+"/"+year;
+                        }else{
+                            OrderOnDateString = date+"/"+month+"/"+year;
+                        }
+                        dateEtv.setText(OrderOnDateString);
+                        try {
+                            Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(OrderOnDateString);
+                            Log.d("Date", String.valueOf(date1));
+                        } catch (ParseException e) {
+                            e.printStackTrace();
+                        }
+                    };
+
+                    DatePickerDialog.OnDateSetListener DeliveryDateListener = (datePicker, year, month, date) -> {
                         month = month+1;
                         if(month<10){
                             OrderDeliveryDate = date+"/"+"0"+month+"/"+year;
                         }else{
                             OrderDeliveryDate = date+"/"+month+"/"+year;
                         }
-                        dateEtv.setText(OrderDeliveryDate);
+                        deliveryDateEtv.setText(OrderDeliveryDate);
                         try {
                             Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(OrderDeliveryDate);
                             Log.d("Date", String.valueOf(date1));
@@ -936,13 +992,21 @@ public class MainActivity extends AppCompatActivity {
                         }
                     };
 
-                    CalendarButton.setOnClickListener(view13 -> {
-                        DatePickerDialog dialog = new DatePickerDialog(view13.getContext(), dateSetListener,
+                    OrderOnDate.setOnClickListener(view13 -> {
+                        DatePickerDialog dialog = new DatePickerDialog(view13.getContext(), OrderOnDateListener,
                                 calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
                                 calendar.get(Calendar.DAY_OF_MONTH));
                         dialog.show();
                     });
-
+                    OrderDeliveryDateBtn.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View view) {
+                            DatePickerDialog dialog = new DatePickerDialog(view.getContext(), DeliveryDateListener,
+                                    calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH),
+                                    calendar.get(Calendar.DAY_OF_MONTH));
+                            dialog.show();
+                        }
+                    });
 
                     RotateBitmap.setOnClickListener(new View.OnClickListener() {
                         @Override
@@ -1021,6 +1085,8 @@ public class MainActivity extends AppCompatActivity {
                         public void afterTextChanged(Editable editable) {
                                 if(!Weight.getText().toString().isEmpty()){
                                     ItemWeight = Double.parseDouble(Weight.getText().toString());
+                                }else{
+                                    ItemWeight = 0.00;
                                 }
                         }
                     });
@@ -1040,6 +1106,8 @@ public class MainActivity extends AppCompatActivity {
                         public void afterTextChanged(Editable editable) {
                             if(!ItemRemarks.getText().toString().isEmpty()){
                                     Remark = ItemRemarks.getText().toString();
+                            }else{
+                                Remark = " ";
                             }
                         }
                     });
@@ -1053,6 +1121,9 @@ public class MainActivity extends AppCompatActivity {
                             Weight.setEnabled(false);
                             Amount.setEnabled(false);
                             ItemRemarks.setEnabled(false);
+                            if(RateFixETV.getVisibility()==View.VISIBLE){
+                                RateFixETV.setEnabled(false);
+                            }
 
                             ItemList.add(Item);
                             Weights.add(ItemWeight);
@@ -1098,6 +1169,7 @@ public class MainActivity extends AppCompatActivity {
                             NewOrderDetails.setWeights(Weights);
                             NewOrderDetails.setSamplePhotos(PhotosList);
                             NewOrderDetails.setDeliveryDate(OrderDeliveryDate);
+                            NewOrderDetails.setOrderNumber(timeStamp);
                             JewelleryThumbnail.setEnabled(false);
                             Particular.setEnabled(false);
                             Weight.setEnabled(false);
@@ -1111,6 +1183,9 @@ public class MainActivity extends AppCompatActivity {
                                     "Order deposit.",
                                     dateFormat.format(Calendar.getInstance().getTime()),
                                     NewCategory.toString())>0){
+                                File SaveTheOrderInternally = new File(getFilesDir(),OrderName);
+                                OrderName.replaceAll(" ","");
+
                                 File SaveTheOrder = new File(getExternalFilesDir(null),OrderName);
                                 FileOutputStream fileOutputStream = null;
                                 try{

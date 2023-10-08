@@ -8,6 +8,25 @@ public class OrderDetails {
     List<String> Items;
     List<String> SamplePhotos;
     List<Double> Weights;
+    private String OrderNumber;
+    boolean RateFix = false;
+    double rate = 0.00;
+
+    public boolean isRateFix() {
+        return RateFix;
+    }
+
+    public void setRateFix(boolean rateFix) {
+        RateFix = rateFix;
+    }
+
+    public double getRate() {
+        return rate;
+    }
+
+    public void setRate(double rate) {
+        this.rate = rate;
+    }
 
     public String getCustomerName() {
         return CustomerName;
@@ -79,5 +98,13 @@ public class OrderDetails {
 
     public void setFileName(String fileName) {
         FileName = fileName;
+    }
+
+    public void setOrderNumber(String timeStamp) {
+        OrderNumber = timeStamp;
+    }
+
+    public String getOrderNumber() {
+        return OrderNumber;
     }
 }

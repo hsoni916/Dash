@@ -10,13 +10,29 @@
         motion:motionInterpolator="linear"
         motion:autoTransition="none"
         motion:layoutDuringTransition="ignoreRequest"
-        motion:duration="912">
+        motion:duration="812">
         <OnClick
-            motion:targetId="@+id/search_bar"
+            motion:targetId="@+id/OrderItem"
             motion:clickAction="transitionToEnd"/>
        <KeyFrameSet>
        </KeyFrameSet>
     </Transition>
+
+    <Transition
+        android:id="@+id/SlideOutTransition"
+        motion:constraintSetEnd="@+id/start"
+        motion:constraintSetStart="@id/end"
+        motion:motionInterpolator="linear"
+        motion:autoTransition="none"
+        motion:layoutDuringTransition="ignoreRequest"
+        motion:duration="712">
+        <OnClick
+            motion:targetId="@+id/close"
+            motion:clickAction="transitionToEnd"/>
+        <KeyFrameSet>
+        </KeyFrameSet>
+    </Transition>
+
 
     <ConstraintSet android:id="@+id/start">
         <Constraint

@@ -98,4 +98,5 @@
     <string name="select_order_tv">Select an Order to Continue.</string>
     <string name="search_generic">Search...</string>
     <string name="rate">Rate Fix:</string>
+    <string name="due_tomorrow">Due tomorrow.</string>
 </resources>
