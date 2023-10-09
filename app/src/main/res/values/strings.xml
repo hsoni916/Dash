@@ -99,4 +99,8 @@
     <string name="search_generic">Search...</string>
     <string name="rate">Rate Fix:</string>
     <string name="due_tomorrow">Due tomorrow.</string>
+    <string name="add_item_1">Add Items below:</string>
+    <string name="Weights">Weight</string>
+    <string name="OrderDateString">Order on</string>
+    <string name="DeliveryDate">Delivery on</string>
 </resources>

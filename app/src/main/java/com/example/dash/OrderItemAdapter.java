@@ -1,6 +1,7 @@
 package com.example.dash;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -25,12 +26,15 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.View
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return null;
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.order_item_list,parent,false);
+        return new ViewHolder(view, parent.getContext());
     }
 
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-
+        holder.ItemName.setText(OrderItems.get(position));
+        holder.Weight.setText(String.valueOf(ItemWeights.get(position)));
+        //holder.Carat.setText();
     }
 
     @Override

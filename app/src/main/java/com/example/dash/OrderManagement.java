@@ -74,7 +74,7 @@ public class OrderManagement extends AppCompatActivity {
         Name = findViewById(R.id.CustomerName);
         PhoneNumber = findViewById(R.id.PhoneNumber);
         DD = findViewById(R.id.DeliveryDate);
-
+        RateFixed = findViewById(R.id.RateFixed);
         File orderFiles = getBaseContext().getExternalFilesDir(null);
         Log.d("Path:",orderFiles.getAbsolutePath());
         for(String ordername: Objects.requireNonNull(orderFiles.list()))
