@@ -58,9 +58,9 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
         String itemText = "";
         if(CurrentOrders.get(position).getItems()!=null){
             if(CurrentOrders.get(position).getItems().size()>1){
-                itemText = CurrentOrders.get(position).getItems().size() + "Items";
+                itemText = CurrentOrders.get(position).getItems().size() + " Items";
             }else{
-                itemText = CurrentOrders.get(position).getItems().size() + "Item";
+                itemText = CurrentOrders.get(position).getItems().size() + " Item";
             }
         }
         holder.Items.setText(itemText);
@@ -82,10 +82,10 @@ public class OrderListAdapter extends RecyclerView.Adapter<OrderListAdapter.View
             if(diffDays<0){
                 Log.d("less"," than zero");
                 holder.DueView.setVisibility(View.VISIBLE);
-                String alerts = "Overdue by" + diffDays + " days.";
+                diffDays = Math.abs(diffDays);
+                String alerts = "Overdue by " + diffDays + " days.";
                 holder.DueView.setText(alerts);
-            }
-            if(diffDays>1){
+            }else if(diffDays>1){
                 Log.d("more"," than one");
                 holder.DueView.setVisibility(View.VISIBLE);
                 String alerts = "Due in " + diffDays + " days.";

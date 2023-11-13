@@ -1223,6 +1223,24 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
+        NewOrder.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                OrderDetails NewOrderDetails = new OrderDetails();
+                LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                if (inflater != null) {
+                    final View NewOrderView = inflater.inflate(R.layout.new_order_1, null);
+                    AutoCompleteTextView NameEtv = NewOrderView.findViewById(R.id.name_etv);
+                    AutoCompleteTextView PhoneEtv = NewOrderView.findViewById(R.id.phone_etv);
+                    EditText Amount = NewOrderView.findViewById(R.id.cash_etv);
+                    EditText ItemRemarks = NewOrderView.findViewById(R.id.remarks_etv);
+                    EditText dateEtv = NewOrderView.findViewById(R.id.date_etv);
+                    EditText deliveryDateEtv = NewOrderView.findViewById(R.id.delivery_date_etv);
+
+                }
+            }
+        });
+
         ManageOrders.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

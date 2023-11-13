@@ -103,4 +103,5 @@
     <string name="Weights">Weight</string>
     <string name="OrderDateString">Order on</string>
     <string name="DeliveryDate">Delivery on</string>
+    <string name="AdAmount">Advance:</string>
 </resources>

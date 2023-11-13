@@ -100,7 +100,7 @@
         android:id="@+id/phone_etv"
         android:layout_width="320dp"
         android:layout_height="32dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="48dp"
         android:background="@drawable/etv_background"
         android:imeOptions="actionNext"
@@ -142,7 +142,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:weightSum="2"
         app:layout_constraintTop_toBottomOf="@id/PhoneError"
         app:layout_constraintStart_toStartOf="@id/name_etv"
@@ -178,13 +178,42 @@
         app:layout_constraintTop_toBottomOf="@id/RateChoices"
         app:layout_constraintStart_toStartOf="@id/name_etv"/>
 
+    <TextView
+        android:id="@+id/label5"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="12dp"
+        android:text="@string/AdAmount"
+        app:layout_constraintBottom_toBottomOf="@id/cash_etv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/cash_etv" />
+
+
+    <EditText
+        android:id="@+id/cash_etv"
+        android:layout_width="320dp"
+        android:layout_height="32dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/etv_background"
+        android:imeOptions="actionNext"
+        android:inputType="numberSigned"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:singleLine="true"
+        app:layout_constraintStart_toStartOf="@id/name_etv"
+        app:layout_constraintTop_toBottomOf="@id/RateChoices" />
+
+
     <androidx.cardview.widget.CardView
         android:id="@+id/OrderDateCardView"
         android:layout_width="240dp"
         android:layout_height="40dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         android:padding="2dp"
-        app:layout_constraintTop_toBottomOf="@id/Rate"
+        app:layout_constraintTop_toBottomOf="@id/cash_etv"
         app:layout_constraintStart_toStartOf="@id/label1">
         <EditText
             android:id="@+id/date_etv"
@@ -199,7 +228,7 @@
             android:layout_width="42dp"
             android:layout_height="match_parent"
             android:src="@drawable/date"
-            android:scaleType="centerInside"
+            android:scaleType="centerCrop"
             android:layout_gravity="end|center_vertical"/>
     </androidx.cardview.widget.CardView>
 
@@ -208,10 +237,10 @@
         android:id="@+id/DeliveryDateCardView"
         android:layout_width="240dp"
         android:layout_height="40dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="16dp"
         android:layout_marginStart="12dp"
         android:padding="2dp"
-        app:layout_constraintTop_toBottomOf="@id/Rate"
+        app:layout_constraintTop_toBottomOf="@id/cash_etv"
         app:layout_constraintStart_toEndOf="@id/OrderDateCardView">
         <EditText
             android:id="@+id/delivery_date_etv"
@@ -226,7 +255,7 @@
             android:layout_width="42dp"
             android:layout_height="match_parent"
             android:src="@drawable/date"
-            android:scaleType="centerInside"
+            android:scaleType="centerCrop"
             android:layout_gravity="end|center_vertical"/>
     </androidx.cardview.widget.CardView>
 
@@ -234,7 +263,7 @@
         android:id="@+id/label4"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:layout_marginBottom="8dp"
         android:textSize="16sp"
         android:textStyle="bold"
@@ -248,6 +277,7 @@
         android:orientation="horizontal"
         android:weightSum="4"
         android:padding="4dp"
+        android:layout_marginTop="16dp"
         android:layout_height="wrap_content"
         app:layout_constraintTop_toBottomOf="@id/label4"
         app:layout_constraintStart_toStartOf="@id/OrderItemsList"
@@ -259,7 +289,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1.5"
             android:textAlignment="center"
-            android:text="Item Name."
+            android:text="Item Name  "
             android:paddingStart="6dp"/>
 
         <TextView
@@ -288,7 +318,7 @@
             android:textAlignment="center"
             android:layout_marginStart="8dp"
             android:layout_weight="0.5"
-            android:text="Size"/>
+            android:text="Size "/>
 
         <ImageButton
             android:id="@+id/CameraBtn"
@@ -299,30 +329,72 @@
             android:layout_marginStart="8dp"
             android:scaleType="centerInside"
             android:src="@drawable/camera"/>
+
+        <ImageButton
+            android:id="@+id/SaveBtn"
+            android:layout_width="44dp"
+            android:layout_height="2dp"
+            android:layout_weight="0.05"
+            android:visibility="invisible"
+            android:layout_marginStart="8dp"
+            android:scaleType="centerInside"
+            android:src="@drawable/camera"/>
     </LinearLayout>
+
+
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/OrderItemsList"
         android:layout_width="0dp"
         android:layout_height="160dp"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="24dp"
         app:layout_constraintTop_toBottomOf="@id/header"
         app:layout_constraintStart_toStartOf="@id/label4"
         app:layout_constraintEnd_toEndOf="parent"
-        tools:listitem="@layout/new_item"/>
+        tools:listitem="@layout/new_item" />
 
-    <Button
-        android:id="@+id/AddNewItem"
+    <TextView
+        android:id="@+id/label9"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:backgroundTint="@color/white"
-        android:text="Add Item"
-        android:layout_marginTop="4dp"
-        android:textColor="@color/teal_500"
-        android:drawableLeft="@drawable/add"
-        android:drawableTint="@color/teal_500"
-        app:layout_constraintTop_toBottomOf="@id/OrderItemsList"
-        app:layout_constraintEnd_toEndOf="@id/OrderItemsList"/>
+        android:text="Remarks:"
+        android:visibility="visible"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:layout_marginStart="12dp"
+
+        app:layout_constraintBottom_toBottomOf="@id/remarks_etv"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/remarks_etv" />
+
+    <EditText
+        android:id="@+id/remarks_etv"
+        android:layout_width="320dp"
+        android:layout_height="30dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="48dp"
+        android:background="@drawable/etv_background"
+        android:imeOptions="actionNext"
+        android:paddingStart="4dp"
+        android:paddingEnd="4dp"
+        android:singleLine="true"
+        android:visibility="visible"
+        app:layout_constraintStart_toStartOf="@id/name_etv"
+        app:layout_constraintTop_toBottomOf="@id/OrderItemsList" />
+
+    <Button
+        android:id="@+id/save"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:backgroundTint="@color/teal_500"
+        android:text="Save Order"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginBottom="4dp"
+        android:textColor="@color/white"
+        app:layout_constraintTop_toBottomOf="@id/remarks_etv"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
