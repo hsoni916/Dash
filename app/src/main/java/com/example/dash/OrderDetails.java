@@ -8,9 +8,19 @@ public class OrderDetails {
     List<String> Items;
     List<String> SamplePhotos;
     List<Double> Weights;
+    private Double Advance;
     private String OrderNumber;
     boolean RateFix = false;
     double rate = 0.00;
+    String AdvanceType;
+
+    public String getAdvanceType() {
+        return AdvanceType;
+    }
+
+    public void setAdvanceType(String advanceType) {
+        AdvanceType = advanceType;
+    }
 
     public boolean isRateFix() {
         return RateFix;
@@ -26,6 +36,14 @@ public class OrderDetails {
 
     public void setRate(double rate) {
         this.rate = rate;
+    }
+
+    public Double getAdvance() {
+        return Advance;
+    }
+
+    public void setAdvance(Double advance) {
+        Advance = advance;
     }
 
     public String getCustomerName() {

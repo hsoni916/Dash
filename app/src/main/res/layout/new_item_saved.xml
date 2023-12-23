@@ -4,73 +4,72 @@
     android:layout_width="match_parent"
     android:orientation="horizontal"
     android:weightSum="4"
-    android:padding="4dp"
-    android:layout_height="wrap_content">
+    android:paddingStart="4dp"
+    android:layout_marginBottom="4dp"
+    android:layout_height="38dp">
 
-    <EditText
+    <TextView
         android:id="@+id/ItemName"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_weight="1.5"
-        android:inputType="text"
+        android:gravity="center_vertical"
         android:hint="Item Name."
-        android:paddingStart="6dp"
-        android:background="@drawable/etv_background"/>
+        android:paddingStart="6dp"/>
 
-    <EditText
+    <TextView
         android:id="@+id/ItemWeight"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_weight="0.5"
-        android:inputType="numberDecimal"
+        android:gravity="center_vertical"
         android:hint="0.00"
-        android:paddingStart="6dp"
-        android:background="@drawable/etv_background"/>
+        android:paddingStart="6dp"/>
 
-    <AutoCompleteTextView
+    <TextView
         android:id="@+id/ItemCarat"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_weight="1"
-        android:inputType="text"
-        android:textAlignment="center"
+        android:gravity="center"
         android:hint="22K916"
-        android:paddingStart="6dp"
-        android:background="@drawable/etv_background"/>
+        android:paddingStart="6dp"/>
 
-    <EditText
+    <TextView
         android:id="@+id/ItemSize"
         android:layout_width="0dp"
         android:layout_height="40dp"
         android:layout_marginStart="8dp"
         android:layout_weight="0.5"
-        android:inputType="numberDecimal"
         android:hint="0.00"
-        android:paddingStart="6dp"
-        android:background="@drawable/etv_background"/>
+        android:gravity="center_vertical"
+        android:paddingStart="6dp"/>
 
     <ImageButton
-        android:id="@+id/CameraBtn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:id="@+id/DeleteBtn"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_weight="0.05"
         android:layout_marginStart="8dp"
-        android:elevation="4dp"
+        android:elevation="2dp"
+        android:gravity="center_vertical"
         android:layout_marginBottom="2dp"
-        android:layout_marginTop="2dp"
         android:background="@color/white"
-        android:src="@drawable/camera"/>
+        android:src="@drawable/delete"/>
+
     <ImageButton
-        android:id="@+id/SaveBtn"
-        android:layout_width="40dp"
-        android:layout_height="40dp"
+        android:id="@+id/EditBtn"
+        android:layout_width="36dp"
+        android:layout_height="36dp"
         android:layout_weight="0.05"
         android:layout_marginStart="8dp"
         android:elevation="4dp"
-        android:layout_marginTop="2dp"
+        android:visibility="visible"
+        android:gravity="center_vertical"
         android:layout_marginBottom="2dp"
         android:background="@color/white"
-        android:src="@drawable/save_item"/>
+        android:src="@drawable/edit"/>
+
 </LinearLayout>

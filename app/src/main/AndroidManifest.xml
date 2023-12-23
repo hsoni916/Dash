@@ -3,11 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.dash">
 
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"
+    <uses-permission
+        android:name="android.permission.WRITE_EXTERNAL_STORAGE"
         tools:ignore="ScopedStorage" />
-    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.CAMERA" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
-
 
     <application
         android:allowBackup="true"
@@ -16,6 +16,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Dash">
+        <activity
+            android:name=".NewOrder"
+            android:exported="false"
+            android:windowSoftInputMode="adjustNothing">
+
+        </activity>
         <activity
             android:name=".SimplifiedActivity"
             android:configChanges="orientation|keyboardHidden"
@@ -31,30 +37,28 @@
             android:name=".MainActivity"
             android:configChanges="orientation|keyboardHidden"
             android:exported="true"
-            android:screenOrientation="landscape">
-        </activity>
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize"></activity>
         <activity
             android:name=".Invoice"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="landscape">
-
-        </activity>
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name=".NewSupplier"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="landscape">
-
-        </activity>
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustPan"></activity>
         <activity
             android:name=".StockManagement"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="landscape">
-
-        </activity>
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize"></activity>
         <activity
             android:name=".OrderManagement"
             android:configChanges="orientation|keyboardHidden"
-            android:screenOrientation="landscape">
+            android:screenOrientation="landscape"
+            android:windowSoftInputMode="adjustResize">
 
         </activity>
     </application>

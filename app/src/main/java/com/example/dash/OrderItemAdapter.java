@@ -1,6 +1,9 @@
 package com.example.dash;
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.net.Uri;
+import android.provider.MediaStore;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,13 +17,17 @@ import java.util.List;
 
 public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.ViewHolder> {
 
+    private final Context BaseCon;
+    private List<String> SamplePhotos;
     List<String> OrderItems, ItemRemarks;
     List<Double> ItemWeights;
 
-    public OrderItemAdapter(List<String> items, List<Double> weights, List<String> remarks) {
+    public OrderItemAdapter(Context baseContext, List<String> items, List<Double> weights, List<String> remarks, List<String> samplePhotos) {
         this.OrderItems = items;
         this.ItemWeights = weights;
         this.ItemRemarks = remarks;
+        this.SamplePhotos = samplePhotos;
+        this.BaseCon = baseContext;
     }
 
     @NonNull
@@ -34,7 +41,13 @@ public class OrderItemAdapter extends RecyclerView.Adapter<OrderItemAdapter.View
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         holder.ItemName.setText(OrderItems.get(position));
         holder.Weight.setText(String.valueOf(ItemWeights.get(position)));
-        //holder.Carat.setText();
+    try {
+        Bitmap bitmap = MediaStore.Images.Media.getBitmap(BaseCon.getContentResolver() , Uri.parse(SamplePhotos.get(position)));
+        holder.SamplePhoto.setImageBitmap(bitmap);
+    }catch (Exception e){
+        e.printStackTrace();
+    }
+    //holder.Carat.setText();
     }
 
     @Override

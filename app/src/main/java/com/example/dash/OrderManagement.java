@@ -115,16 +115,15 @@ public class OrderManagement extends AppCompatActivity {
                 DD.setText(details.getDeliveryDate());
                 if(details.isRateFix()){
                     RateFixed.setVisibility(View.VISIBLE);
-                    String ratevalue = details.getRate() + "/10gm";
-                    RateFixed.setText(ratevalue);
+                    String FixedRate = details.getRate() + "/10gm";
+                    RateFixed.setText(FixedRate);
                 }
                 MotionLayout SidePanel = findViewById(R.id.SidePanel);
                 SidePanel.transitionToEnd();
-                OrderItemAdapter = new OrderItemAdapter(details.getItems(),details.getWeights(),details.getRemarks());
+                OrderItemAdapter = new OrderItemAdapter(getBaseContext(),details.getItems(),details.getWeights(),details.getRemarks(),details.getSamplePhotos());
                 Items.setAdapter(OrderItemAdapter);
                 Items.setLayoutManager(new LinearLayoutManager(getBaseContext()));
                 Items.setItemAnimator(new DefaultItemAnimator());
-
                 return true;
             }
         });

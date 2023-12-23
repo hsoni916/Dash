@@ -792,6 +792,7 @@ public class Invoice extends AppCompatActivity {
                         }
                     });
                 }
+                Print.setEnabled(true);
             }
         });
     }

@@ -436,14 +436,16 @@ public class DBManager {
             }catch (Exception e){
                 e.printStackTrace();
             }
-            String AddNewCustomer = "INSERT INTO CustomersList (Name, PhoneNumber, AccountCreatedOn, LastActiveOn) VALUES (?, ?, ?, ?, ?)";
+            String AddNewCustomer = "INSERT INTO CustomersList (Name, PhoneNumber, DateofBirth, AccountCreatedOn, LastActiveOn) VALUES (?, ?, ?, ?, ?)";
             SQLiteStatement statement = database.compileStatement(AddNewCustomer);
             statement.bindString(1, Name);
             statement.bindString(2, PhoneNumber);
-            statement.bindString(3, String.valueOf(today));
+            statement.bindString(3, "");
             statement.bindString(4, String.valueOf(today));
+            statement.bindString(5, String.valueOf(today));
             try{
                 result = statement.executeInsert();
+                Log.d("Quick Insert:",String.valueOf(result));
                 String tableName = Name+"_"+PhoneNumber;
                 tableName = tableName.replaceAll(" ","");
                 String CustomerAccount = "create table if not exists " + tableName +
@@ -456,8 +458,10 @@ public class DBManager {
                 dbHelper.getWritableDatabase().execSQL(CustomerAccount);
             }catch (Exception e){
                 e.fillInStackTrace();
+                e.printStackTrace();
             }
             close();
+            Log.d("Quick Insert:",String.valueOf(result));
             return result;
         }
 
@@ -535,7 +539,7 @@ public class DBManager {
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy",Locale.getDefault());
                 Log.d("DOB0",fetch.getString(2));
                 if(fetch.getString(2).isEmpty()){
-                    customer.setDateOfBirth(Calendar.getInstance().getTime().toString());
+                    customer.setDateOfBirth("");
                     Log.d("DOB1","Empty Date");
                 }else{
                     customer.setDateOfBirth(fetch.getString(2));
