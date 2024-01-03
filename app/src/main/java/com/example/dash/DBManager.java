@@ -217,6 +217,10 @@ public class DBManager {
         long result = -1;
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         ContentValues contentValues = new ContentValues();
+        //check if the table exists.
+            // -> check if contains all the standards.
+                // -> add missing standards.
+
 
         contentValues.put("Standard_Name","999 Fine Gold");
         contentValues.put("Standard_Value",99.9);
@@ -288,6 +292,13 @@ public class DBManager {
                             + "DateofEntry" + " STRING NOT NULL,"
                             + "SupplierCode" + " INTEGER" +
                             ");";
+                    String indexname = table_name + "_index";
+                    String create_index = "create UNIQUE INDEX IF NOT EXISTS " + indexname +
+                            " ON "
+                            + table_name
+                            + " ( BarCode ASC )" +
+                            ";";
+                    dbHelper.getWritableDatabase().execSQL(create_index);
                     String table_name2 = table_name+"_uid";
                     String create_table_backup = "create table if not exists " + table_name2 + "(" + "Barcode" + " STRING NOT NULL" + ");";
                     dbHelper.getWritableDatabase().execSQL(create_table_backup);
@@ -346,6 +357,13 @@ public class DBManager {
                         + "DateofEntry" + " STRING NOT NULL,"
                         + "SupplierCode" + " INTEGER" +
                         ");";
+                String indexname = table_name + "_index";
+                String create_index = "create UNIQUE INDEX IF NOT EXISTS " + indexname +
+                        " ON "
+                        + table_name
+                        + " ( BarCode ASC )" +
+                        ";";
+                dbHelper.getWritableDatabase().execSQL(create_index);
                 String table_name2 = table_name+"_uid";
                 String create_table_backup = "create table if not exists " + table_name2 + "(" + "Barcode" + " STRING NOT NULL" + ");";
                 dbHelper.getWritableDatabase().execSQL(create_table_backup);
@@ -526,6 +544,22 @@ public class DBManager {
             return PhoneOfCustomer;
         }
 
+        //List Name and Phone numbers
+            public List<Customer> getCustomerDetails() {
+                SQLiteDatabase db = dbHelper.getWritableDatabase();
+                String sql = "SELECT Name, PhoneNumber FROM CustomersList";
+                Cursor fetch = db.rawQuery(sql,null);
+                List<Customer> CustomerDetails = new ArrayList<>();
+                while(fetch.moveToNext()){
+                    Customer customer = new Customer();
+                    customer.setName(fetch.getString(0));
+                    customer.setPhoneNumber(fetch.getString(1));
+                    CustomerDetails.add(customer);
+                }
+                fetch.close();
+                return CustomerDetails;
+            }
+
         public List<Customer> GetCustomerProfile() throws ParseException {
         //Name Phone DOB Address
             SQLiteDatabase db = dbHelper.getWritableDatabase();
@@ -672,7 +706,7 @@ public class DBManager {
         if(transactionDate.isEmpty()){
             transactionDate = String.valueOf(today);
         }
-        String tablename = name +"_"+phone;
+        String tablename = name +"_"+ phone;
         tablename = tablename.replaceAll(" ","");
         String statement1 = "INSERT INTO " + tablename + "(Date, Narration, Remarks, Amount, Metal) VALUES (?, ?, ?, ?, ?)";
         SQLiteStatement statement = database.compileStatement(statement1);
@@ -735,5 +769,28 @@ public class DBManager {
         }
         fetch.close();
         return balance;
+    }
+
+    public List<String> getAllBarcodes() {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String get_categories = "SELECT Category FROM Categories";
+        Cursor fetch = db.rawQuery(get_categories,null);
+        List<String> category_list = new ArrayList<>();
+        while(fetch.moveToNext()){
+            int columnIndex = fetch.getColumnIndex("Category");
+            String boiler = fetch.getString(columnIndex).replaceAll(" ","_");
+            boiler = boiler.replaceAll("-","_");
+            category_list.add(boiler);
+        }
+        List<String> Barcodes = new ArrayList<>();
+        for(String category0 : category_list){
+            get_categories = "SELECT Barcode FROM " + category0;
+            fetch = db.rawQuery(get_categories,null);
+            while (fetch.moveToNext()){
+                int columnIndex = fetch.getColumnIndex("Barcode");
+                Barcodes.add(fetch.getString(columnIndex));
+            }
+        }
+        return Barcodes;
     }
 }

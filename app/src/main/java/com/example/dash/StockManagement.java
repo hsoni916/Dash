@@ -503,6 +503,7 @@ public class StockManagement extends AppCompatActivity {
                     String RV = dbManager.getBarCode(id,CategoriesString.replaceAll(" ","_"));
                     if(!RV.isEmpty()){
                         label.setBarcode(RV);
+
                         inventory.collection("Inventory").document(label.Barcode)
                                 .set(label)
                                 .addOnCompleteListener(new OnCompleteListener<Void>() {

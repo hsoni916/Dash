@@ -77,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
     private List<String> GenericItemsSilver = new ArrayList<>();
     private List<String> Purity_Levels_Silver = new ArrayList<>();
     private List<String> Purity_Levels_Gold = new ArrayList<>();
-
+    ArrayAdapter<String> itemAdapter;
     private Bitmap uriToBitmap(Uri image_uri){
         try {
             ParcelFileDescriptor parcelFileDescriptor =
@@ -101,7 +101,6 @@ public class MainActivity extends AppCompatActivity {
         dbManager = new DBManager(this);
         dbManager.open();
         CAContext = this;
-        ArrayAdapter<String> itemAdapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_item, dbManager.ListAllItems());
 
         GenericItemsGold.addAll(Arrays.asList("Mens Ring", "Women Ring", "Chain",
                 "Plastic Paatla", "Gold Set", "Gold Haar",

@@ -58,6 +58,7 @@ public class DBHelper extends SQLiteOpenHelper {
             + "Supplier" + " STRING"
             + ");";
 
+
     private static final String CREATE_TABLE_3 = "create table if not exists " + "Supplier" +
             "(" + "Business_Name" + " STRING,"
             + "Person_In_Charge" + " STRING,"

@@ -4,8 +4,13 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
+import android.provider.UserDictionary;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
 import android.text.format.DateFormat;
 import android.util.Log;
@@ -56,6 +61,9 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Objects;
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class Invoice extends AppCompatActivity {
     private DBManager dbManager;
@@ -85,6 +93,7 @@ public class Invoice extends AppCompatActivity {
     boolean ExistingCustomer = false;
     SundryItem sundryItem;
     Map<String, Double> PaymentDetails;
+    ArrayAdapter<String> ItemAdapter;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -127,21 +136,49 @@ public class Invoice extends AppCompatActivity {
 
         Purity_Levels_Gold.addAll(Arrays.asList("999 Fine Gold", "23KT958", "22KT916", "21KT875",
                 "20KT833", "18KT750", "14KT585","Others"));
-        List<String> CustomerLists = dbManager.ListAllCustomer();
-        List<String> PhoneNumbers = dbManager.ListAllPhone();
         List<String> Birthdays = dbManager.ListDOB();
+        List<String> NameList = new ArrayList<>();
+        List<String> PhoneNumbers = new ArrayList<>();
+        List<Customer> CustomerList = dbManager.getCustomerDetails();
+        for(Customer customer:CustomerList){
+            NameList.add(customer.getName());
+            PhoneNumbers.add(customer.getPhoneNumber());
+        }
         ArrayAdapter<String> NameAdapter = new ArrayAdapter<>
-                (this, android.R.layout.select_dialog_item, CustomerLists);
+                (this, android.R.layout.select_dialog_item,NameList);
         ArrayAdapter<String> PhoneAdapter = new ArrayAdapter<>
                 (this,android.R.layout.select_dialog_item,PhoneNumbers);
         ArrayAdapter<String> DOBAdapter = new ArrayAdapter<>
                 (this,android.R.layout.select_dialog_item,Birthdays);
-        ArrayAdapter<String> ItemAdapter = new ArrayAdapter<>
-                (this, android.R.layout.select_dialog_item,dbManager.ListAllItems());
-        if(ItemAdapter.getCount()==0){
-            ItemAdapter = new ArrayAdapter<>(this, android.R.layout.select_dialog_item,
-                    new ArrayList<String>(){{addAll(GenericItemsGold); addAll(GenericItemsSilver);}});
-        }
+
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                List<String> Barcodes = dbManager.getAllBarcodes();
+                Log.d("In executor", String.valueOf(Barcodes.size()));
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        if(Barcodes.size()==0){
+                            Log.d("In handler","Size is 0");
+                            ItemAdapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.select_dialog_item,
+                                    new ArrayList<String>(){{addAll(GenericItemsGold); addAll(GenericItemsSilver); }});
+                        }else{
+                            Log.d("In handler","Size is "+String.valueOf(Barcodes.size()));
+                            Log.d("Barcodes:",Barcodes.toString());
+                            ItemAdapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.select_dialog_item,
+                                    new ArrayList<String>(){{ addAll(GenericItemsGold); addAll(GenericItemsSilver); addAll(Barcodes);}});
+                        }
+                        Particular.setThreshold(2);
+                        Particular.setAdapter(ItemAdapter);
+                    }
+                });
+            }
+        });
+
+
 
         Names.setThreshold(2);
         Names.setAdapter(NameAdapter);
@@ -149,16 +186,19 @@ public class Invoice extends AppCompatActivity {
         PhoneNumber.setThreshold(2);
         PhoneNumber.setAdapter(PhoneAdapter);
 
-        Particular.setThreshold(2);
-        Particular.setAdapter(ItemAdapter);
+
         Names.setOnItemClickListener((adapterView, view, i, l) -> {
             String selectedName = NameAdapter.getItem(i);
             ExistingCustomer = true;
-            int indextouse = CustomerLists.indexOf(selectedName);
-            Log.d("Data", i + "--" + selectedName + "--" + indextouse);
-            printData.setCustomerName(CustomerLists.get(indextouse));
+            int indextouse = 0;
+            for(int nameindex =0;nameindex<CustomerList.size();nameindex++){
+                if(Objects.equals(CustomerList.get(nameindex).getName(), selectedName)){
+                    indextouse = nameindex;
+                }
+            }
+            printData.setCustomerName(CustomerList.get(indextouse).getName());
             PhoneNumber.setEnabled(false);
-            PhoneNumber.setText(PhoneNumbers.get(indextouse));
+            PhoneNumber.setText(CustomerList.get(indextouse).getPhoneNumber());
             printData.setPhone(PhoneNumbers.get(indextouse));
             Log.d("Index", String.valueOf(indextouse));
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM", Locale.getDefault());
@@ -191,8 +231,8 @@ public class Invoice extends AppCompatActivity {
             int indextouse = PhoneNumbers.indexOf(selectedPhone);
             printData.setPhone(PhoneNumbers.get(indextouse));
             Names.setEnabled(false);
-            Names.setText(CustomerLists.get(indextouse));
-            printData.setCustomerName(CustomerLists.get(indextouse));
+            Names.setText(NameList.get(indextouse));
+            printData.setCustomerName(NameList.get(indextouse));
 
             SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM", Locale.getDefault());
             try {
@@ -721,11 +761,13 @@ public class Invoice extends AppCompatActivity {
                                         printData.setSundryItemList(sundryItemList);
                                         String s = DateFormat.format("dd/MM/yyy", new java.util.Date()).toString();
                                         Calendar cal=Calendar.getInstance();
-                                        SimpleDateFormat month_date = new SimpleDateFormat("MMMM");
+                                        SimpleDateFormat month_date = new SimpleDateFormat("MMM");
                                         String month_name = month_date.format(cal.getTime());
+                                        month_name = month_name.toUpperCase();
                                         printData.setDate(s);
                                         Calendar calendar = Calendar.getInstance();
                                         dbManager.open();
+                                        String year = String.valueOf(Calendar.getInstance().get(Calendar.YEAR));
                                         dbManager.addCounter(calendar.get(Calendar.MONTH)+1,calendar.get(Calendar.YEAR));
                                         dbManager.close();
                                         invoicecounter = invoicecounter + dbManager.getCounter(calendar.get(Calendar.MONTH),calendar.get(Calendar.YEAR));
@@ -733,8 +775,10 @@ public class Invoice extends AppCompatActivity {
                                         dbManager.open();
                                         dbManager.updateCounter(calendar.get(Calendar.MONTH),calendar.get(Calendar.YEAR),invoicecounter);
                                         dbManager.close();
-                                        printData.setBillNo(s.replaceAll("/","") + invoicecounter);
-                                        db.collection("Invoices"+"/"+month_date.format(cal.getTime())+"/"+"Sales").add(printData).addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
+                                        printData.setBillNo(month_name + s.replaceAll("/","") + invoicecounter);
+                                        db.collection("Invoices"+"/"+month_date.format(cal.getTime())+"-"+year+"/"+"Sales")
+                                                .add(printData)
+                                                .addOnCompleteListener(new OnCompleteListener<DocumentReference>() {
                                             @Override
                                             public void onComplete(@NonNull Task<DocumentReference> task) {
                                                 if(task.isSuccessful()){
@@ -1312,13 +1356,27 @@ public class Invoice extends AppCompatActivity {
                 }
             }
             tax = (amount * 3)/100;
-            String amountString = String.format(String.valueOf(amount),"%.1f",Locale.getDefault()) + " /-";
+            String amountString = String.format(Locale.getDefault(),"%.2f",amount) + " /-";
             AmountHolder.setText(amountString);
-            amountString = String.format(String.valueOf(tax),"%.1f",Locale.getDefault()) + " /-";
+            amountString = String.format(Locale.getDefault(),"%.2f",tax) + " /-";
             TaxHolder.setText(amountString);
             double total = amount+tax;
-            amountString = String.format(String.valueOf(total),"%.1f",Locale.getDefault()) + " /-";
+            amountString = String.format(Locale.getDefault(),"%.2f",total) + " /-";
             TotalAmountHolder.setText(amountString);
         }
     }
+
+    static class DBloader extends AsyncTask<Void, Void, Void>{
+
+        @Override
+        protected Void doInBackground(Void... voids) {
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void unused) {
+            super.onPostExecute(unused);
+        }
+    }
+
 }

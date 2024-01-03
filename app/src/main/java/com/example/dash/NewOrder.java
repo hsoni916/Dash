@@ -84,6 +84,7 @@ public class NewOrder extends AppCompatActivity {
     private List<Double> Weights = new ArrayList<>();
     private Uri image_uri;
     private RecyclerView ItemRecyclerView;
+    boolean ExistingCustomer = false;
 
 
     private ImageButton ItemPicture;
@@ -103,7 +104,7 @@ public class NewOrder extends AppCompatActivity {
     });
     private FirebaseFirestore firebaseFirestore;
     private List<String> NewCategory = new ArrayList<>();
-    private List<String> RemarksList;
+    private List<String> RemarksList = new ArrayList<>();
     private TempOrderList OrderItemList;
     private ImageButton ItemSave;
     private AutoCompleteTextView ItemName;
@@ -116,7 +117,7 @@ public class NewOrder extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.new_order_1);
-        OrderDetails NewOrder = new OrderDetails();
+        OrderDetails NewOrderVariable = new OrderDetails();
         dbManager = new DBManager(this);
         dbManager.open();
         firebaseFirestore = FirebaseFirestore.getInstance();
@@ -195,7 +196,7 @@ public class NewOrder extends AppCompatActivity {
                     gram.setTextColor(getColor(R.color.black));
                     cash.setElevation(0);
                     gram.setElevation(10);
-                    NewOrder.setAdvanceType("Cash");
+                    NewOrderVariable.setAdvanceType("Cash");
                 }
             });
             gram.setOnClickListener(new View.OnClickListener() {
@@ -207,7 +208,7 @@ public class NewOrder extends AppCompatActivity {
                     cash.setTextColor(getColor(R.color.black));
                     cash.setElevation(10);
                     gram.setElevation(0);
-                    NewOrder.setAdvanceType("Metal");
+                    NewOrderVariable.setAdvanceType("Metal");
                 }
             });
 
@@ -217,7 +218,7 @@ public class NewOrder extends AppCompatActivity {
             EditText deliveryDateEtv = findViewById(R.id.delivery_date_etv);
             ImageButton OrderDeliveryDateBtn = findViewById(R.id.delivery_datePicker);
             RecyclerView NewItemList = findViewById(R.id.OrderItemsList);
-            Button save = findViewById(R.id.save);
+            Button Save_Order = findViewById(R.id.save);
             RadioGroup isRateFix = findViewById(R.id.RateChoices);
             ItemPicture = findViewById(R.id.CameraBtn);
             ChipGroup ModeOfPayments = findViewById(R.id.ModeOfPaymentChips);
@@ -225,8 +226,13 @@ public class NewOrder extends AppCompatActivity {
         //General Order Details Form End
 
             //General details capture
-            List<String> NameList = dbManager.ListAllCustomer();
-            List<String> PhoneList = dbManager.ListAllPhone();
+            List<String> NameList = new ArrayList<>();
+            List<String> PhoneList = new ArrayList<>();
+            List<Customer> CustomerList = dbManager.getCustomerDetails();
+            for(Customer customer:CustomerList){
+                NameList.add(customer.getName());
+                PhoneList.add(customer.getPhoneNumber());
+            }
             ArrayAdapter<String> NameAdapter = new ArrayAdapter<>
                     (getBaseContext(), android.R.layout.select_dialog_item, NameList);
             ArrayAdapter<String> PhoneAdapter = new ArrayAdapter<>
@@ -239,27 +245,37 @@ public class NewOrder extends AppCompatActivity {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     name = NameAdapter.getItem(i);
-                    int indextouse = NameList.indexOf(name);
+                    int indextouse=0;
+                    for(int nameindex = 0;nameindex<CustomerList.size();nameindex++){
+                        if(CustomerList.get(nameindex).getName().equals(name))
+                            indextouse = nameindex;
+                    }
+                    ExistingCustomer = true;
                     PhoneEtv.setText(PhoneList.get(indextouse));
                     phone = PhoneList.get(indextouse);
                     NameEtv.setEnabled(false);
                     PhoneEtv.setEnabled(false);
                     OrderName = name+"_"+phone;
-                    NewOrder.setCustomerName(name);
-                    NewOrder.setPhoneNumber(phone);
+                    NewOrderVariable.setCustomerName(name);
+                    NewOrderVariable.setPhoneNumber(phone);
                 }
             });
             PhoneEtv.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                 @Override
                 public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                     phone = PhoneAdapter.getItem(i);
-                    int indextouse = PhoneAdapter.getPosition(phone);
+                    int indextouse=0;
+                    for(int nameindex = 0;nameindex<CustomerList.size();nameindex++){
+                        if(CustomerList.get(nameindex).getName().equals(phone))
+                            indextouse = nameindex;
+                    }
+                    ExistingCustomer = true;
                     NameEtv.setText(NameAdapter.getItem(indextouse));
                     name = NameAdapter.getItem(indextouse);
                     NameEtv.setEnabled(false);
                     PhoneEtv.setEnabled(false);
-                    NewOrder.setCustomerName(name);
-                    NewOrder.setPhoneNumber(phone);
+                    NewOrderVariable.setCustomerName(name);
+                    NewOrderVariable.setPhoneNumber(phone);
                 }
             });
             EditText RateFixETV = findViewById(R.id.Rate);
@@ -268,11 +284,11 @@ public class NewOrder extends AppCompatActivity {
                 public void onCheckedChanged(RadioGroup radioGroup, int i) {
                     if(i == R.id.RateFixed){
                         RateFixETV.setVisibility(View.VISIBLE);
-                        NewOrder.setRateFix(true);
+                        NewOrderVariable.setRateFix(true);
                     }
                     if(i == R.id.RateUnFixed){
                         RateFixETV.setVisibility(View.GONE);
-                        NewOrder.setRateFix(false);
+                        NewOrderVariable.setRateFix(false);
                     }
                 }
             });
@@ -290,7 +306,7 @@ public class NewOrder extends AppCompatActivity {
                 @Override
                 public void afterTextChanged(Editable editable) {
                     if(!RateFixETV.getText().toString().isEmpty()){
-                        NewOrder.setRate(Double.parseDouble(RateFixETV.getText().toString()));
+                        NewOrderVariable.setRate(Double.parseDouble(RateFixETV.getText().toString()));
                     }
                 }
             });
@@ -307,7 +323,7 @@ public class NewOrder extends AppCompatActivity {
                 try {
                     Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(OrderOnDateString);
                     Log.d("Date", String.valueOf(date1));
-                    NewOrder.setOrderDate(OrderOnDateString);
+                    NewOrderVariable.setOrderDate(OrderOnDateString);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -323,7 +339,7 @@ public class NewOrder extends AppCompatActivity {
                 try {
                     Date date1 = new SimpleDateFormat("dd/MM/yyyy").parse(OrderDeliveryDate);
                     Log.d("Date", String.valueOf(date1));
-                    NewOrder.setDeliveryDate(OrderDeliveryDate);
+                    NewOrderVariable.setDeliveryDate(OrderDeliveryDate);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 }
@@ -440,11 +456,14 @@ public class NewOrder extends AppCompatActivity {
                             Weights.add(Double.valueOf(ItemWeight.getText().toString()));
                         }
                         if(!OrderAdvance.getText().toString().isEmpty()){
-                            NewOrder.setAdvance(Double.valueOf(OrderAdvance.getText().toString()));
+                            NewOrderVariable.setAdvance(Double.valueOf(OrderAdvance.getText().toString()));
                         }
 
                     }else{
 
+                    }
+                    if(!ItemRemarks.getText().toString().isEmpty()){
+                        RemarksList.add(ItemRemarks.getText().toString());
                     }
                     NewItemList.setAdapter(OrderItemList);
                     NewItemList.setLayoutManager(new LinearLayoutManager(getBaseContext()));
@@ -464,36 +483,45 @@ public class NewOrder extends AppCompatActivity {
                 }
             });
 
-        save.setOnClickListener(new View.OnClickListener() {
+        Save_Order.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                if(!ExistingCustomer){
+                    dbManager.open();
+                    long result = dbManager.quickInsertNewCustomer(NameEtv.getText().toString(),PhoneEtv.getText().toString());
+                    if(result!=-1){
+                        NewOrderVariable.setCustomerName(NameEtv.getText().toString());
+                        name = name.replaceAll(" ","_");
+                        name = name.replaceAll("-","_");
+                        NewOrderVariable.setPhoneNumber(PhoneEtv.getText().toString());
+                    }
+                    dbManager.close();
+                }
                 String timeStamp = String.valueOf(TimeUnit.MILLISECONDS.toSeconds(System.currentTimeMillis()));
                 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 
                 OrderName = OrderName+"_"+timeStamp+".json";
-                NewOrder.setOrderDate(dateFormat.format(Calendar.getInstance().getTime()));
-                NewOrder.setItems(ItemList);
-                NewOrder.setRemarks(RemarksList);
-                NewOrder.setWeights(Weights);
-                NewOrder.setSamplePhotos(Pictures);
-                NewOrder.setDeliveryDate(OrderDeliveryDate);
-                NewOrder.setOrderNumber(timeStamp);
+                NewOrderVariable.setOrderDate(dateFormat.format(Calendar.getInstance().getTime()));
+                NewOrderVariable.setItems(ItemList);
+                NewOrderVariable.setRemarks(RemarksList);
+                NewOrderVariable.setWeights(Weights);
+                NewOrderVariable.setSamplePhotos(Pictures);
+                NewOrderVariable.setDeliveryDate(OrderDeliveryDate);
+                NewOrderVariable.setOrderNumber(timeStamp);
                 ItemName.setEnabled(false);
                 ItemWeight.setEnabled(false);
                 OrderAdvance.setEnabled(false);
                 ItemRemarks.setEnabled(false);
 
                 Gson gson = new Gson();
-                String FileText = gson.toJson(NewOrder);
+                String FileText = gson.toJson(NewOrderVariable);
+                dbManager.open();
                 if(dbManager.addRecord(name,phone,0.00,
                         Double.parseDouble(OrderAdvance.getText().toString()),
                         "Order deposit.",
                         dateFormat.format(Calendar.getInstance().getTime()),
                         NewCategory.toString())>0){
-                    File SaveTheOrderInternally = new File(getFilesDir(),OrderName);
                     OrderName.replaceAll(" ","");
-
                     File SaveTheOrder = new File(getExternalFilesDir(null),OrderName);
                     FileOutputStream fileOutputStream = null;
                     try{
@@ -505,10 +533,10 @@ public class NewOrder extends AppCompatActivity {
                         Toast.makeText(view.getContext(),"Order saved.",Toast.LENGTH_LONG).show();
                         Log.d("File:",fileOutputStream.toString());
                         OrderName = OrderName.replace(".json","");
-                        NewOrder.setFileName(OrderName);
+                        NewOrderVariable.setFileName(OrderName);
                         firebaseFirestore.collection("Orders")
                                 .document(OrderName)
-                                .set(NewOrder).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                .set(NewOrderVariable).addOnCompleteListener(new OnCompleteListener<Void>() {
                                     @Override
                                     public void onComplete(@NonNull Task<Void> task) {
                                         if(task.isSuccessful()){
@@ -524,6 +552,7 @@ public class NewOrder extends AppCompatActivity {
                         Toast.makeText(view.getContext(),"Order not saved.",Toast.LENGTH_LONG).show();
                     }
                 }
+                dbManager.close();
             }
         });
         }
