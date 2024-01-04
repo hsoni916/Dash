@@ -1,5 +1,6 @@
 package com.example.dash;
 
+import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -8,12 +9,17 @@ import android.graphics.BitmapFactory;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.os.ParcelFileDescriptor;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -30,6 +36,7 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.view.menu.MenuBuilder;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.DefaultItemAnimator;
 import androidx.recyclerview.widget.LinearLayoutManager;
@@ -55,6 +62,8 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class MainActivity extends AppCompatActivity {
     final Calendar calendar = Calendar.getInstance();
@@ -93,6 +102,43 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        ExecutorService executorService = Executors.newSingleThreadExecutor();
+        Handler handler = new Handler(Looper.getMainLooper());
+        executorService.execute(new Runnable() {
+            @Override
+            public void run() {
+                dbManager.insertAllCategoriesGold(GenericItemsGold);
+                dbManager.insertAllCategoriesSilver(GenericItemsSilver);
+                handler.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        GenericItemsGold.addAll(Arrays.asList("Mens Ring", "Women Ring", "Chain",
+                                "Plastic Paatla", "Gold Set", "Gold Haar",
+                                "Earring", "Tops", "Gents Bracelets",
+                                "Ladies Bracelets", "Gold Paatla", "Gold Kada",
+                                "Pendant", "Pendant-Set","Bor", "Nath",
+                                "Damdi", "Tikka", "Gold Saakra", "Gold Coin",
+                                "Mangalsutra", "MS-Pendant", "MS-Pendant Set",
+                                "Dano", "Nathdi", "Pokarva", "Baby-Earring"));
+                        GenericItemsSilver.addAll(Arrays.asList("Silver Saakra", "Silver Chain", "Silver Murti",
+                                "Silver Coin", "Silver Mangalsutra", "Silver Bracelets", "Silver Mangalsutra","Silver Men Ring", "Silver Women Rings"));
+                        Purity_Levels_Silver.addAll(Arrays.asList("925", "Kachhi Silver", "Zevar Silver", "D-Silver", "Rupa"));
+                        Purity_Levels_Gold.addAll(Arrays.asList("999 Fine Gold", "23KT958", "22KT916", "21KT875",
+                                "20KT833", "18KT750", "14KT585","Others"));
+                        itemAdapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.simple_spinner_dropdown_item,
+                                new ArrayList<String>() {{
+                                    addAll(GenericItemsGold);
+                                    addAll(GenericItemsSilver);
+                                }});
+                    }
+                });
+            }
+        });
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
@@ -101,36 +147,6 @@ public class MainActivity extends AppCompatActivity {
         dbManager = new DBManager(this);
         dbManager.open();
         CAContext = this;
-
-        GenericItemsGold.addAll(Arrays.asList("Mens Ring", "Women Ring", "Chain",
-                "Plastic Paatla", "Gold Set", "Gold Haar",
-                "Earring", "Tops", "Gents Bracelets",
-                "Ladies Bracelets", "Gold Paatla", "Gold Kada",
-                "Pendant", "Pendant-Set","Bor", "Nath",
-                "Damdi", "Tikka", "Gold Saakra", "Gold Coin",
-                "Mangalsutra", "MS-Pendant", "MS-Pendant Set",
-                "Dano", "Nathdi", "Pokarva", "Baby-Earring"));
-        GenericItemsSilver.addAll(Arrays.asList("Silver Saakra", "Silver Chain", "Silver Murti",
-                "Silver Coin", "Silver Mangalsutra", "Silver Bracelets", "Silver Mangalsutra","Silver Men Ring", "Silver Women Rings"));
-        Purity_Levels_Silver.addAll(Arrays.asList("925", "Kachhi Silver", "Zevar Silver", "D-Silver", "Rupa"));
-        Purity_Levels_Gold.addAll(Arrays.asList("999 Fine Gold", "23KT958", "22KT916", "21KT875",
-                "20KT833", "18KT750", "14KT585","Others"));
-        itemAdapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item,
-                new ArrayList<String>() {{
-                    addAll(GenericItemsGold);
-                    addAll(GenericItemsSilver);
-                }});
-
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                dbManager.insertAllCategoriesGold(GenericItemsGold);
-                dbManager.insertAllCategoriesSilver(GenericItemsSilver);
-            }
-        },3000);
-
-
 
         NewCustomer = findViewById(R.id.NewCustomer);
         newInvoiceButton = findViewById(R.id.NewInvoice);
@@ -764,5 +780,34 @@ public class MainActivity extends AppCompatActivity {
                 startActivity(stockManagement);
             }
         });
+    }
+
+    @SuppressLint("RestrictedApi")
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        if(menu instanceof MenuBuilder){
+            ((MenuBuilder) menu).setOptionalIconsVisible(true);
+        }
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+
+
+
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        int id = item.getItemId();
+
+        switch (item.getItemId()){
+            case R.id.setting_menuItem:
+                //Start a new activity.
+                break;
+            case R.id.profile_menuItem:
+                //Start a new activity.
+                break;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 }

@@ -268,11 +268,13 @@ public class DBManager {
                 SQLiteDatabase db = dbHelper.getWritableDatabase();
                 Cursor fetch = db.rawQuery(sql,null);
                 //Log.d("Cursor Count",String.valueOf(fetch.getCount()));
-                if(fetch.getCount()==0){
-                    for(int j=0;j<Categories.size();j++){
-                        contentValues.put("Category",Categories.get(j));
-                        contentValues.put("BaseMetal","Gold");
-                        result = result+db.insert("Categories", null,contentValues);
+                while (fetch.moveToNext()){
+                    for(String string: Categories){
+                        if(!fetch.getString(0).equals(string)){
+                            contentValues.put("Category",string);
+                            contentValues.put("BaseMetal","Gold");
+                            result = result+db.insert("Categories", null,contentValues);
+                        }
                     }
                 }
                 fetch.close();
@@ -332,12 +334,14 @@ public class DBManager {
             String sql = "SELECT Category FROM Categories";
             SQLiteDatabase db = dbHelper.getWritableDatabase();
             Cursor fetch = db.rawQuery(sql,null);
-            Log.d("Cursor Count",String.valueOf(fetch.getCount()));
-            if(fetch.getCount()==0){
-                for(int j=0;j<Categories.size();j++){
-                    contentValues.put("Category",Categories.get(j));
-                    contentValues.put("BaseMetal","Silver");
-                    result = result+db.insert("Categories", null,contentValues);
+           // Log.d("Cursor Count",String.valueOf(fetch.getCount()));
+            while (fetch.moveToNext()){
+                for(String string: Categories){
+                    if(!fetch.getString(0).equals(string)){
+                        contentValues.put("Category",string);
+                        contentValues.put("BaseMetal","Silver");
+                        result = result+db.insert("Categories", null,contentValues);
+                    }
                 }
             }
             fetch.close();
@@ -380,7 +384,7 @@ public class DBManager {
                 PFB.close();
                 String triggers = "CREATE TRIGGER IF NOT EXISTS " + triggerName + " AFTER INSERT ON "
                         + table_name + " WHEN new.Barcode IS null " + " BEGIN UPDATE " + table_name + " SET Barcode = '"+prefix+"'||rowid; END;";
-                Log.d("Triggers:",triggers);
+               // Log.d("Triggers:",triggers);
                 String trigger2 = "CREATE TRIGGER IF NOT EXISTS " + triggerName2 + " AFTER DELETE ON "
                         + table_name +" BEGIN INSERT INTO " + table_name2 + " (Barcode) " + " VALUES ( old.Barcode ); END;";
                 dbHelper.getWritableDatabase().execSQL(create_table);
@@ -771,7 +775,7 @@ public class DBManager {
         return balance;
     }
 
-    public List<String> getAllBarcodes() {
+    public List<Label> getAllBarcodes() {
         SQLiteDatabase db = dbHelper.getWritableDatabase();
         String get_categories = "SELECT Category FROM Categories";
         Cursor fetch = db.rawQuery(get_categories,null);
@@ -782,15 +786,78 @@ public class DBManager {
             boiler = boiler.replaceAll("-","_");
             category_list.add(boiler);
         }
-        List<String> Barcodes = new ArrayList<>();
+        Log.d("Category list:",category_list.toString());
+        List<Label> Barcodes = new ArrayList<>();
         for(String category0 : category_list){
-            get_categories = "SELECT Barcode FROM " + category0;
+            get_categories = "SELECT * FROM " + category0;
             fetch = db.rawQuery(get_categories,null);
             while (fetch.moveToNext()){
                 int columnIndex = fetch.getColumnIndex("Barcode");
-                Barcodes.add(fetch.getString(columnIndex));
+                Label label = new Label();
+                label.setBarcode(fetch.getString(columnIndex));
+                label.setName(category0);
+                columnIndex = fetch.getColumnIndex("GrossWeight");
+                label.setGW(String.valueOf(fetch.getDouble(columnIndex)));
+                columnIndex = fetch.getColumnIndex("NetWeight");
+                label.setNW(String.valueOf(fetch.getDouble(columnIndex)));
+                columnIndex = fetch.getColumnIndex("ExtraCharges");
+                label.setEC(String.valueOf(fetch.getInt(columnIndex)));
+                columnIndex = fetch.getColumnIndex("HUID");
+                if(fetch.getString(columnIndex)!=null)
+                    if(!fetch.getString(columnIndex).isEmpty())
+                        label.setHUID(fetch.getString(columnIndex));
+                    else
+                        label.setHUID("");
+                columnIndex = fetch.getColumnIndex("Purity");
+                Log.d("Purity:",String.valueOf(fetch.getDouble(columnIndex)));
+                switch (String.valueOf(fetch.getDouble(columnIndex))){
+                    //"999 Fine Gold", "23KT958", "22KT916", "21KT875",
+                    //                "20KT833", "18KT750", "14KT585","Others"
+                    case "99.0":
+                        label.setHMStandard("999 Fine Gold");
+                        break;
+                    case "96.0":
+                        label.setHMStandard("23KT958");
+                        break;
+                    case "92.0":
+                        label.setHMStandard("22KT916");
+                        break;
+                    case "88.0":
+                        label.setHMStandard("21KT875");
+                        break;
+                    case "84.0":
+                        label.setHMStandard("20KT833");
+                        break;
+                    case "76.0":
+                        label.setHMStandard("18KT750");
+                        break;
+                    case "59.0":
+                        label.setHMStandard("14KT585");
+                        break;
+                    case "92.5":
+                        label.setHMStandard("925 Silver");
+                        break;
+                    case "72.0":
+                        label.setHMStandard("Kachhi Silver");
+                        break;
+                    case "62.0":
+                        label.setHMStandard("Zevar Silver");
+                        break;
+                        // "D-Silver", "Rupa"
+                }
+
+                Barcodes.add(label);
             }
         }
         return Barcodes;
+    }
+
+    public void getLabelDetails(String barcode, String name) {
+        SQLiteDatabase db = dbHelper.getWritableDatabase();
+        String get_details = "SELECT * FROM " +name+ " WHERE Barcode="+barcode;
+        Cursor fetch = db.rawQuery(get_details,null);
+        while (fetch.moveToNext()){
+
+        }
     }
 }

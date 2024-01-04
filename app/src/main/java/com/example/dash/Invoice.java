@@ -95,6 +95,8 @@ public class Invoice extends AppCompatActivity {
     Map<String, Double> PaymentDetails;
     ArrayAdapter<String> ItemAdapter;
     FirebaseFirestore db = FirebaseFirestore.getInstance();
+    List<Label> Barcodes = new ArrayList<>();
+    List<String> Barcode_String = new ArrayList<>();
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -156,8 +158,12 @@ public class Invoice extends AppCompatActivity {
         executorService.execute(new Runnable() {
             @Override
             public void run() {
-                List<String> Barcodes = dbManager.getAllBarcodes();
-                Log.d("In executor", String.valueOf(Barcodes.size()));
+                Barcodes = dbManager.getAllBarcodes();
+                Barcode_String = new ArrayList<>();
+                for(Label label:Barcodes){
+                    Barcode_String.add(label.getBarcode());
+                }
+                Log.d("In executor", String.valueOf(Barcode_String.size()));
                 handler.post(new Runnable() {
                     @Override
                     public void run() {
@@ -166,10 +172,10 @@ public class Invoice extends AppCompatActivity {
                             ItemAdapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.select_dialog_item,
                                     new ArrayList<String>(){{addAll(GenericItemsGold); addAll(GenericItemsSilver); }});
                         }else{
-                            Log.d("In handler","Size is "+String.valueOf(Barcodes.size()));
+                            Log.d("In handler","Size is "+String.valueOf(Barcode_String.size()));
                             Log.d("Barcodes:",Barcodes.toString());
                             ItemAdapter = new ArrayAdapter<>(getBaseContext(), android.R.layout.select_dialog_item,
-                                    new ArrayList<String>(){{ addAll(GenericItemsGold); addAll(GenericItemsSilver); addAll(Barcodes);}});
+                                    new ArrayList<String>(){{ addAll(GenericItemsGold); addAll(GenericItemsSilver); addAll(Barcode_String);}});
                         }
                         Particular.setThreshold(2);
                         Particular.setAdapter(ItemAdapter);
@@ -295,9 +301,8 @@ public class Invoice extends AppCompatActivity {
             }
         });
 
-        ArrayAdapter<String> finalItemAdapter = ItemAdapter;
         Particular.setOnItemClickListener((adapterView, view, i, l) -> {
-            if(GenericItemsGold.contains(finalItemAdapter.getItem(i)) || GenericItemsSilver.contains(finalItemAdapter.getItem(i))){
+            if(GenericItemsGold.contains(ItemAdapter.getItem(i)) || GenericItemsSilver.contains(ItemAdapter.getItem(i))){
                 Log.d("Item :","Generic");
                 Add_Barcode_Item.setEnabled(false);
                 LayoutInflater inflater = (LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -340,7 +345,7 @@ public class Invoice extends AppCompatActivity {
                     Purity.setAdapter(Purity_Adapter);
                     Purity.setSelection(0);
                     Category.setEnabled(false);
-                    Category.setText(finalItemAdapter.getItem(i));
+                    Category.setText(ItemAdapter.getItem(i));
                     if(dbManager.ListAllSuppliers().size()>0){
                         Supplier_Adapter = new ArrayAdapter<>
                                 (marginView.getContext(), android.R.layout.simple_spinner_item,
@@ -574,7 +579,7 @@ public class Invoice extends AppCompatActivity {
                                 if(id!=-1){
                                     Toast.makeText(marginView.getContext(),"Item Saved",Toast.LENGTH_LONG).show();
                                     sundryItem.setId(id);
-                                    itemids.add(id);
+                                    //itemids.add(id);
                                     AddItem(sundryItem);
                                     popupWindow.dismiss();
                                 }else{
@@ -587,9 +592,33 @@ public class Invoice extends AppCompatActivity {
                         }
                     });
                 }
-            }else{
+            }
+            else{
+                Log.d("Item :","Barcode");
                 Add_Barcode_Item.setEnabled(true);
+                Add_Barcode_Item.setVisibility(View.VISIBLE);
+                //Get details from the database about the label.
 
+                Add_Barcode_Item.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        SundryItem sundryItem = new SundryItem();
+                        for(Label label: Barcodes){
+                            if(label.getBarcode().equals(Particular.getText().toString())){
+                                sundryItem.setName(label.getName());
+                                sundryItem.setGW(Double.parseDouble(label.getGW()));
+                                sundryItem.setEC(Double.parseDouble(label.getEC()));
+                                sundryItem.setNW(Double.parseDouble(label.getNW()));
+                                sundryItem.setLW(Double.parseDouble(label.getGW())-Double.parseDouble(label.getNW()));
+                                sundryItem.setTypeOf(label.getHMStandard());
+                                //Log.d("Type of:",sundryItem.getTypeOf());
+                                AddItem(sundryItem);
+                                Particular.setText("");
+                                Particular.clearFocus();
+                            }
+                        }
+                    }
+                });
                 //Fetch details and add it to the recyclerview.
             }
         });
@@ -843,45 +872,15 @@ public class Invoice extends AppCompatActivity {
 
     private void AddItem(SundryItem sundryItem) {
         dbHelper = new DBHelper(getBaseContext());
-        SQLiteDatabase db = dbHelper.getWritableDatabase();
         if(sundryItemList.isEmpty())
             sundryItemList = new ArrayList<>();
         sundryItemList.add(sundryItem);
         updateWeightCounters(sundryItemList);
-        /*for(int i=0;i<itemids.size();i++){
-            String sql = "SELECT * FROM Sundry_Supplies WHERE rowid = " + itemids.get(i);
-            Cursor fetch = db.rawQuery(sql,null);
-            while (fetch.moveToNext() && !fetch.isAfterLast()){
-                int CI;
-                CI = fetch.getColumnIndex("Name");
-                sundryItem.setName(fetch.getString(CI));
-                CI = fetch.getColumnIndex("GrossWeight");
-                sundryItem.setGW(fetch.getDouble(CI));
-                CI = fetch.getColumnIndex("LessWeight");
-                sundryItem.setLW(fetch.getDouble(CI));
-                CI = fetch.getColumnIndex("NetWeight");
-                sundryItem.setNW(fetch.getDouble(CI));
-                CI = fetch.getColumnIndex("ExtraCharges");
-                sundryItem.setEC(fetch.getDouble(CI));
-                CI = fetch.getColumnIndex("TypeOfArticle");
-                sundryItem.setTypeOf(fetch.getString(CI));
-                CI = fetch.getColumnIndex("Wastage");
-                sundryItem.setWastage(fetch.getDouble(CI));
-                sundryItemList.add(sundryItem);
-                updateWeightCounters(sundryItemList);
-                //Update Details about invoice.
-                //GoldWeightHolder = findViewById(R.sundryItem.TotalGoldHolder);
-                //        SilverWeightHolder = findViewById(R.sundryItem.TotalSilverHolder);
-                //        AmountHolder = findViewById(R.sundryItem.AmountHolder);
-                //        TaxHolder = findViewById(R.sundryItem.TaxAmountHolder);
-                //        TotalAmountHolder = findViewById(R.sundryItem.TotalAmountHolder);
-             }
-            }*/
             adapter = new ItemListAdapter(sundryItemList, new ItemListAdapter.OnItemClicked() {
                 @Override
                 public void DeleteThisItem(int position) {
                     sundryItemList.remove(position);
-                    itemids.remove(position);
+                    //itemids.remove(position);
                     adapter.notifyItemRemoved(position);
                     updateWeightCounters(sundryItemList);
                     updateAmountCounters(sundryItemList);
@@ -1308,8 +1307,11 @@ public class Invoice extends AppCompatActivity {
             GoldWeightHolder.setText("0.00 gm");
             SilverWeightHolder.setText("0.00 gm");
         }
+
         for(int j=0;j<newitem.size();j++) {
+            //Log.d("Purity level:",newitem.get(j).getTypeOf());
             if(Purity_Levels_Gold.contains(newitem.get(j).getTypeOf())){
+
                 GoldWeight = GoldWeight+newitem.get(j).getNW();
             }
             if(Purity_Levels_Silver.contains(newitem.get(j).getTypeOf())){

@@ -5,6 +5,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.os.Handler;
+import android.os.Looper;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -40,6 +42,8 @@ import java.util.Locale;
 import java.util.Objects;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 public class StockManagement extends AppCompatActivity {
     List<String> GenericItemsGold = new ArrayList<>();
@@ -503,41 +507,47 @@ public class StockManagement extends AppCompatActivity {
                     String RV = dbManager.getBarCode(id,CategoriesString.replaceAll(" ","_"));
                     if(!RV.isEmpty()){
                         label.setBarcode(RV);
-
-                        inventory.collection("Inventory").document(label.Barcode)
-                                .set(label)
-                                .addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if(task.isSuccessful()){
-                                            Log.d("Label Saved",RV);
-                                            //Clear all
-
-                                            GrossWeight.setText(null);
-                                            LessWeight.setText(null);
-                                            NetWeight.setText(null);
-                                            ExtraCharges.setText(null);
-                                            HUID.setText(null);
-                                            Wastage.setText(null);
-                                            labels.add(label);
-                                            label = new Label();
-                                            Supplier_tv.setText(null);
-                                            Purity.setSelected(false);
-                                            Categories.setSelected(false);
-                                            inventorylist.setAdapter(stockAdapter);
-                                            inventorylist.setLayoutManager(new LinearLayoutManager(getBaseContext()));
-                                            inventorylist.setItemAnimator(new DefaultItemAnimator());
-                                            inventorylist.setVisibility(View.VISIBLE);
-
-                                        }else{
-                                            Toast.makeText(getBaseContext(),"Item not saved.",Toast.LENGTH_LONG).show();
-                                            savetobackend(label);
-
-                                        }
-                                        disableView.setVisibility(View.GONE);
-                                        progressBar.setVisibility(View.GONE);
-                                    }
-                                });
+                        //separate thread work.
+                        ExecutorService executorService = Executors.newSingleThreadExecutor();
+                        executorService.execute(new Runnable() {
+                            @Override
+                            public void run() {
+                                //Background work.
+                                final boolean[] saved = {false};
+                                inventory.collection("Inventory").document(label.Barcode)
+                                        .set(label)
+                                        .addOnCompleteListener(new OnCompleteListener<Void>() {
+                                            @Override
+                                            public void onComplete(@NonNull Task<Void> task) {
+                                                if(task.isSuccessful()){
+                                                    Log.d("Label Saved",RV);
+                                                    GrossWeight.setText(null);
+                                                    LessWeight.setText(null);
+                                                    NetWeight.setText(null);
+                                                    ExtraCharges.setText(null);
+                                                    HUID.setText(null);
+                                                    Wastage.setText(null);
+                                                    labels.add(label);
+                                                    label = new Label();
+                                                    Supplier_tv.setText(null);
+                                                    Purity.setSelected(false);
+                                                    Categories.setSelected(false);
+                                                    inventorylist.setAdapter(stockAdapter);
+                                                    inventorylist.setLayoutManager(new LinearLayoutManager(getBaseContext()));
+                                                    inventorylist.setItemAnimator(new DefaultItemAnimator());
+                                                    inventorylist.setVisibility(View.VISIBLE);
+                                                    saved[0] = true;
+                                                }else{
+                                                    saved[0] = false;
+                                                    Toast.makeText(getBaseContext(),"Item not saved.",Toast.LENGTH_LONG).show();
+                                                    savetobackend(label);
+                                                }
+                                                disableView.setVisibility(View.GONE);
+                                                progressBar.setVisibility(View.GONE);
+                                            }
+                                        });
+                            }
+                        });
                     }else{
                         label.setBarcode("");
                         Log.d("Barcode"," is NULL!");
@@ -550,7 +560,6 @@ public class StockManagement extends AppCompatActivity {
                 NameError.setText(R.string.gross_weight_error);
                 NameError.setVisibility(View.VISIBLE);
             }
-            //label = null;
         });
 
 
